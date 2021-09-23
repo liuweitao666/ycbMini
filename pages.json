@@ -4,18 +4,18 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "业绩看板",
-				"navigationStyle":"custom"
-			}
-		},
-		{
 			"path" : "pages/personalCenter/index",
 			"style" :                                                                                    
 			{
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false,
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "业绩看板",
 				"navigationStyle":"custom"
 			}
 		},

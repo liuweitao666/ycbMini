@@ -24,6 +24,21 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+button {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border-radius: 0;
+  background-color: transparent;
+  width: -webkit-max-content;
+  width: max-content;
+}
+button::after { border: none
+}
+.button-hover {
+	color:rgba(0, 0, 0, 0.6);
+	background-color:#fff;
+}
 .u-relative,
 .u-rela {
   position: relative;

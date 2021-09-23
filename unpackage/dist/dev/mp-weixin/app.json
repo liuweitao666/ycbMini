@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/personalCenter/index",
+    "pages/index/index",
     "pages/question/question",
     "pages/report/report"
   ],
@@ -19,6 +19,5 @@
   },
   "usingComponents": {
     "nav-bar": "/components/navbar/index"
-  },
-  "sitemapLocation": "sitemap.json"
+  }
 }

@@ -1,0 +1,14 @@
+button {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border-radius: 0;
+  background-color: transparent;
+  width: max-content;
+}
+button::after { border: none }
+
+.button-hover {
+	color:rgba(0, 0, 0, 0.6);
+	background-color:#fff;
+}

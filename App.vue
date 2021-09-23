@@ -14,6 +14,7 @@
 
 <style lang="scss">
 	@import "uview-ui/index.scss";
+	@import "@/static/styles/common.css";
 	/* 每个页面公共css */
 	page{
 		background-color: #F0FCFD;
