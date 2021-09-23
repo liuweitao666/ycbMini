@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "业绩看板",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-dropdown": "/node-modules/uview-ui/components/u-dropdown/u-dropdown",
+    "u-dropdown-item": "/node-modules/uview-ui/components/u-dropdown-item/u-dropdown-item"
+  }
+}

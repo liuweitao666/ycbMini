@@ -1,0 +1,1 @@
+<view><nav-bar vue-id="29213635-1" isBackground="{{true}}" title="徐小凯" height="482rpx" data-event-opts="{{[['^change',[['changeTab']]]]}}" bind:change="__e" bind:__l="__l"></nav-bar><view>123456</view></view>

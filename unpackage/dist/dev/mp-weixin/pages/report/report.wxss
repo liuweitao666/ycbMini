@@ -1,0 +1,227 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.report .bor-top.data-v-e403a974 {
+  border-top: 30rpx solid #F3F3F4;
+}
+.report .analysis.data-v-e403a974 {
+  width: 682rpx;
+  opacity: 1;
+  background: #fff7ea;
+  border-radius: 14rpx;
+  padding: 21rpx;
+  font-size: 32rpx;
+  font-family: PingFang SC, PingFang SC-Medium;
+  font-weight: 500;
+  text-align: left;
+  color: #333333;
+  line-height: 50rpx;
+}
+.report .grey.data-v-e403a974 {
+  color: #000;
+  background-color: #FFFFFF;
+  padding-top: 0;
+}
+.report .top.data-v-e403a974 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+  padding-bottom: 50rpx;
+}
+.report .top .top-back.data-v-e403a974 {
+  background-color: #D4B381;
+  width: 100%;
+  height: 333rpx;
+  padding: 34rpx;
+}
+.report .top .top-back .title.data-v-e403a974 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+}
+.report .top .top-back .title .icon.data-v-e403a974 {
+  width: 50rpx;
+  height: 50rpx;
+  margin-right: 20rpx;
+}
+.report .top .top-back .title .icon image.data-v-e403a974 {
+  width: 100%;
+  height: 100%;
+}
+.report .top .top-back .title .text_tit.data-v-e403a974 {
+  opacity: 1;
+  font-family: PingFang SC, PingFang SC-Bold;
+  color: #ffffff;
+  color: #FFFFFF;
+}
+.report .top .top-back .title .text_tit .top_title.data-v-e403a974 {
+  font-weight: 700;
+  font-size: 36rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+}
+.report .top .top-back .title .text_tit .bottom.data-v-e403a974 {
+  font-weight: 500;
+  font-size: 32rpx;
+  line-height: 50rpx;
+  margin-top: 15rpx;
+}
+.report .top .top_con.data-v-e403a974 {
+  width: 682rpx;
+  margin-top: -140rpx;
+}
+.report .top .top_con .top_content.data-v-e403a974 {
+  height: 399rpx;
+  opacity: 1;
+  background: #ffffff;
+  border-radius: 14rpx;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.13);
+  width: 100%;
+  padding: 43rpx 47rpx;
+}
+.report .top .top_con .top_content .con_title.data-v-e403a974 {
+  font-size: 32rpx;
+  font-family: PingFang SC, PingFang SC-Bold;
+  font-weight: 700;
+  color: #d9b884;
+  line-height: 50rpx;
+  margin-bottom: 25rpx;
+}
+.report .top .top_con .top_content .con_main.data-v-e403a974 {
+  font-size: 28rpx;
+  font-family: PingFang SC, PingFang SC-Medium;
+  text-align: left;
+  color: #333333;
+  line-height: 50rpx;
+}
+.report .top .top_con .con_desc.data-v-e403a974 {
+  font-size: 26rpx;
+  font-family: PingFang SC, PingFang SC-Medium;
+  font-weight: 500;
+  text-align: left;
+  padding: 40rpx 20rpx;
+  color: #999999;
+  line-height: 40rpx;
+}
+.report .answer_ays.data-v-e403a974 {
+  width: 100%;
+  line-height: 50rpx;
+  padding: 40rpx 34rpx;
+  background-color: #FFFFFF;
+}
+.report .answer_ays .top.data-v-e403a974 {
+  font-size: 32rpx;
+  font-family: PingFang SC, PingFang SC-Medium;
+  font-weight: 500;
+  text-align: left;
+  color: #333333;
+  padding-bottom: 11rpx;
+}
+.report .answer_ays .question_answer.data-v-e403a974 {
+  padding-top: 39rpx;
+}
+.report .answer_ays .question_answer .question.data-v-e403a974 {
+  font-size: 30rpx;
+  font-family: PingFang SC, PingFang SC-Medium;
+  text-align: left;
+  color: #333333;
+}
+.report .answer_ays .question_answer .answer.data-v-e403a974 {
+  color: #999;
+  margin-top: 20rpx;
+  font-size: 30rpx;
+  padding-left: 26rpx;
+  padding-right: 26rpx;
+  font-weight: normal;
+}
+.report .policy.data-v-e403a974 {
+  padding: 40rpx 34rpx;
+}
+.report .policy .policy_tit.data-v-e403a974 {
+  font-weight: 700;
+  font-size: 32rpx;
+  line-height: 50rpx;
+}
+.report .policy .policy_con .item.data-v-e403a974 {
+  margin: 30rpx 0;
+  line-height: 40rpx;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+}
+.report .policy .policy_con .item .number.data-v-e403a974 {
+  display: inline-block;
+  background-color: #D4B381;
+  width: 35rpx;
+  height: 35rpx;
+  min-width: 35rpx;
+  line-height: 35rpx;
+  color: #FFFFFF;
+  margin-right: 15rpx;
+  text-align: center;
+  position: relative;
+  top: 5rpx;
+}
+.report .policy .policy_con .item .content.data-v-e403a974 {
+  color: #999;
+  letter-spacing: 2rpx;
+  font-size: 26rpx;
+  font-family: PingFang SC, PingFang SC-Medium;
+}
+.report .asys_bottom.data-v-e403a974 {
+  background-color: #F3F3F4;
+  padding: 35rpx 34rpx;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+          flex-direction: column;
+}
+.report .asys_bottom .msg.data-v-e403a974 {
+  line-height: 50rpx;
+  color: #999;
+}
+.report .asys_bottom .share_submit.data-v-e403a974 {
+  width: 682rpx;
+  height: 100rpx;
+  opacity: 1;
+  font-size: 28rpx;
+  background: #d9b782;
+  border-radius: 50px;
+  line-height: 100rpx;
+  color: #FFFFFF;
+  margin-top: 50rpx;
+}
+
