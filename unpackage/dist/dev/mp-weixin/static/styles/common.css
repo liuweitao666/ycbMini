@@ -12,3 +12,27 @@ button::after { border: none }
 	color:rgba(0, 0, 0, 0.6);
 	background-color:#fff;
 }
+/* 个人名片中 介绍卡片通用样式 */
+.card{
+	padding: 30rpx;
+	background-color: #FFFFFF;
+	margin-top: 30rpx;
+	box-shadow: 0px 0px 10px 0px rgba(104, 103, 139, 0.08);
+	border-radius: 16rpx;
+}
+.card_title{
+	font-size: 32rpx;
+	font-family: PingFangSC-Medium, PingFang SC;
+	font-weight: 500;
+	color: #333333;
+	line-height: 44rpx;
+	padding-bottom: 20rpx;
+}
+.card_desc{
+	font-size: 24rpx;
+	font-family: PingFangSC-Regular, PingFang SC;
+	font-weight: 400;
+	color: #777777;
+	line-height: 54rpx;
+	color: #777777;
+}

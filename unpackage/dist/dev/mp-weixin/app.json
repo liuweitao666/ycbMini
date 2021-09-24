@@ -19,5 +19,6 @@
   },
   "usingComponents": {
     "nav-bar": "/components/navbar/index"
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

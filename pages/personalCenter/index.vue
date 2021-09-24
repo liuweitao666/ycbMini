@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<audio :src="audioSrc" class="audio"></audio>
 		<nav-bar @change="changeNav" :isBackground="true" title="徐小凯" height="482rpx"></nav-bar>
 		<view class="main">
 			<!-- 卡片 -->
@@ -62,7 +63,7 @@
 				:is-scroll="false" 
 				:current="current" 
 				@change="change"></u-tabs>
-
+				<!--  -->
 				<view class="content">
 					<view class="top">
 						<view class="item">
@@ -85,21 +86,65 @@
 								<text class="">实名认证</text>
 							</view>
 						</view>
+						<view class="intro_for_audio item">
+							<view style="height: 90rpx;">
+								<u-avatar size="90"></u-avatar>
+							</view>
+							<view class="audio_wrap">
+								<u-icon name="wifi" class="audio_icon"></u-icon>
+							</view>
+							<text class="audio_time">20s</text>
+						</view>
 					</view>
 					<view class="bottom">
-						
+						<view class="card_title">
+							个人职称
+						</view>
+						<view class="card_desc title">
+							<view class="flex_li">
+								·中国注册会计师(CPA)
+							</view>
+							<view class="flex_li">
+								·中国注册会计师(CPA)
+							</view>
+							<view class="flex_li">
+								·中国注册会计师(CPA)
+							</view>
+							<view class="flex_li">
+								·中国注册会计师(CPA)
+							</view>
+						</view>
 					</view>
 				</view>
 			</view>
-			<!-- footer -->
+			<!-- 个人介绍 -->
+			<person-intro v-show="current===0" />
+			<!-- 我的业务 -->
+			<enterprise-intro v-show="current===1" />
+			<!-- 业务介绍 -->
+			<business-intro v-show="current===2" />
 		</view>
+		<!-- footer -->
+		<person-footer />
 	</view>
 </template>
 
 <script>
+	import personIntro from "./components/personIntro.vue"
+	import personFooter from "./components/footer.vue"
+	import enterpriseIntro from "./components/enterpriseIntro.vue"
+	import businessIntro from "./components/businessIntro.vue"
 	export default {
+		components:{
+			personIntro,
+			personFooter,
+			businessIntro,
+			enterpriseIntro
+		},
 		data(){
 			return{
+				// 音频文件
+				audioSrc:'',
 				navList:[{
 					cate_name: '待收货'
 				}, {
@@ -121,15 +166,21 @@
 					background:"#00A4FF",
 				},
 				list: [{
-					cate_name: '待收货'
+					cate_name: '个人介绍'
 				}, {
-					cate_name: '待付款'
+					cate_name: '我的企业'
 				}, {
-					cate_name: '待评价',
+					cate_name: '业务介绍',
 					cate_count: 5
 				}],
-				current: 0
-				
+				// 当前tab栏
+				current: 0,
+				// 个人中心数据
+				personData:null,
+				// 我的企业数据
+				myEnterpriseData:null,
+				// 业务数据
+				businessData:null,
 			}
 		},
 		methods: {
@@ -146,7 +197,7 @@
 
 <style lang="scss" scoped>
 	.main{
-		padding: 30rpx;
+		padding: 30rpx 30rpx 0;
 		margin-top: -228rpx;
 		position: relative;
 		z-index: 999;
@@ -260,11 +311,64 @@
 							}
 						}
 					}
+					.intro_for_audio{
+						display: flex;
+						align-items: center;
+						.audio_wrap{
+							width: 290rpx;
+							height: 70rpx;
+							background: #A0E75A;
+							border: 1px solid #84D55A;
+							position: relative;
+							padding-left: 30rpx;
+							margin-left: 40rpx;
+							border-radius: 6rpx;
+							display: flex;
+							align-items: center;
+							&::before{
+								content: '';
+								position: absolute;
+								width: 30rpx;
+								height: 30rpx;
+								border-radius: 4rpx;
+								background-color: #A0E75A;
+								left: -15rpx;
+								top: 50%;
+								transform: translateY(-50%) rotate(45deg);
+							}
+							.audio_icon{
+								color: #70A13F;
+								font-size: 30rpx;
+								transform: rotate(90deg);
+							}
+						}
+						.audio_time{
+							padding-left: 20rpx;
+							color: #999999;
+							font-size: 24rpx;
+						}
+					}
 				}
+				// 底部
 				.bottom{
 					border-top: 1px solid #EDEDED;
+					padding: 30rpx;
+					.title{
+						display: flex;
+						flex-wrap: wrap;
+						.flex_li{
+							width: 50%;
+						}
+					}
 				}
 			}
 		}
+		//
+	}
+	.audio{
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: -1;
 	}
 </style>

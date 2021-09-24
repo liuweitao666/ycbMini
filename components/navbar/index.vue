@@ -3,7 +3,7 @@
 		class="navbar" 
 		:style='{
 		"height":height,
-		"background":isBackground?"url(/static/personalCenter/back_navbar.png) no-repeat":"#292B4D",
+		"background":isBackground?"url(/static/image/personalCenter/back_navbar.png) no-repeat":"#292B4D",
 		"background-size": "100% 100%"
 		}'>
 		<view class="header" :style='{"height":(navTop-4)+"px"}'>

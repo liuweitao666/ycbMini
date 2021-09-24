@@ -90,7 +90,7 @@
 						<view class="text_desc">长沙/商标</view>
 					</view>
 					<view class="right">
-						<image src="@/static/home/phone.png" mode=""></image>
+						<image src="@/static/image/home/phone.png" mode=""></image>
 					</view>
 				</view>
 				<view class="section_content">
@@ -102,7 +102,7 @@
 						<view class="text_desc">长沙/商标</view>
 					</view>
 					<view class="right">
-						<image src="@/static/home/phone.png" mode=""></image>
+						<image src="@/static/image/home/phone.png" mode=""></image>
 					</view>
 				</view>
 				<view class="section_content">
@@ -114,7 +114,7 @@
 						<view class="text_desc">长沙/商标</view>
 					</view>
 					<view class="right">
-						<image src="@/static/home/phone.png" mode=""></image>
+						<image src="@/static/image/home/phone.png" mode=""></image>
 					</view>
 				</view>
 				<view class="section_content">
@@ -126,7 +126,7 @@
 						<view class="text_desc">长沙/商标</view>
 					</view>
 					<view class="right">
-						<image src="@/static/home/phone.png" mode=""></image>
+						<image src="@/static/image/home/phone.png" mode=""></image>
 					</view>
 				</view>
 			</view>
