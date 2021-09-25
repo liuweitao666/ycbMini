@@ -7,7 +7,6 @@
     "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
     "u-button": "/node-modules/uview-ui/components/u-button/u-button",
     "u-tabs": "/node-modules/uview-ui/components/u-tabs/u-tabs",
-    "u-rate": "/node-modules/uview-ui/components/u-rate/u-rate",
     "person-intro": "/pages/personalCenter/components/personIntro",
     "person-footer": "/pages/personalCenter/components/footer",
     "business-intro": "/pages/personalCenter/components/businessIntro",

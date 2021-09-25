@@ -12,6 +12,18 @@ button::after { border: none }
 	color:rgba(0, 0, 0, 0.6);
 	background-color:#fff;
 }
+/* 介绍 */
+.introduce{
+	margin-top: -10rpx;
+}
+.introduce .content{
+	background-color: #FFFFFF;
+	padding-top: 10rpx;
+	margin-top: -10rpx;
+	border-radius: 0 0 16rpx 16rpx;
+	/* box-shadow: 0px 0px 10px 0px rgba(104, 103, 139, 0.08); */
+}
+
 /* 个人名片中 介绍卡片通用样式 */
 .card{
 	padding: 30rpx;
@@ -35,4 +47,19 @@ button::after { border: none }
 	color: #777777;
 	line-height: 54rpx;
 	color: #777777;
+}
+/* 自定义tabs */
+.custom_tabs{
+	background: #FFFFFF;
+	box-shadow: 0px 0px 20rpx 0px rgba(104, 103, 139, 0.08);
+	border-radius: 16rpx;
+	margin-top: 30rpx;
+	overflow: hidden;
+	.line{
+		height: 1px;
+		background-color: #EDEDED;
+		position: relative;
+		width: 100%;
+		top: 93rpx;
+	}
 }

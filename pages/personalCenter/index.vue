@@ -52,7 +52,11 @@
 				<button class="save_btn">存入通讯录</button>
 			</view>
 			<!-- introduce 介绍tabs -->
-			<view class="introduce_tabs">
+			<view class="custom_tabs">
+				<!-- tab 对应内容 -->
+				<view class="line">
+					
+				</view>
 				<u-tabs name="cate_name" 
 				count="cate_count" 
 				:list="list"
@@ -63,59 +67,6 @@
 				:is-scroll="false" 
 				:current="current" 
 				@change="change"></u-tabs>
-				<!--  -->
-				<view class="content">
-					<view class="top">
-						<view class="item">
-							<text class="label">服务订单：</text>
-							<text>637单</text>
-						</view>
-						<view class="item">
-							<text class="label">服务订单：</text>
-							<u-rate :current="3.7" active-color="#FFA501" inactive-color="#FFA501" :disabled="true"></u-rate>
-							<text style="color:#FFA501;padding-left:8rpx">3.7</text>
-						</view>
-						<view class="item">
-							<text class="label">服务订单：</text>
-							<view class="item_right">
-								<u-icon name="checkmark-circle"></u-icon>
-								<text>
-									执业认证
-								</text>
-								<u-icon name="checkmark-circle"></u-icon>
-								<text class="">实名认证</text>
-							</view>
-						</view>
-						<view class="intro_for_audio item">
-							<view style="height: 90rpx;">
-								<u-avatar size="90"></u-avatar>
-							</view>
-							<view class="audio_wrap">
-								<u-icon name="wifi" class="audio_icon"></u-icon>
-							</view>
-							<text class="audio_time">20s</text>
-						</view>
-					</view>
-					<view class="bottom">
-						<view class="card_title">
-							个人职称
-						</view>
-						<view class="card_desc title">
-							<view class="flex_li">
-								·中国注册会计师(CPA)
-							</view>
-							<view class="flex_li">
-								·中国注册会计师(CPA)
-							</view>
-							<view class="flex_li">
-								·中国注册会计师(CPA)
-							</view>
-							<view class="flex_li">
-								·中国注册会计师(CPA)
-							</view>
-						</view>
-					</view>
-				</view>
 			</view>
 			<!-- 个人介绍 -->
 			<person-intro v-show="current===0" />
@@ -286,83 +237,7 @@
 				color: #fff;
 			}
 		}
-		.introduce_tabs{
-			background: #FFFFFF;
-			box-shadow: 0px 0px 20rpx 0px rgba(104, 103, 139, 0.08);
-			border-radius: 16rpx;
-			margin-top: 30rpx;
-			overflow: hidden;
-			.content{
-				margin-top: -10rpx;
-				.top{
-					border-top: 1px solid #EDEDED;
-					padding:20rpx 30rpx;
-					.item{
-						padding-top: 20rpx;
-						.label{
-							padding-right: 6rpx;
-							color: #999;
-						}
-						.item_right{
-							color: #FFA501;
-							display: inline-block;
-							text{
-								padding:0rpx 15rpx;
-							}
-						}
-					}
-					.intro_for_audio{
-						display: flex;
-						align-items: center;
-						.audio_wrap{
-							width: 290rpx;
-							height: 70rpx;
-							background: #A0E75A;
-							border: 1px solid #84D55A;
-							position: relative;
-							padding-left: 30rpx;
-							margin-left: 40rpx;
-							border-radius: 6rpx;
-							display: flex;
-							align-items: center;
-							&::before{
-								content: '';
-								position: absolute;
-								width: 30rpx;
-								height: 30rpx;
-								border-radius: 4rpx;
-								background-color: #A0E75A;
-								left: -15rpx;
-								top: 50%;
-								transform: translateY(-50%) rotate(45deg);
-							}
-							.audio_icon{
-								color: #70A13F;
-								font-size: 30rpx;
-								transform: rotate(90deg);
-							}
-						}
-						.audio_time{
-							padding-left: 20rpx;
-							color: #999999;
-							font-size: 24rpx;
-						}
-					}
-				}
-				// 底部
-				.bottom{
-					border-top: 1px solid #EDEDED;
-					padding: 30rpx;
-					.title{
-						display: flex;
-						flex-wrap: wrap;
-						.flex_li{
-							width: 50%;
-						}
-					}
-				}
-			}
-		}
+		
 		//
 	}
 	.audio{

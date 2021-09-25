@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "线索详情",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
+    "u-tabs": "/node-modules/uview-ui/components/u-tabs/u-tabs",
+    "followup-log": "/pages/clueDetail/components/followupLog",
+    "circulation-log": "/pages/clueDetail/components/circulationLog",
+    "operation-log": "/pages/clueDetail/components/operationLog"
+  }
+}

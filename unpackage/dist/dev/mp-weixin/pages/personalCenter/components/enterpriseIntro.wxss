@@ -24,6 +24,17 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.enterprise_intro .content .item.data-v-73878803 {
+  font-size: 28rpx;
+  padding: 20rpx 30rpx;
+  border-bottom: 1px solid #EDEDED;
+}
+.enterprise_intro .content .item .name.data-v-73878803 {
+  color: #999;
+}
+.enterprise_intro .content .item_card.data-v-73878803 {
+  padding: 30rpx;
+}
 .enterprise_intro .card_title.data-v-73878803 {
   padding: 0 0 30rpx 20rpx;
 }

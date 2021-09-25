@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/clueDetail/index",
     "pages/personalCenter/index",
     "pages/index/index",
-    "pages/question/question",
     "pages/report/report"
   ],
   "subPackages": [],

@@ -81,7 +81,7 @@
 						<u-dropdown-item v-model="value2" title="温度" :options="options2"></u-dropdown-item>
 					</u-dropdown>
 				</view>
-				<view class="section_content">
+				<view class="section_content" @click="handleTo">
 					<view class="left">
 						<view class="title">
 							分享是学习他姥姥
@@ -198,6 +198,12 @@ export default {
 		change(data){
 			const {current} = data.detail
 			this.swiperActive = current
+		},
+		// 跳转对应的线索详情
+		handleTo(){
+			uni.navigateTo({
+			    url: '/pages/clueDetail/index?id=123'
+			});
 		}
 	}
 };
