@@ -76,7 +76,7 @@
 				'height': '84rpx',
 				'background': '#00A4FF',
 				'border-radius': '8px'
-			}">添加跟进</u-button>
+			}" @click="JumpTo">添加跟进</u-button>
 			
 		</log-footer>
 	</view>
@@ -117,6 +117,11 @@ export default {
 		// tabs 改变
 		change(value){
 			this.current = value
+		},
+		JumpTo(){
+			uni.navigateTo({
+				url:'/pages/addFollowup/addFollowup'
+			})
 		}
 	}
 };
