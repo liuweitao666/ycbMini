@@ -60,17 +60,38 @@
 		<followup-log v-show="current===0"/>
 		<circulation-log v-show="current===1"/>
 		<operation-log v-show="current===2"/>
+		<view class="spacing">
+			
+		</view>
+		<!-- 底部 -->
+		<log-footer>
+			<u-button type="primary" :custom-style="{
+				'width': '260rpx',
+				'height': '84rpx',
+				'background': '#FC961E',
+				'border-radius': '8px',
+			}">生成客户</u-button>
+			<u-button type="primary" :custom-style="{
+				'width': '260rpx',
+				'height': '84rpx',
+				'background': '#00A4FF',
+				'border-radius': '8px'
+			}">添加跟进</u-button>
+			
+		</log-footer>
 	</view>
 </template>
 <script>
 	import followupLog from "./components/followupLog.vue"
 	import circulationLog from "./components/circulationLog.vue"
 	import operationLog from "./components/operationLog.vue"
+	import logFooter from "@/components/footer/footer.vue"
 export default {
 	components:{
 		followupLog,
 		circulationLog,
-		operationLog
+		operationLog,
+		logFooter
 	},
 	data() {
 		return {
@@ -191,6 +212,9 @@ export default {
 	.clue_tabs{
 		margin-top: 0;
 		padding-right: 30rpx;
+	}
+	.spacing{
+		background-color: #FFFFFF;
 	}
 }
 </style>

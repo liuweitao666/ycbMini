@@ -69,5 +69,24 @@ button::after { border: none }
 	background-color: #FFFFFF;
 	padding: 20rpx 30rpx 30rpx;
 	margin-top: -10rpx;
-	
+}
+// 公共描述
+.desc{
+	font-size: 24rpx;
+	font-family: PingFangSC-Regular, PingFang SC;
+	font-weight: 400;
+	color: rgba(0, 0, 0, 0.5);
+	line-height: 50rpx;
+}
+// title 全局样式标题
+.custom_title{
+	font-size: 32rpx;
+	font-family: PingFangSC-Medium, PingFang SC;
+	font-weight: 500;
+	color: #222222;
+}
+
+// 距离底部距离
+.spacing{
+	height: 188rpx;
 }

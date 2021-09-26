@@ -1,15 +1,17 @@
 import urlConfig from './config.js'
 import store from '../../store/index.js'
+import website from '@/config/website';
+let Base64= require('@/utils/base64.js').Base64;
 
 const request = {}
 const headers = {}
 
-request.globalRequest = (url, method, data, power, baseUrl) => {
-	/*     权限判断 因为有的接口请求头可能需要添加的参数不一样，所以这里做了区分
+request.globalRequest = (url, method, params, power) => {
+	/*  权限判断 因为有的接口请求头可能需要添加的参数不一样，所以这里做了区分
 	    1 == 不通过access_token校验的接口
 	    2 == 文件下载接口列表
 	    3 == 验证码登录 */
-	let realUrl = baseUrl + url
+	const data = params || {}
 	let token = ''
 	// uni.getStorage({
 	// 	key:'token',
@@ -17,12 +19,13 @@ request.globalRequest = (url, method, data, power, baseUrl) => {
 	// 		token = res.data
 	// 	}
 	// })
-	headers['tenant'] = 'MTAwMQ=='
+	headers['Tenant-Id'] = uni.getStorageSync('tenantId') || ''
 	headers['Content-Type'] = 'application/json'
-	headers['token'] = store.state.token
+	// headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
+	// headers['token'] = store.state.token
 	switch (power) {
 		case 1:
-			headers['Authorization'] = 'Basic a3N1ZGk6a3N1ZGk='
+			headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
 			break;
 		case 2:
 			headers['Authorization'] = 'Basic a3N1ZGlfcGM6a3N1ZGlfcGM='
@@ -39,9 +42,9 @@ request.globalRequest = (url, method, data, power, baseUrl) => {
 			break;
 	}
 	return uni.request({
-		url:realUrl,
+		url,
 		method,
-		data: data,
+		data,
 		dataType: 'json',
 		header: headers
 	}).then(res => {
@@ -65,7 +68,6 @@ request.globalRequest = (url, method, data, power, baseUrl) => {
 				return Promise.reject()
 				break
 		}
-
 	})
 }
 export default request
