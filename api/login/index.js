@@ -6,21 +6,42 @@ const {
 // 获取对应信息
 
 // 效验wx.login 获取的code
-export const checkCode = params => request.globalRequest(
-	`${baseUrl}/blade-crm/wx-mini/auth/verify-code?code=${params.code}`, 'POST', null, 1)
+export const checkCode = (params) => request.globalRequest({
+	url: `${baseUrl}/blade-crm/wx-mini/auth/verify-code?code=${params.code}`,
+	method: 'POST',
+	params:null,
+	power: 1
+})
 // 根据用户手机号获取用户列表
-export const getUsers = params => request.globalRequest(
-	`${baseUrl}/blade-crm/wx-mini/auth/get-phone-users`,
-	'POST',
-	params, 1)
+export const getUsers = (params) => request.globalRequest({
+	url: `${baseUrl}/blade-crm/wx-mini/auth/get-phone-users`,
+	method: 'POST',
+	params,
+	power: 1
+})
+
 // 登录
-export const login = params => request.globalRequest(
-	`${baseUrl}/blade-auth/oauth/token?tenantId=${params.tenantId}&username=${params.account}&grant_type=wxmini&code=${params.code}&phone=${params.phone}`,
-	'POST', params, 1)
-export const refreshToken = (tenantId,refresh_token) => request.globalRequest(`${baseUrl}/blade-auth/oauth/token`, 'POST', {
-	tenantId,
-	refresh_token,
-	grant_type: "refresh_token",
-	scope: "all",
-}, 1)
+export const login = (params) => request.globalRequest({
+	url: `${baseUrl}/blade-auth/oauth/token?tenantId=${params.tenantId}&username=${params.account}&grant_type=wxmini&code=${params.code}&phone=${params.phone}`,
+	method: 'POST',
+	params,
+	power: 1
+})
+// 刷新token
+export const refreshToken = (tenantId, refresh_token) => request.globalRequest({
+	url: `${baseUrl}/blade-auth/oauth/token?tenantId=${tenantId}&refresh_token=${refresh_token}&grant_type=refresh_token&scope=all`,
+	method: 'POST',
+	params: {
+		tenantId,
+		refresh_token,
+		grant_type: "refresh_token",
+		scope: "all",
+	},
+	power: 1
+})
+// 登出
+export const logout = () => request.globalRequest({
+	url: `${baseUrl}blade-auth/oauth/logout`,
+	method: 'get',
+});
 // refreshToken

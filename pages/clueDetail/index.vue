@@ -70,13 +70,13 @@
 				'height': '84rpx',
 				'background': '#FC961E',
 				'border-radius': '8px',
-			}">生成客户</u-button>
+			}"  @click="JumpTo('/pages/generateCustomer/index')" >生成客户</u-button>
 			<u-button type="primary" :custom-style="{
 				'width': '260rpx',
 				'height': '84rpx',
 				'background': '#00A4FF',
 				'border-radius': '8px'
-			}" @click="JumpTo">添加跟进</u-button>
+			}" @click="JumpTo('/pages/addFollowup/index')">添加跟进</u-button>
 			
 		</log-footer>
 	</view>
@@ -118,9 +118,9 @@ export default {
 		change(value){
 			this.current = value
 		},
-		JumpTo(){
+		JumpTo(url){
 			uni.navigateTo({
-				url:'/pages/addFollowup/addFollowup'
+				url
 			})
 		}
 	}

@@ -16,7 +16,7 @@ export default {
 		this.refreshToken()
 		this.timer = setInterval(() => {
 			this.refreshToken()
-		}, 10000);
+		}, 60000);
 		// 获取设备信息
 		uni.getSystemInfo({
 			success: function(res) {
@@ -27,23 +27,36 @@ export default {
 	},
 	onHide: function() {
 		console.log('App Hide');
-		clearInterval(this.timer)
+		// clearInterval(this.timer)
 	},
 	computed:{
 		...mapGetters(['userInfo'])
 	},
 	methods:{
 		// 定时检测token
-		refreshToken() {
+		async refreshToken() {
 			const tokenData = uni.getStorageSync('token_time')
 			if(!tokenData) return
 			const token = JSON.parse(tokenData)
 			const date = calcDate(token.datetime, new Date().getTime());
 			if (validatenull(date)) return;
-			console.log(date.seconds,website.tokenTime)
 			if (date.seconds >= website.tokenTime) {
-				const data = this.$store.dispatch("refreshToken")
-				console.log(data)
+				try{
+					const data =await this.$store.dispatch("refreshToken")
+					console.log(data)
+				}catch(e){
+					//TODO handle the exception
+					let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
+					let curRoute = routes.length===0?'':routes[routes.length - 1].route //获取当前页面路由
+					// 超出时间直接登出重新登录
+					this.$store.dispatch("FedLogOut").then(_=>{
+						if(!curRoute){
+							uni.navigateTo({
+								url:'/pages/login/index'
+							})
+						}
+					})
+				}
 			}
 		},
 		

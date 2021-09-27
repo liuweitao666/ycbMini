@@ -1,7 +1,10 @@
 <template>
 	<!-- 登陆 -->
 	<view class="wrap">
-		<button open-type="getPhoneNumber" class="button" @getphonenumber="getPhoneNumber">授权登陆</button>
+		<view class="logo">
+			<image src="../../static/image/login/logo.png" ></image>
+		</view>
+		<button open-type="getPhoneNumber" class="button" @getphonenumber="getPhoneNumber">微信一键登录</button>
 	</view>
 </template>
 
@@ -90,14 +93,6 @@ export default {
 		handleClose() {
 			this.show = false;
 		}
-		// getPhoneNumber(e) {
-		// 	wx.showLoading({
-		// 		title: '授权中'
-		// 	});
-		// 	let iv = e.detail.iv;
-		// 	let encryptedData = e.detail.encryptedData;
-		// 	this.login(encryptedData, iv);
-		// }
 	}
 };
 </script>
@@ -105,42 +100,29 @@ export default {
 <style lang="scss">
 .wrap {
 	width: 100%;
-	height: 734rpx;
 	opacity: 1;
-	background: #ffffff;
-	border-radius: 14rpx;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding-top: 25rpx;
-
-	.image {
-		width: 410rpx;
-		height: 410rpx;
-		opacity: 1;
+	padding-top: 120rpx;
+	.logo{
+		width: 200rpx;
+		height: 270rpx;
+		background: url(../../static/image/login/logo_back.png);
+		image {
+			width: 100%;
+			height: 100%;
+		}
 	}
-
-	.text {
-		width: 480rpx;
-		height: 93rpx;
-		opacity: 1;
-		font-size: 32rpx;
-		font-family: PingFang SC, PingFang SC-Bold;
-		font-weight: 700;
-		text-align: center;
-		color: #333333;
-		line-height: 48rpx;
-	}
-
 	.button {
-		width: 300rpx;
-		height: 72rpx;
-		line-height: 72rpx;
-		opacity: 1;
-		background: #dbb985;
-		color: #ffffff;
-		border-radius: 36rpx;
-		margin-top: 50rpx;
+		width: 480rpx;
+		// height: 80rpx;
+		background: #007AC3;
+		box-shadow: 0px 0px 14px 0px rgba(132, 131, 169, 0.12);
+		border-radius: 12rpx;
+		color: #fff;
+		margin-top: 246rpx;
+		font-size: 32rpx;
 	}
 }
 </style>

@@ -6,7 +6,7 @@ let Base64= require('@/utils/base64.js').Base64;
 const request = {}
 const headers = {}
 
-request.globalRequest = (url, method, params, power) => {
+request.globalRequest = ({url, method, params, power}) => {
 	/*  权限判断 因为有的接口请求头可能需要添加的参数不一样，所以这里做了区分
 	    1 == 不通过access_token校验的接口
 	    2 == 文件下载接口列表

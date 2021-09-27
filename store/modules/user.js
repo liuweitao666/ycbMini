@@ -2,7 +2,8 @@ import {
 	checkCode,
 	getUsers,
 	login,
-	refreshToken
+	refreshToken,
+	logout
 } from '@/api/login/index.js';
 
 const getuserInfo = _ =>{
@@ -12,10 +13,10 @@ const getuserInfo = _ =>{
 
 const user = {
 	state: {
-		tenantId: uni.getStorageInfoSync('tenantId') || '',
+		tenantId: uni.getStorageSync('tenantId') || '',
 		userInfo: getuserInfo(),
-		token: uni.getStorageInfoSync('token') || '',
-		refreshToken: uni.getStorageInfoSync('refreshToken') || '',
+		token: uni.getStorageSync('token') || '',
+		refreshToken: uni.getStorageSync('refreshToken') || '',
 	},
 	actions: {
 		//根据用户名登录
@@ -73,18 +74,19 @@ const user = {
 			commit
 		}) {
 			return new Promise((resolve, reject) => {
-				refreshToken(state.refreshToken, state.tenantId).then(res => {
-					const data = res.data;
+				refreshToken(state.tenantId,state.refreshToken).then(res => {
+					const data = res;
 					// 记录保存的时间戳
 					let token_time = {
 						token:data.access_token,
 						datetime:new Date().getTime(),
 						datatype:'string'
 					}
+					console.log(data)
 					uni.setStorageSync('token_time',JSON.stringify(token_time))
 					commit('SET_TOKEN', data.access_token);
 					commit('SET_REFRESH_TOKEN', data.refresh_token);
-					resolve();
+					resolve(data);
 				}).catch(error => {
 					reject(error)
 				})
@@ -97,14 +99,9 @@ const user = {
 			return new Promise((resolve, reject) => {
 				logout().then(() => {
 					commit('SET_TOKEN', '');
-					commit('SET_MENU', []);
-					commit('SET_MENU_ALL_NULL', []);
-					commit('SET_ROLES', []);
-					commit('SET_TAG_LIST', []);
-					commit('DEL_ALL_TAG');
-					commit('CLEAR_LOCK');
-					removeToken();
-					removeRefreshToken();
+					commit('SET_REFRESH_TOKEN', '');
+					commit('SET_TENANT_ID', '');
+					commit('SET_USER_INFO', '');
 					resolve();
 				}).catch(error => {
 					reject(error)
@@ -117,9 +114,10 @@ const user = {
 		}) {
 			return new Promise(resolve => {
 				commit('SET_TOKEN', '');
-				uni.removeStorageSync('token');
-				uni.removeStorageSync('refreshToken');
-				uni.removeStorageSync('userInfo');
+				commit('SET_REFRESH_TOKEN', '');
+				commit('SET_TENANT_ID', '');
+				commit('SET_USER_INFO', '');
+				resolve();
 			})
 		},
 	},

@@ -4,9 +4,15 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/addFollowup/addFollowup",
+			"path": "pages/login/index",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "用户登录"
+			}
+		},
+		{
+			"path": "pages/addFollowup/index",
+			"style": {
+				"navigationBarTitleText": "添加跟进",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -18,9 +24,10 @@
 			}
 		},
 		{
-			"path": "pages/login/index",
+			"path": "pages/generateCustomer/index",
 			"style": {
-				"navigationBarTitleText": "用户登录"
+				"navigationBarTitleText": "生成客户",
+				"enablePullDownRefresh": false
 			}
 		},
 		{
