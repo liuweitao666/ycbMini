@@ -103,6 +103,7 @@ export default {
 	onPageScroll(e) {
 		// 传入scrollTop值并触发所有easy-loadimage组件下的滚动监听事件
 		this.scrollTop = e.scrollTop;
+		// console.log('滚动距离：'+this.scrollTop,'可滚动高度：'+this.scrollHeight)
 		if(this.scrollTop>=(this.scrollHeight/2)){
 			this.hiddenFooter = false
 		}else{
@@ -173,7 +174,9 @@ export default {
 		// tabs 改变
 		change(value) {
 			this.current = value;
-			this.getScrollHeight()
+			setTimeout(()=>{
+				this.getScrollHeight()
+			},200)
 		},
 		// 获取当前页面高度，并计算可以滚动区域高度
 		getScrollHeight(){

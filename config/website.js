@@ -13,7 +13,7 @@ export default {
   captchaMode: false, // 是否开启验证码模式
   switchMode: true, // 是否开启部门切换模式
   lockPage: '/lock',
-  tokenTime: 200,
+  tokenTime: 3000,
   tokenHeader: 'Blade-Auth',
   //http的status默认放行列表
   statusWhiteList: [],

@@ -1,5 +1,7 @@
 <template>
 	<view class="clue_wrap">
+		<!--自定义导航 -->
+		<nav-bar @change="changeNav"  :title="title" ></nav-bar>
 		<view class="clue_header">
 			<!-- 商标部分 -->
 			<view class="trademark">
@@ -108,10 +110,12 @@ export default {
 			},
 			// 当前tab栏
 			current: 0,
+			title:''
 		};
 	},
 	onLoad(option) {
 		console.log(option);
+		this.title = option.type==='0'?'线索详情':'客户详情'
 	},
 	methods: {
 		// tabs 改变
@@ -120,7 +124,7 @@ export default {
 		},
 		JumpTo(url){
 			uni.navigateTo({
-				url
+				// url
 			})
 		}
 	}

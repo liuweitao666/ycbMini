@@ -90,3 +90,9 @@ button::after { border: none }
 .spacing{
 	height: 188rpx;
 }
+
+// 居中对齐
+.align-items{
+	display: flex;
+	align-items: center;
+}

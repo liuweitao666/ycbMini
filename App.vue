@@ -16,7 +16,7 @@ export default {
 		this.refreshToken()
 		this.timer = setInterval(() => {
 			this.refreshToken()
-		}, 60000);
+		}, 10000);
 		// 获取设备信息
 		uni.getSystemInfo({
 			success: function(res) {

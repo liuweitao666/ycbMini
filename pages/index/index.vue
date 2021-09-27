@@ -142,9 +142,9 @@ export default {
 	data(){
 		return {
 			navList:[{
-				cate_name: '待收货'
+				cate_name: '线索'
 			}, {
-				cate_name: '待付款'
+				cate_name: '客户'
 			},],
 			// 轮播数据
 			swiperActive:0,
@@ -187,12 +187,14 @@ export default {
 					label: '加冰',
 					value: 2,
 				}
-			]
+			],
+			// 0线索 1 客户
+			dataType:0
 		}
 	},
 	methods:{
-		changeTab(){
-			
+		changeTab(value){
+			console.log(value)
 		},
 		// 轮播图变化
 		change(data){
@@ -202,7 +204,7 @@ export default {
 		// 跳转对应的线索详情
 		handleTo(){
 			uni.navigateTo({
-			    url: '/pages/clueDetail/index?id=123'
+			    url: `/pages/clueDetail/index?id=123&type=${this.dataType}`
 			});
 		}
 	}

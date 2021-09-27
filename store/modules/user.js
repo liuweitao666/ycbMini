@@ -6,9 +6,9 @@ import {
 	logout
 } from '@/api/login/index.js';
 
-const getuserInfo = _ =>{
-	 const info = uni.getStorageSync('userInfo')
-	 return info?JSON.parse(info):[]
+const getuserInfo = _ => {
+	const info = uni.getStorageSync('userInfo')
+	return info ? JSON.parse(info) : []
 }
 
 const user = {
@@ -34,19 +34,24 @@ const user = {
 						})
 					} else {
 						let token_time = {
-							token:data.access_token,
-							datetime:new Date().getTime(),
-							datatype:'string'
+							token: data.access_token,
+							datetime: new Date().getTime(),
+							datatype: 'string'
 						}
-						uni.setStorageSync('token_time',JSON.stringify(token_time))
+						uni.setStorageSync('token_time', JSON.stringify(token_time))
 						commit('SET_TOKEN', data.access_token);
 						commit('SET_REFRESH_TOKEN', data.refresh_token);
 						commit('SET_TENANT_ID', data.tenant_id);
 						commit('SET_USER_INFO', data);
 					}
-					resolve();
+					resolve({
+						code:200,
+						data:res
+					});
 				}).catch(error => {
-					reject(error);
+					reject({
+						err: error
+					});
 				})
 			})
 		},
@@ -59,7 +64,7 @@ const user = {
 			return new Promise((resolve, reject) => {
 				getUsers(params).then(res => {
 					console.log(res.data)
-					if(res.data.length===1){
+					if (res.data.length === 1) {
 						commit('SET_TENANT_ID', res.data[0].tenantId)
 					}
 					resolve(res)
@@ -74,16 +79,16 @@ const user = {
 			commit
 		}) {
 			return new Promise((resolve, reject) => {
-				refreshToken(state.tenantId,state.refreshToken).then(res => {
+				refreshToken(state.tenantId, state.refreshToken).then(res => {
 					const data = res;
 					// 记录保存的时间戳
 					let token_time = {
-						token:data.access_token,
-						datetime:new Date().getTime(),
-						datatype:'string'
+						token: data.access_token,
+						datetime: new Date().getTime(),
+						datatype: 'string'
 					}
 					console.log(data)
-					uni.setStorageSync('token_time',JSON.stringify(token_time))
+					uni.setStorageSync('token_time', JSON.stringify(token_time))
 					commit('SET_TOKEN', data.access_token);
 					commit('SET_REFRESH_TOKEN', data.refresh_token);
 					resolve(data);
