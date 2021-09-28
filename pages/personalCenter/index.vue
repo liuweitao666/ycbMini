@@ -8,8 +8,8 @@
 				<view class="header">
 					<u-avatar :src="src" :size="160"></u-avatar>
 					<view class="info">
-						<view class="name">徐小凯</view>
-						<view class="desc">技术总监CTO</view>
+						<view class="name">{{userInfo.nick_name}}</view>
+						<view class="desc">{{userInfo.role_name}}</view>
 						<view class="desc company">深圳市金信恒企业管理有限公司</view>
 					</view>
 				</view>
@@ -92,6 +92,7 @@ import personIntro from './components/personIntro.vue';
 import personFooter from '@/components/footer/footer.vue';
 import enterpriseIntro from './components/enterpriseIntro.vue';
 import businessIntro from './components/businessIntro.vue';
+import {mapGetters} from "vuex"
 export default {
 	components: {
 		personIntro,
@@ -110,8 +111,12 @@ export default {
 			this.hiddenFooter = true
 		}
 	},
+	computed:{
+		...mapGetters(['userInfo'])
+	},
 	mounted() {
 		this.getScrollHeight()
+		console.log(this.userInfo)
 	},
 	data() {
 		return {

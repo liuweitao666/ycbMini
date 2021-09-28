@@ -1,15 +1,15 @@
 <template>
 	<view class="clue_wrap">
 		<!--自定义导航 -->
-		<nav-bar @change="changeNav"  :title="title" ></nav-bar>
+		<nav-bar @change="changeNav" :title="dataType === '0' ? '线索详情' : '客户详情'"></nav-bar>
 		<view class="clue_header">
 			<!-- 商标部分 -->
 			<view class="trademark">
 				<view class="trade_left">商标</view>
 				<view class="trade_right">
 					<view class="trade_right_title">
-						<view class="title">商标注册</view>
-						<text class="date">2021-10-01 10:12</text>
+						<view class="title">{{ detailData.name }}</view>
+						<text class="date">{{ $dateFormat(detailData.createTime) }}</text>
 					</view>
 					<view class="card_desc">商标局已不强制要求提交转让公证书。但最好是去公证处做商标转让公证…</view>
 				</view>
@@ -18,78 +18,98 @@
 			<view class="contact_info">
 				<view class="phone">
 					<u-icon name="phone" color="#8F9BB3" size="40"></u-icon>
-					<text class="icon_text">13142174304</text>
+					<text class="icon_text">{{ detailData.phone }}</text>
 				</view>
 				<view class="weixin">
 					<u-icon name="weixin-fill" color="#8F9BB3" size="40"></u-icon>
-					<text class="icon_text">1332@qq.com</text>
+					<text class="icon_text">{{ detailData.wechat }}</text>
 				</view>
 			</view>
 			<!-- 沟通记录 -->
 			<view class="work_record">
 				<view class="item_record">
 					<image src="/static/image/clueDetail/Filled.png" mode=""></image>
-					<text>回收：4分12秒</text>
+					<text>回收：{{ detailData.recoveryTime || '0秒' }}</text>
 				</view>
 				<view class="item_record">
 					<image src="/static/image/clueDetail/data.png" mode=""></image>
-					<text>跟进：5次</text>
+					<text>跟进：{{ detailData.followCount }}次</text>
 				</view>
 				<view class="item_record">
 					<image src="/static/image/clueDetail/loop.png" mode=""></image>
-					<text>流转：10次</text>
+					<text>流转：{{ detailData.transferCount }}次</text>
 				</view>
 			</view>
 		</view>
 		<!-- 标签 -->
-		<view class="custom_tabs clue_tabs">
-			<view class="line"></view>
-			<u-tabs
-				name="cate_name"
-				count="cate_count"
-				:list="list"
-				:height="100"
-				inactive-color="#999"
-				active-color="#333"
-				:bar-style="tabStyle"
-				bar-width="78"
-				:is-scroll="false"
-				:current="current"
-				@change="change"
-			></u-tabs>
-		</view>
+		<u-sticky :offset-top="topHeight-12">
+			<view class="custom_tabs clue_tabs">
+				<view class="line"></view>
+				<u-tabs
+					name="cate_name"
+					count="cate_count"
+					:list="list"
+					:height="100"
+					inactive-color="#999"
+					active-color="#333"
+					:bar-style="tabStyle"
+					bar-width="78"
+					:is-scroll="false"
+					:current="currentTab"
+					@change="changeTab"
+				></u-tabs>
+			</view>
+		</u-sticky>
 		<!-- 展示对应记录页面 -->
-		<followup-log v-show="current===0"/>
-		<circulation-log v-show="current===1"/>
-		<operation-log v-show="current===2"/>
-		<view class="spacing">
-			
-		</view>
+		<followup-log v-if="currentTab === 0" :data="data"  :total="total"/>
+		<circulation-log v-if="currentTab === 1" :data="data" :total="total"/>
+		<operation-log v-if="currentTab === 2" :data="data" :total="total"/>
+		<!-- 加载完成 -->
+		<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
+		<!-- 加载动画 -->
+		<view :class="['loading_wrap', { hidden: isComplete }]"><u-loading :show="isLoading">正在加载……</u-loading></view>
+		<!-- 加载数据loading 展示区域 -->
+		<view class="spacing"></view>
 		<!-- 底部 -->
 		<log-footer>
-			<u-button type="primary" :custom-style="{
-				'width': '260rpx',
-				'height': '84rpx',
-				'background': '#FC961E',
-				'border-radius': '8px',
-			}"  @click="JumpTo('/pages/generateCustomer/index')" >生成客户</u-button>
-			<u-button type="primary" :custom-style="{
-				'width': '260rpx',
-				'height': '84rpx',
-				'background': '#00A4FF',
-				'border-radius': '8px'
-			}" @click="JumpTo('/pages/addFollowup/index')">添加跟进</u-button>
-			
+			<u-button
+				type="primary"
+				:custom-style="{
+					width: '260rpx',
+					height: '84rpx',
+					background: '#FC961E',
+					'border-radius': '8px'
+				}"
+				@click="JumpTo('/pages/generateCustomer/index')"
+				v-if="dataType === '0'"
+			>
+				生成客户
+			</u-button>
+			<view :style="{ margin: dataType === '0' ? '0' : '0 auto' }">
+				<u-button
+					type="primary"
+					:custom-style="{
+						width: dataType === '0' ? '260rpx' : '420rpx',
+						height: '84rpx',
+						background: '#00A4FF',
+						'border-radius': '8px'
+					}"
+					@click="JumpTo(`/pages/addFollowup/index?customerId=${queryInfo.customerId}`)"
+				>
+					添加跟进
+				</u-button>
+			</view>
 		</log-footer>
 	</view>
 </template>
 <script>
-	import followupLog from "./components/followupLog.vue"
-	import circulationLog from "./components/circulationLog.vue"
-	import operationLog from "./components/operationLog.vue"
-	import logFooter from "@/components/footer/footer.vue"
+import followupLog from './components/followupLog.vue';
+import circulationLog from './components/circulationLog.vue';
+import operationLog from './components/operationLog.vue';
+import logFooter from '@/components/footer/footer.vue';
+import { getCustomerDetail, getFollowRecord, getTransferRecord, getOperationRecord } from '@/api/customer/customer.js';
 export default {
-	components:{
+	components: {
 		followupLog,
 		circulationLog,
 		operationLog,
@@ -97,35 +117,113 @@ export default {
 	},
 	data() {
 		return {
-			list: [{
-				cate_name: '跟进记录'
-			}, {
-				cate_name: '跟进记录'
-			}, {
-				cate_name: '操作记录',
-			}],
+			list: [
+				{
+					cate_name: '跟进记录'
+				},
+				{
+					cate_name: '流转记录'
+				},
+				{
+					cate_name: '操作记录'
+				}
+			],
 			// tabs底部滑块样式
-			tabStyle:{
-				background:"#007AC3",
+			tabStyle: {
+				background: '#007AC3'
 			},
 			// 当前tab栏
-			current: 0,
-			title:''
+			currentTab: 0,
+			// 线索0 客户1
+			dataType: null,
+			detailData: {},
+			// 获取记录
+			queryInfo: {
+				customerId: '',
+				size: 3,
+				current: 1
+			},
+			// 展示正在加载
+			isLoading: false,
+			// log记录数据
+			data: [],
+			// 全部条数
+			total: null,
+			topHeight:''
 		};
 	},
-	onLoad(option) {
-		console.log(option);
-		this.title = option.type==='0'?'线索详情':'客户详情'
+	computed: {
+		// 数据是否加载完成
+		isComplete() {
+			return this.total === this.data.length && this.total !== 0;
+		}
+	},
+	async onReachBottom() {
+		// 触底函数
+		if (this.isComplete) return;
+		this.queryInfo.current++;
+		await this.handleInitData();
+	},
+	onLoad({ type, id }) {
+		this.dataType = type;
+		this.queryInfo.customerId = id;
+		// 获取详情数据
+		this.dataType === '0' ? null : this.getCustomerDetail();
+		this.handleInitData();
+		this.topHeight = uni.getStorageSync('topHeight')
+		console.log(topHeight)
 	},
 	methods: {
 		// tabs 改变
-		change(value){
-			this.current = value
+		changeTab(value) {
+			this.currentTab = value;
+			this.data = [];
+			this.queryInfo.current = 1;
+			// 改变记录数据
+			this.handleInitData();
 		},
-		JumpTo(url){
+		JumpTo(url) {
 			uni.navigateTo({
-				// url
-			})
+				url
+			});
+		},
+		handleInitData() {
+			this.isLoading = true
+			setTimeout(async _=>{
+				if (this.dataType === 0) {
+				} else {
+					// 客户记录
+					await this.initCustomerLogData()
+				}
+				this.isLoading = false
+			},500)
+		},
+		// 获取客户详情
+		async getCustomerDetail() {
+			const { data: res } = await getCustomerDetail({
+				id: this.queryInfo.customerId
+			});
+			this.detailData = res;
+			console.log(res);
+		},
+		// 初始化客户详情 记录数据
+		async initCustomerLogData() {
+			// 0获取客户跟进记录 1获取客户转让记录  2获取客户操作记录
+			switch (this.currentTab) {
+				case 0:
+					const { data: followRecord } = await getFollowRecord(this.queryInfo);
+					this.total = followRecord.total;
+					return (this.data = [...this.data, ...followRecord.records]);
+				case 1:
+					const { data: transferRecord } = await getTransferRecord(this.queryInfo);
+					this.total = transferRecord.total;
+					return (this.data = [...this.data, ...transferRecord.records]);
+				case 2:
+					const { data: operationRecord } = await getOperationRecord(this.queryInfo);
+					this.total = operationRecord.total;
+					return (this.data = [...this.data, ...operationRecord.records]);
+			}
+			console.log(data);
 		}
 	}
 };
@@ -218,12 +316,15 @@ export default {
 			}
 		}
 	}
-	.clue_tabs{
+	.clue_tabs {
 		margin-top: 0;
 		padding-right: 30rpx;
 	}
-	.spacing{
-		background-color: #FFFFFF;
+	.spacing {
+		background-color: #ffffff;
 	}
+}
+.loading_wrap {
+	background-color: #ffffff;
 }
 </style>

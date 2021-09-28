@@ -1,36 +1,40 @@
 <template>
 	<view
-		class="navbar"
-		:style="{
-			height: height,
-			background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D',
-			'background-size': '100% 100%'
-		}"
+		:style="{paddingTop:(navbarHeight*2)+'rpx',height,paddingBottom:'1rpx',background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D','background-size': '100% 100%'}"
 	>
-		<view class="header" :style="{ height: navTop - 4 + 'px' }"></view>
-		<view class="navbar-tabs">
-			<!-- 头像 -->
-			<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="isAvatar"></view>
-			<view class="avatar back" :style="{ height: '60rpx', width: '60rpx' }" @click="back" v-else><u-icon name="arrow-left" color="#fff" size="35"></u-icon></view>
-			<!-- 导航 -->
-			<view class="navbar-u-tabs" :style="{ height: navList ? 'auto' : 80 + 'rpx' }">
-				<u-tabs
-					name="cate_name"
-					bg-color="transparent"
-					count="cate_count"
-					:list="navList"
-					:is-scroll="false"
-					:current="current"
-					active-color="#fff"
-					inactive-color="#999"
-					v-if="navList"
-					@change="change"
-				></u-tabs>
-				<view class="nav-title" v-else>{{ title }}</view>
+		<view
+			class="navbar"
+			id="navbar"
+			:style="{
+				background: '#292B4D',
+				background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D','background-size': '100%'
+			}"
+		>
+			<view class="header" :style="{ height: navTop - 4 + 'px' }"></view>
+			<view class="navbar-tabs">
+				<!-- 头像 -->
+				<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="isAvatar"></view>
+				<view class="avatar back" :style="{ height: '60rpx', width: '60rpx' }" @click="back" v-else><u-icon name="arrow-left" color="#fff" size="35"></u-icon></view>
+				<!-- 导航 -->
+				<view class="navbar-u-tabs" :style="{ height: navList ? 'auto' : 80 + 'rpx' }">
+					<u-tabs
+						name="cate_name"
+						bg-color="transparent"
+						count="cate_count"
+						:list="navList"
+						:is-scroll="false"
+						:current="current"
+						active-color="#fff"
+						inactive-color="#999"
+						v-if="navList"
+						@change="change"
+					></u-tabs>
+					<view class="nav-title" v-else>{{ title }}</view>
+				</view>
 			</view>
+			<!-- 分割线 -->
+			<view class="line" v-if="isLine"></view>
 		</view>
-		<!-- 分割线 -->
-		<view class="line" v-if="isLine"></view>
 		<!-- 搜索区域 -->
 		<view class="search" v-if="isSearch">
 			<input v-model="searchVal" placeholder="搜索客户、线索" />
@@ -78,7 +82,8 @@ export default {
 			windowHeight: 0,
 			navTop: 0,
 			current: 0,
-			searchVal: ''
+			searchVal: '',
+			navbarHeight: ''
 		};
 	},
 	created() {
@@ -97,6 +102,9 @@ export default {
 			}
 		});
 		console.log(this.height);
+	},
+	mounted() {
+		this.getNavHeight();
 	},
 	methods: {
 		// 回到上一页
@@ -120,6 +128,17 @@ export default {
 			uni.navigateTo({
 				url: '/pages/personalCenter/index?id=1&name=uniapp'
 			});
+		},
+		//获取navbar的高度
+		getNavHeight() {
+			const query = uni.createSelectorQuery().in(this);
+			query
+				.select('#navbar')
+				.boundingClientRect(data => {
+					this.navbarHeight = data.height;
+					uni.setStorageSync('topHeight', navbarHeight);
+				})
+				.exec();
 		}
 	}
 };
@@ -128,14 +147,15 @@ export default {
 <style lang="scss">
 /* components/navbar/index.wxss */
 /* components/navbar/index.wxss */
-
+.nav-wrap {
+}
 .navbar {
 	width: 100%;
 	overflow: hidden;
-	position: relative;
+	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 10;
+	z-index: 1000;
 	flex-shrink: 0;
 	background-size: 100% 100%;
 	.line {
@@ -143,27 +163,27 @@ export default {
 		margin-top: 16rpx;
 		background-color: rgba($color: #ffffff, $alpha: 0.2);
 	}
-	.search {
-		width: 690rpx;
-		height: 94rpx;
-		margin: 35rpx auto;
-		display: flex;
-		border-radius: 16rpx;
-		overflow: hidden;
-		input {
-			flex: 1;
-			height: 100%;
-			background-color: #ffffff;
-			padding-left: 30rpx;
-			color: #999;
-		}
-		button {
-			width: 120rpx;
-			height: 100%;
-			border-radius: 0;
-			background: #fc961e;
-			color: #fff;
-		}
+}
+.search {
+	width: 690rpx;
+	height: 94rpx;
+	margin: 35rpx auto;
+	display: flex;
+	border-radius: 16rpx;
+	overflow: hidden;
+	input {
+		flex: 1;
+		height: 100%;
+		background-color: #ffffff;
+		padding-left: 30rpx;
+		color: #999;
+	}
+	button {
+		width: 120rpx;
+		height: 100%;
+		border-radius: 0;
+		background: #fc961e;
+		color: #fff;
 	}
 }
 

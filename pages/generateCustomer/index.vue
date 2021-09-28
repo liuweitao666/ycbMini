@@ -33,7 +33,7 @@
 					</u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="标签">
+					<u-form-item label="标签.">
 						<u-input v-model="form.sex" type="select" @click="show = true" />
 						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
 					</u-form-item>

@@ -96,3 +96,17 @@ button::after { border: none }
 	display: flex;
 	align-items: center;
 }
+// 加载数据样式
+.loading_wrap{
+	display: flex;
+	justify-content: center;
+	color: #999;
+	padding: 10rpx 0 20rpx;
+}
+.hidden{
+	display: none;
+}
+// 
+.empty_view{
+	margin-top: 50rpx;
+}

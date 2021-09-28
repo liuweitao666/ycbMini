@@ -21,7 +21,8 @@ request.globalRequest = ({url, method, params, power}) => {
 	// })
 	headers['Tenant-Id'] = uni.getStorageSync('tenantId') || ''
 	headers['Content-Type'] = 'application/json'
-	// headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
+	headers['Blade-Auth'] = `bearer ${uni.getStorageSync('token')||''}`  
+	headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
 	// headers['token'] = store.state.token
 	switch (power) {
 		case 1:
@@ -58,7 +59,17 @@ request.globalRequest = ({url, method, params, power}) => {
 		console.log(parmas.message)
 		switch (parmas.code) {
 			case 401:
-				uni.clearStorageSync()
+				store.dispatch('FedLogOut').then(res=>{
+					uni.showToast({
+						title: '登录已失效，请重新登录',
+						icon: 'none',
+					})
+					setTimeout(()=>{
+						uni.navigateTo({
+							url: `/pages/login/index`
+						});
+					},500)
+				})
 				break
 			default:
 				uni.showToast({
