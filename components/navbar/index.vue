@@ -1,6 +1,6 @@
 <template>
 	<view
-		:style="{paddingTop:(navbarHeight*2)+'rpx',height,paddingBottom:'1rpx',background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D','background-size': '100% 100%'}"
+		:style="{paddingTop:(navbarHeight)+'rpx',height,paddingBottom:'1rpx',background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D','background-size': '100% 100%'}"
 	>
 		<view
 			class="navbar"
@@ -32,17 +32,19 @@
 					<view class="nav-title" v-else>{{ title }}</view>
 				</view>
 			</view>
-			<!-- 分割线 -->
-			<view class="line" v-if="isLine"></view>
 		</view>
+		<!-- 分割线 -->
+		<view class="line" v-if="isLine"></view>
 		<!-- 搜索区域 -->
 		<view class="search" v-if="isSearch">
-			<input v-model="searchVal" placeholder="搜索客户、线索" />
-			<button><u-icon name="search" size="40"></u-icon></button>
+			<input v-model="searchVal" @blur="handleSearch" placeholder="搜索客户、线索" />
+			<button ><u-icon name="search" size="40"></u-icon></button>
 		</view>
 	</view>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
 	props: {
 		// 导航数据
@@ -83,15 +85,16 @@ export default {
 			navTop: 0,
 			current: 0,
 			searchVal: '',
-			navbarHeight: ''
 		};
+	},
+	computed:{
+		...mapGetters(['navbarHeight'])
 	},
 	created() {
 		var that = this;
 		let menuButtonObject = uni.getMenuButtonBoundingClientRect();
 		uni.getSystemInfo({
 			success: function(res) {
-				console.log(res);
 				that.navTop = menuButtonObject.top;
 				let statusBarHeight = res.statusBarHeight,
 					navTop = menuButtonObject.top, //胶囊按钮与顶部的距离
@@ -101,7 +104,6 @@ export default {
 				that.windowHeight = res.windowHeight;
 			}
 		});
-		console.log(this.height);
 	},
 	mounted() {
 		this.getNavHeight();
@@ -117,6 +119,10 @@ export default {
 			this.current = index;
 			this.$emit('change', index);
 		},
+		// 搜索事件
+		handleSearch(){
+			this.$emit('search',this.searchVal)
+		},
 		handleTo() {
 			console.log('goto');
 			const token = uni.getStorageSync('token');
@@ -131,12 +137,16 @@ export default {
 		},
 		//获取navbar的高度
 		getNavHeight() {
+			// const topHeight = uni.getStorageSync('topHeight')
+			// if(topHeight) return
+			if(this.navbarHeight) return 
 			const query = uni.createSelectorQuery().in(this);
 			query
 				.select('#navbar')
 				.boundingClientRect(data => {
-					this.navbarHeight = data.height;
-					uni.setStorageSync('topHeight', navbarHeight);
+					console.log(data)
+					const navbarHeight = data.height/(uni.upx2px(data.height/2)/(data.height/2));
+					this.$store.commit('SET_NAV_BAR_HEIGHT',navbarHeight)
 				})
 				.exec();
 		}
@@ -158,12 +168,12 @@ export default {
 	z-index: 1000;
 	flex-shrink: 0;
 	background-size: 100% 100%;
-	.line {
+	padding-bottom: 16rpx;
+}
+.line {
 		height: 1px;
-		margin-top: 16rpx;
 		background-color: rgba($color: #ffffff, $alpha: 0.2);
 	}
-}
 .search {
 	width: 690rpx;
 	height: 94rpx;
@@ -176,7 +186,6 @@ export default {
 		height: 100%;
 		background-color: #ffffff;
 		padding-left: 30rpx;
-		color: #999;
 	}
 	button {
 		width: 120rpx;

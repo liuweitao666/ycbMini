@@ -4,13 +4,13 @@
 			<view class="form_wrap">
 				<view class="form_item">
 					<u-form-item label="客户姓名">
-						<u-input v-model="form.sex" type="select" @click="show = true" />
+						<u-input v-model="form.name" type="select" @click="show = true" />
 						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
 				<view class="form_item">
 					<u-form-item label="联系方式">
-						<u-input v-model="form.sex" type="select" @click="show = true" />
+						<u-input v-model="form.phone" type="select" @click="show = true" />
 						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
@@ -28,12 +28,12 @@
 				</view>
 				<view class="form_item">
 					<u-form-item label="客户状态">
-						<u-input v-model="form.sex" type="select" @click="show = true" />
+						<u-input v-model="form.status" type="select" @click="show = true" />
 						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="标签.">
+					<u-form-item label="标签">
 						<u-input v-model="form.sex" type="select" @click="show = true" />
 						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
 					</u-form-item>
@@ -71,8 +71,17 @@ export default {
 			},
 			form: {
 				name: '',
-				intro: '',
-				sex: ''
+				cityCode: '',
+				cityName:'',
+				clueId:'',
+				labels: '',
+				labels:'',
+				phone:'',
+				provinceCode:'',
+				provinceName:'',
+				qichachaCompanyId:'',
+				status:'',
+				wechat:'',
 			},
 			checkboxList: [
 				{

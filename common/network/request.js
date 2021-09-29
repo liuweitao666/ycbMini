@@ -56,7 +56,7 @@ request.globalRequest = ({url, method, params, power}) => {
 			throw res[1].data
 		}
 	}).catch(parmas => {
-		console.log(parmas.message)
+		// console.log(parmas)
 		switch (parmas.code) {
 			case 401:
 				store.dispatch('FedLogOut').then(res=>{
@@ -64,11 +64,16 @@ request.globalRequest = ({url, method, params, power}) => {
 						title: '登录已失效，请重新登录',
 						icon: 'none',
 					})
+					let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
+					let curRoute = routes[routes.length-1]
+					console.log(curRoute)
 					setTimeout(()=>{
+						if(curRoute && curRoute.route ==='pages/login/index') return
 						uni.navigateTo({
 							url: `/pages/login/index`
 						});
 					},500)
+					return Promise.reject(parmas)
 				})
 				break
 			default:

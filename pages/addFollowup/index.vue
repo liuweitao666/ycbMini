@@ -71,7 +71,6 @@ export default {
 				minHeight: '200rpx'
 			},
 			form: {
-				customerId:'',
 				type: '',
 				typeText: '',
 				followContent: '',
@@ -103,8 +102,9 @@ export default {
 			switchVal: false
 		};
 	},
-	onLoad({customerId}) {
-		this.form.customerId = customerId
+	onLoad({id,dataType}) {
+		console.log(id)
+		dataType===0?this.form.clueId = id:this.form.customerId = id
 	},
 	// 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
 	onReady() {

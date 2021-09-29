@@ -122,6 +122,8 @@ const user = {
 				commit('SET_REFRESH_TOKEN', '');
 				commit('SET_TENANT_ID', '');
 				commit('SET_USER_INFO', '');
+				commit('SET_USER_INFO', '');
+				uni.removeStorageSync('token_time')
 				resolve();
 			})
 		},

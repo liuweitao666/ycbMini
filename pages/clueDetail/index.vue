@@ -9,9 +9,9 @@
 				<view class="trade_right">
 					<view class="trade_right_title">
 						<view class="title">{{ detailData.name }}</view>
-						<text class="date">{{ $dateFormat(detailData.createTime) }}</text>
+						<text class="date">{{ $dateFormat(detailData.createTime,'yyyy-mm-dd') }}</text>
 					</view>
-					<view class="card_desc">商标局已不强制要求提交转让公证书。但最好是去公证处做商标转让公证…</view>
+					<view class="card_desc">{{detailData.remark||detailData.provinceName}}</view>
 				</view>
 			</view>
 			<!-- 联系方式 -->
@@ -42,8 +42,8 @@
 			</view>
 		</view>
 		<!-- 标签 -->
-		<u-sticky :offset-top="topHeight-12">
-			<view class="custom_tabs clue_tabs">
+		<u-sticky :offset-top="navbarHeight" @fixed="isFixed(true)" @unfixed="isFixed(false)">
+			<view :class="['custom_tabs', 'clue_tabs', { isFix }]">
 				<view class="line"></view>
 				<u-tabs
 					name="cate_name"
@@ -61,9 +61,9 @@
 			</view>
 		</u-sticky>
 		<!-- 展示对应记录页面 -->
-		<followup-log v-if="currentTab === 0" :data="data"  :total="total"/>
-		<circulation-log v-if="currentTab === 1" :data="data" :total="total"/>
-		<operation-log v-if="currentTab === 2" :data="data" :total="total"/>
+		<followup-log v-if="currentTab === 0" :data="data" :total="total" />
+		<circulation-log v-if="currentTab === 1" :data="data" :total="total" />
+		<operation-log v-if="currentTab === 2" :data="data" :total="total" />
 		<!-- 加载完成 -->
 		<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
 		<!-- 加载动画 -->
@@ -94,7 +94,7 @@
 						background: '#00A4FF',
 						'border-radius': '8px'
 					}"
-					@click="JumpTo(`/pages/addFollowup/index?customerId=${queryInfo.customerId}`)"
+					@click="JumpTo(`/pages/addFollowup/index?id=${dataType==='0'?clueId:customerId}&dataType=${dataType}`)"
 				>
 					添加跟进
 				</u-button>
@@ -103,11 +103,16 @@
 	</view>
 </template>
 <script>
+// 组件
 import followupLog from './components/followupLog.vue';
 import circulationLog from './components/circulationLog.vue';
 import operationLog from './components/operationLog.vue';
 import logFooter from '@/components/footer/footer.vue';
+// 导入接口
 import { getCustomerDetail, getFollowRecord, getTransferRecord, getOperationRecord } from '@/api/customer/customer.js';
+import { getClueDetail, getClueFollowList, getCluetransferRecord } from '@/api/clue/clue.js';
+// vuex
+import { mapGetters } from 'vuex';
 export default {
 	components: {
 		followupLog,
@@ -136,94 +141,148 @@ export default {
 			currentTab: 0,
 			// 线索0 客户1
 			dataType: null,
+			//详情
 			detailData: {},
-			// 获取记录
-			queryInfo: {
-				customerId: '',
-				size: 3,
-				current: 1
-			},
+			size: 3,
+			current: 1,
+			// 客户customerID
+			customerId: '',
+			// clue线索id
+			clueId: '',
 			// 展示正在加载
 			isLoading: false,
 			// log记录数据
 			data: [],
 			// 全部条数
 			total: null,
-			topHeight:''
+			isFix: false
 		};
 	},
 	computed: {
 		// 数据是否加载完成
 		isComplete() {
 			return this.total === this.data.length && this.total !== 0;
-		}
+		},
+		// 距离上边的高度
+		...mapGetters(['navbarHeight'])
 	},
 	async onReachBottom() {
 		// 触底函数
 		if (this.isComplete) return;
-		this.queryInfo.current++;
+		this.current++;
 		await this.handleInitData();
 	},
 	onLoad({ type, id }) {
+		console.log(type, id);
 		this.dataType = type;
-		this.queryInfo.customerId = id;
+		this.dataType === '0' ? (this.clueId = id) : (this.customerId = id);
 		// 获取详情数据
-		this.dataType === '0' ? null : this.getCustomerDetail();
+		this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		this.handleInitData();
-		this.topHeight = uni.getStorageSync('topHeight')
-		console.log(topHeight)
 	},
 	methods: {
 		// tabs 改变
 		changeTab(value) {
 			this.currentTab = value;
 			this.data = [];
-			this.queryInfo.current = 1;
+			this.total=null;
+			this.current = 1;
 			// 改变记录数据
 			this.handleInitData();
 		},
+		// 跳转对于页面
 		JumpTo(url) {
 			uni.navigateTo({
 				url
 			});
 		},
 		handleInitData() {
-			this.isLoading = true
-			setTimeout(async _=>{
-				if (this.dataType === 0) {
+			this.isLoading = true;
+			console.log(this.dataType);
+			setTimeout(async _ => {
+				if (this.dataType === '0') {
+					// 线索记录
+					await this.initClueLogData();
+					this.isLoading = false;
 				} else {
 					// 客户记录
-					await this.initCustomerLogData()
+					await this.initCustomerLogData();
 				}
-				this.isLoading = false
-			},500)
+				this.isLoading = false;
+			}, 500);
 		},
 		// 获取客户详情
 		async getCustomerDetail() {
 			const { data: res } = await getCustomerDetail({
-				id: this.queryInfo.customerId
+				id: this.customerId
 			});
 			this.detailData = res;
 			console.log(res);
 		},
-		// 初始化客户详情 记录数据
+		// 获取线索详情
+		async getClueDetail() {
+			console.log(this.clueId + 'clue');
+			const { data: res } = await getClueDetail({
+				id: this.clueId
+			});
+			this.detailData = res;
+			console.log(res);
+		},
+		// 初始线索详情 记录数据
 		async initCustomerLogData() {
 			// 0获取客户跟进记录 1获取客户转让记录  2获取客户操作记录
+			const queryInfo = {
+				size: this.size,
+				current: this.current,
+				customerId: this.customerId
+			};
 			switch (this.currentTab) {
 				case 0:
-					const { data: followRecord } = await getFollowRecord(this.queryInfo);
+					const { data: followRecord } = await getFollowRecord(queryInfo);
 					this.total = followRecord.total;
-					return (this.data = [...this.data, ...followRecord.records]);
+					this.data = [...this.data, ...followRecord.records];
+					break;
 				case 1:
-					const { data: transferRecord } = await getTransferRecord(this.queryInfo);
+					const { data: transferRecord } = await getTransferRecord(queryInfo);
 					this.total = transferRecord.total;
-					return (this.data = [...this.data, ...transferRecord.records]);
+					this.data = [...this.data, ...transferRecord.records];
+					break;
 				case 2:
-					const { data: operationRecord } = await getOperationRecord(this.queryInfo);
+					const { data: operationRecord } = await getOperationRecord(queryInfo);
+					this.total = operationRecord.total;
+					this.data = [...this.data, ...operationRecord.records];
+					break;
+			}
+		},
+		// 初始线索详情 记录数据
+		async initClueLogData() {
+			// 0获取线索跟进记录 1获取线索转让记录  2获取线索操作记录
+			const queryInfo = {
+				size: this.size,
+				current: this.current,
+				clueId: this.clueId
+			};
+			console.log(queryInfo);
+			switch (this.currentTab) {
+				case 0:
+					const { data: followRecord } = await getClueFollowList(queryInfo);
+					this.total = followRecord.total;
+					(this.data = [...this.data, ...followRecord.records]);
+					break
+				case 1:
+					const { data: transferRecord } = await getCluetransferRecord(queryInfo);
+					this.total = transferRecord.total;
+					(this.data = [...this.data, ...transferRecord.records]);
+					break
+				case 2:
+					const { data: operationRecord } = await getOperationRecord(queryInfo);
 					this.total = operationRecord.total;
 					return (this.data = [...this.data, ...operationRecord.records]);
 			}
-			console.log(data);
+		},
+		isFixed(isFix) {
+			console.log(isFix);
+			this.isFix = isFix;
 		}
 	}
 };
@@ -232,7 +291,7 @@ export default {
 .clue_wrap {
 	.clue_header {
 		background-color: #292b4d;
-		padding: 30rpx;
+		padding: 12rpx 30rpx 30rpx;
 		.trademark {
 			display: flex;
 			.trade_left {
@@ -249,6 +308,7 @@ export default {
 				align-items: center;
 			}
 			.trade_right {
+				flex: 1;
 				.trade_right_title {
 					display: flex;
 					align-items: center;
@@ -318,7 +378,7 @@ export default {
 	}
 	.clue_tabs {
 		margin-top: 0;
-		padding-right: 30rpx;
+		// padding-right: 30rpx;
 	}
 	.spacing {
 		background-color: #ffffff;

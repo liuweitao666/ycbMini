@@ -8,8 +8,8 @@
 			<view class="pop_wrap">
 				<view class="title">选择您的组织</view>
 				<view class="desc">你在以下组织中担任成员</view>
-				<view class="userList" >
-					<view :class="['user_item', 'align-items', { selected: selected === index }]" v-for="(item, index) in userList" :key="item.id" @click="postLogin(item)">
+				<view class="userList">
+					<view :class="['user_item', 'align-items', { selected: selected === index }]" v-for="(item, index) in userList" :key="item.id" @click="selectUser(item)">
 						<text>{{ item.name }}</text>
 						<u-icon name="arrow-right"></u-icon>
 					</view>
@@ -27,7 +27,7 @@ import { mapActions } from 'vuex';
 export default {
 	data() {
 		return {
-			show: true,
+			show: false,
 			code: '',
 			session_key: '',
 			openid: '',
@@ -73,9 +73,6 @@ export default {
 					encryptedData: e.detail.encryptedData,
 					iv: e.detail.iv
 				};
-				uni.showLoading({
-					title: '正在登录...'
-				});
 				this.checkCode(this.loginParams);
 			} else {
 				console.log(e, '获取手机号失败');
@@ -89,7 +86,14 @@ export default {
 				code
 			})
 				.then(async res => {
+					// 获取当前用户组
 					const { data: result } = await this.GetUserInfo(loginParams);
+					if (result.length === 0)
+						return this.$refs.uToast.show({
+							title: '您还未注册，请联系管理员！',
+							type: 'warning'
+						});
+					if (result.length > 1) return (this.show = true);
 					this.postLogin({
 						code,
 						...result[0]
@@ -111,25 +115,49 @@ export default {
 				// url: '/pages/order-check/index?addtype=1'
 			});
 		},
+		// 选择用户
+		selectUser(user) {
+			this.postLogin({
+				code,
+				...user
+			});
+		},
+		// 用户登录
 		postLogin(loginParams) {
 			const _this = this;
+			uni.showLoading({
+				title: '正在登录...'
+			});
 			this.Login(loginParams)
 				.then(res => {
 					if (res.code) {
 						uni.hideLoading();
 						this.$refs.uToast.show({
 							title: '登录成功',
-							type: 'success',
-							url: '/pages/index/index'
+							type: 'success'
 						});
+						let pages = getCurrentPages()	
+						// 获取上一页栈
+						let prevPage = pages[ pages.length - 2 ]
+						console.log(prevPage)
+						// 触发上一页 upData 函数(并携带参数)
+						prevPage.$vm.upData()
+						setTimeout(_ => {
+							uni.navigateBack({
+								delta: 1,
+							});
+						}, 500);
 					}
 				})
 				.catch(err => {
 					console.log(err);
 					this.$refs.uToast.show({
-						title: '登录失败，请稍后再试！',
+						title: '登录失败，请重试!',
 						type: 'error'
 					});
+					// 重新获取code
+					this.login();
+					uni.hideLoading();
 				});
 		},
 		handleClose() {

@@ -8,10 +8,13 @@
 				<view class="header">
 					<u-avatar :src="src" :size="160"></u-avatar>
 					<view class="info">
-						<view class="name">{{userInfo.nick_name}}</view>
-						<view class="desc">{{userInfo.role_name}}</view>
+						<view class="name">
+							<text>{{ userInfo.nick_name }}</text>
+						</view>
+						<view class="desc">{{ userInfo.role_name }}</view>
 						<view class="desc company">深圳市金信恒企业管理有限公司</view>
 					</view>
+					<u-icon name="weixin-circle-fill" @click="jumpTo" class="qr_code"></u-icon>
 				</view>
 				<view class="contact">
 					<view class="item">
@@ -87,12 +90,12 @@
 </template>
 
 <script>
-	// 导入组件
+// 导入组件
 import personIntro from './components/personIntro.vue';
 import personFooter from '@/components/footer/footer.vue';
 import enterpriseIntro from './components/enterpriseIntro.vue';
 import businessIntro from './components/businessIntro.vue';
-import {mapGetters} from "vuex"
+import { mapGetters } from 'vuex';
 export default {
 	components: {
 		personIntro,
@@ -105,28 +108,28 @@ export default {
 		// 传入scrollTop值并触发所有easy-loadimage组件下的滚动监听事件
 		this.scrollTop = e.scrollTop;
 		// console.log('滚动距离：'+this.scrollTop,'可滚动高度：'+this.scrollHeight)
-		if(this.scrollTop>=(this.scrollHeight/2)){
-			this.hiddenFooter = false
-		}else{
-			this.hiddenFooter = true
+		if (this.scrollTop >= this.scrollHeight / 2) {
+			this.hiddenFooter = false;
+		} else {
+			this.hiddenFooter = true;
 		}
 	},
-	computed:{
+	computed: {
 		...mapGetters(['userInfo'])
 	},
 	mounted() {
-		this.getScrollHeight()
-		console.log(this.userInfo)
+		this.getScrollHeight();
+		console.log(this.userInfo);
 	},
 	data() {
 		return {
 			// 音频文件
 			audioSrc: '',
 			// 页面高度
-			scrollHeight:0,
+			scrollHeight: 0,
 			// 滚动高度
-			scrollTop:0,
-			hiddenFooter:true,
+			scrollTop: 0,
+			hiddenFooter: true,
 			navList: [
 				{
 					cate_name: '待收货'
@@ -179,20 +182,25 @@ export default {
 		// tabs 改变
 		change(value) {
 			this.current = value;
-			setTimeout(()=>{
-				this.getScrollHeight()
-			},200)
+			setTimeout(() => {
+				this.getScrollHeight();
+			}, 200);
 		},
 		// 获取当前页面高度，并计算可以滚动区域高度
-		getScrollHeight(){
+		getScrollHeight() {
 			const query = uni.createSelectorQuery().in(this);
 			query
 				.select('#personCenter')
 				.boundingClientRect(data => {
-					const windowHeight = uni.getStorageSync('windowHeight')
-					this.scrollHeight = data.height - windowHeight
+					const windowHeight = uni.getStorageSync('windowHeight');
+					this.scrollHeight = data.height - windowHeight;
 				})
 				.exec();
+		},
+		jumpTo(){
+			uni.navigateTo({
+				url:`/pages/personalQRcode/personalQRcode?id=${this.userInfo.user_id}`
+			})
 		}
 	}
 };
@@ -234,6 +242,7 @@ export default {
 			border-bottom: 1px solid #96c7ff;
 			display: flex;
 			align-items: center;
+			position: relative;
 			.info {
 				color: #fff;
 				padding-left: 36rpx;
@@ -251,6 +260,13 @@ export default {
 				.company {
 					font-size: 24rpx;
 				}
+			}
+			.qr_code {
+				position: absolute;
+				top: 0;
+				right: 0;
+				font-size: 62rpx;
+				margin-right: 40rpx;
 			}
 		}
 		// 联系方式

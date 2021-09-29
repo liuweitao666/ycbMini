@@ -13,14 +13,12 @@ export default {
 		console.log('App Launch');
 	},
 	onShow: function() {
-		this.refreshToken()
 		this.timer = setInterval(() => {
 			this.refreshToken()
 		}, 10000);
 		// 获取设备信息
 		uni.getSystemInfo({
 			success: function(res) {
-				console.log(res);
 				uni.setStorageSync('windowHeight', res.windowHeight);
 			}
 		});
@@ -35,6 +33,7 @@ export default {
 	methods:{
 		// 定时检测token
 		async refreshToken() {
+			console.log('refreshToken')
 			const tokenData = uni.getStorageSync('token_time')
 			if(!tokenData) return
 			const token = JSON.parse(tokenData)

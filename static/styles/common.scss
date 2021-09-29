@@ -110,3 +110,11 @@ button::after { border: none }
 .empty_view{
 	margin-top: 50rpx;
 }
+
+// 导航栏吸顶时样式变化	
+.isFix{
+	position: relative;
+	top: -6rpx;
+	z-index: 1002;
+	width: 100vw;
+}

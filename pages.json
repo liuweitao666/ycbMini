@@ -12,6 +12,22 @@
 			}
 		},
 		{
+			"path": "pages/personalCenter/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/personalQRcode/personalQRcode",
+			"style": {
+				"navigationBarTitleText": "微信二维码",
+				"enablePullDownRefresh": false
+			}
+		},
+
+		{
 			"path": "pages/login/index",
 			"style": {
 				"navigationBarTitleText": "用户登录"
@@ -29,14 +45,6 @@
 			"style": {
 				"navigationBarTitleText": "生成客户",
 				"enablePullDownRefresh": false
-			}
-		},
-		{
-			"path": "pages/personalCenter/index",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false,
-				"navigationStyle": "custom"
 			}
 		},
 		{
