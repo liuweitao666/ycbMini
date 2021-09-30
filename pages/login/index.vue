@@ -96,6 +96,8 @@ export default {
 					if (result.length > 1) return (this.show = true);
 					this.postLogin({
 						code,
+						grant_type:'wxmini',
+						username:result[0].account,
 						...result[0]
 					});
 				})

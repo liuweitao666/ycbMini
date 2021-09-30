@@ -118,8 +118,11 @@ export default {
 		}
 	}
 	.footer_desc{
-		width: 690rpx;
+		width: 100%;
 		margin: 0 auto;
+		image{
+			width: 100%;
+		}
 	}
 }
 </style>

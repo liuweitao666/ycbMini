@@ -4,7 +4,7 @@
 		<!-- 看板 -->
 		<performance ref="performance"/>
 		<view class="main">
-			<u-sticky :offset-top="topHeight" @fixed="isFixed(true)" @unfixed="isFixed(false)">
+			<u-sticky :offset-top="navbarHeight" @fixed="isFixed(true)" @unfixed="isFixed(false)">
 				<view :class="['screen', { isFix }]" >
 					<u-dropdown title-size="24" border-radius="16">
 						<u-dropdown-item v-model="value1" title="排序方式" menu-icon="arrow-down-fill" :options="createTimeOptions"></u-dropdown-item>
@@ -61,7 +61,7 @@ export default {
 			current: 1,
 			size: 3,
 			queryInfo: {
-				
+				name:''
 			},
 			total: null,
 
@@ -130,19 +130,18 @@ export default {
 		})
 	},
 	mounted() {
-		this.topHeight = uni.getStorageSync('topHeight');
 	},
 	async onReachBottom() {
 		// 触底函数
 		if (this.isComplete) return;
-		this.queryInfo.current++;
+		this.current++;
 		await this.initData();
 	},
 	methods: {
 		changeTab(value) {
 			this.dataType = value;
 			this.dataList = [];
-			this.queryInfo.current = 1;
+			this.current = 1;
 			this.initData();
 		},
 		// 更新数据
@@ -153,7 +152,7 @@ export default {
 		// 搜索
 		handleSearch(value){
 			this.dataList = [];
-			this.queryInfo.current = 1;
+			this.current = 1;
 			this.queryInfo.name = value
 			this.initData()
 		},
@@ -162,7 +161,7 @@ export default {
 			this.isLoading = true;
 			const queryInfo = {
 				size:this.size,
-				current:1,
+				current:this.current,
 				...this.queryInfo
 			}
 			setTimeout(async _ => {

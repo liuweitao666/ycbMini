@@ -80,7 +80,7 @@
 					background: '#FC961E',
 					'border-radius': '8px'
 				}"
-				@click="JumpTo('/pages/generateCustomer/index')"
+				@click="JumpTo(`/pages/generateCustomer/index?id=${clueId}`)"
 				v-if="dataType === '0'"
 			>
 				生成客户
@@ -173,7 +173,6 @@ export default {
 		await this.handleInitData();
 	},
 	onLoad({ type, id }) {
-		console.log(type, id);
 		this.dataType = type;
 		this.dataType === '0' ? (this.clueId = id) : (this.customerId = id);
 		// 获取详情数据

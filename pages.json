@@ -3,14 +3,30 @@
 		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	{
+		"path": "pages/home/index",
+		"style": {
+			"navigationBarTitleText": "业绩看板",
+			"navigationStyle": "custom",
+			"enablePullDownRefresh": true
+		}
+	},
 		{
-			"path": "pages/home/index",
+			"path": "pages/addFollowup/index",
 			"style": {
-				"navigationBarTitleText": "业绩看板",
-				"navigationStyle": "custom",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "添加跟进",
+				"enablePullDownRefresh": false
 			}
 		},
+
+		{
+			"path": "pages/generateCustomer/index",
+			"style": {
+				"navigationBarTitleText": "生成客户",
+				"enablePullDownRefresh": false
+			}
+		},
+
 		{
 			"path": "pages/personalCenter/index",
 			"style": {
@@ -31,20 +47,6 @@
 			"path": "pages/login/index",
 			"style": {
 				"navigationBarTitleText": "用户登录"
-			}
-		},
-		{
-			"path": "pages/addFollowup/index",
-			"style": {
-				"navigationBarTitleText": "添加跟进",
-				"enablePullDownRefresh": false
-			}
-		},
-		{
-			"path": "pages/generateCustomer/index",
-			"style": {
-				"navigationBarTitleText": "生成客户",
-				"enablePullDownRefresh": false
 			}
 		},
 		{

@@ -1,6 +1,6 @@
 <template>
 	<!-- 首页业绩看板 -->
-	<view class="swiper_wrap" v-if="performance">
+	<view class="swiper_wrap">
 		<swiper class="swiper" @change="change">
 			<swiper-item v-for="item in performanceList" :key="item">
 				<view
@@ -34,7 +34,7 @@
 						<view class="con_item">
 							<view class="title genjin_bg">跟进</view>
 							<view class="item_block">
-								<view class="item_block_label">{{ performance.followManNum + '/' + performance.followFrequency }}</view>
+								<view class="item_block_label">{{ performance.followManNum||0 + '/' + performance.followFrequency||0 }}</view>
 								<view class="item_block_desc">人 / 次</view>
 							</view>
 							<view class="item_block">

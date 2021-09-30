@@ -33,9 +33,9 @@ export const getCluePerformance = (params) => request.globalRequest({
 
 // /api/blade-crm/wechat/clue/clueToCustomer
 // 小程序线索转客户
-export const getclueToCustomer = (params) => request.globalRequest({
+export const clueToCustomer = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wechat/clue/clueToCustomer`,
-	method: 'post',
+	method: 'POST',
 	params,
 	power: 1
 })
@@ -59,7 +59,7 @@ export const getCluetransferRecord = (params) => request.globalRequest({
 // 跟进记录新增
 export const addClueFollow = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wechat/follow/create`,
-	method: 'post',
+	method: 'POST',
 	params,
 	power: 1
 })

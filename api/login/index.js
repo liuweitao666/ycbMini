@@ -7,9 +7,9 @@ const {
 
 // 效验wx.login 获取的code
 export const checkCode = (params) => request.globalRequest({
-	url: `${baseUrl}/blade-crm/wx-mini/auth/verify-code?code=${params.code}`,
+	url: `${baseUrl}/blade-crm/wx-mini/auth/verify-code`,
 	method: 'POST',
-	params:null,
+	params,
 	power: 1
 })
 // 根据用户手机号获取用户列表
@@ -22,14 +22,15 @@ export const getUsers = (params) => request.globalRequest({
 
 // 登录
 export const login = (params) => request.globalRequest({
-	url: `${baseUrl}/blade-auth/oauth/token?tenantId=${params.tenantId}&username=${params.account}&grant_type=wxmini&code=${params.code}&phone=${params.phone}`,
+	// url: `${baseUrl}/blade-auth/oauth/token?tenantId=${params.tenantId}&username=${params.account}&grant_type=wxmini&code=${params.code}&phone=${params.phone}`,
+	url: `${baseUrl}/blade-auth/oauth/token`,
 	method: 'POST',
 	params,
 	power: 1
 })
 // 刷新token
 export const refreshToken = (tenantId, refresh_token) => request.globalRequest({
-	url: `${baseUrl}/blade-auth/oauth/token?tenantId=${tenantId}&refresh_token=${refresh_token}&grant_type=refresh_token&scope=all`,
+	url: `${baseUrl}/blade-auth/oauth/token`,
 	method: 'POST',
 	params: {
 		tenantId,

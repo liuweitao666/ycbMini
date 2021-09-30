@@ -5,8 +5,8 @@
 				<view class="custom_title">{{item.createUserName}}</view>
 				<view class="desc">{{$dateFormat(item.createTime)}}</view>
 				<view class="desc">
-					<text style="color: #FC961E;">#{{followType[item.type]}}#</text>
-					{{item.followContent}}
+					<text style="color: #FC961E;">#{{item.operationType}}#</text>
+					{{item.operationType}}
 				</view>
 				<view class="image_cneg">
 					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="widthFix"></image>

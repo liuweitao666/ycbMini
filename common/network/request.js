@@ -2,6 +2,7 @@ import urlConfig from './config.js'
 import store from '../../store/index.js'
 import website from '@/config/website';
 let Base64= require('@/utils/base64.js').Base64;
+import { serialize} from "@/utils/util.js"
 
 const request = {}
 const headers = {}
@@ -23,7 +24,10 @@ request.globalRequest = ({url, method, params, power}) => {
 	headers['Content-Type'] = 'application/json'
 	headers['Blade-Auth'] = `bearer ${uni.getStorageSync('token')||''}`  
 	headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
-	// headers['token'] = store.state.token
+	//headers中配置serialize为true开启序列化
+	if (method === "POST") {
+		url = `${url}?${serialize(params)}`;
+	}
 	switch (power) {
 		case 1:
 			headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
@@ -49,7 +53,7 @@ request.globalRequest = ({url, method, params, power}) => {
 		dataType: 'json',
 		header: headers
 	}).then(res => {
-		console.log(res)
+		// console.log(res)
 		if (res[1].statusCode == 200) {
 			return res[1].data
 		} else {
@@ -78,10 +82,10 @@ request.globalRequest = ({url, method, params, power}) => {
 				break
 			default:
 				uni.showToast({
-					title: parmas.message,
+					title: parmas.msg,
 					icon: 'none'
 				})
-				return Promise.reject()
+				return Promise.reject(parmas)
 				break
 		}
 	})

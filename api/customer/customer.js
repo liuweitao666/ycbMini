@@ -42,7 +42,7 @@ export const getTransferRecord = (params) => request.globalRequest({
 //添加客户跟进记录
 export const addFollowRecord = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wx-mini/customer/add_follow_record`,
-	method: 'post',
+	method: 'POST',
 	params,
 	power: 1
 })
