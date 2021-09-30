@@ -1,5 +1,9 @@
 <template>
 	<view class="QRcode">
+		<!-- 底部描述图片 -->
+		<view class="footer_desc">
+			<image src="../../static/image/QRcode/footer_desc.png" mode="widthFix" ></image>
+		</view>
 		<!-- 二维码区域 -->
 		<view class="wrap">
 			<image src="@/static/image/QRcode/logo.png"></image>
@@ -22,10 +26,7 @@
 				<text>保存照片至相册</text>
 			</view>
 		</view>
-		<!-- 底部描述图片 -->
-		<view class="footer_desc">
-			<image src="../../static/image/QRcode/footer_desc.png" mode="widthFix" ></image>
-		</view>
+		
 	</view>
 </template>
 
@@ -51,6 +52,8 @@ export default {
 		margin: 0 auto;
 		background: #ffffff;
 		border-radius: 16rpx;
+		position: relative;
+		z-index: 999;
 		image {
 			width: 100%;
 			height: 180rpx;
@@ -120,6 +123,8 @@ export default {
 	.footer_desc{
 		width: 100%;
 		margin: 0 auto;
+		position: fixed;
+		bottom: 30rpx;
 		image{
 			width: 100%;
 		}

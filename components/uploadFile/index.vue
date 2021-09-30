@@ -1,9 +1,11 @@
 <template>
 	<div>
+		<!-- :before-upload="beforeUpload" -->
+		<!-- @on-choose-complete="beforeUpload" -->
 		<u-upload
 			:action="ossData.host || ''"
 			:width="width"
-			:before-upload="beforeUpload"
+			:before-upload="beforeAvatarUpload"
 			:file-list="fileList"
 			:form-data="dataUpload"
 			ref="Uupload"
@@ -86,6 +88,11 @@ export default {
 			fileList: []
 		};
 	},
+	watch:{
+		fileList(newVal){
+			console.log(newVal)
+		}
+	},
 	created() {
 		this.configOssData();
 	},
@@ -101,29 +108,29 @@ export default {
 			});
 		},
 		// 上传前的狗子
-		beforeUpload(index, fileList) {
+		beforeUpload(lists) {
 			uni.showLoading({
 				title:"正在上传"
 			})
-			this.beforeAvatarUpload(fileList)
-			return false
+			this.beforeAvatarUpload(lists)
 		},
-		beforeAvatarUpload(fileList) {
+		beforeAvatarUpload(index,fileList) {
 			this.dataUpload.OSSAccessKeyId = this.ossData.accessId;
 			this.dataUpload.policy = this.ossData.policy;
 			this.dataUpload.Signature = this.ossData.signature;
-			fileList.forEach((file,index)=>{
-				console.log(file)
-				this.uploadFile(file,index,fileList.length-1)
-			})
+			// fileList.forEach((file,index)=>{
+			// 	console.log(file)
+			// })
+			this.uploadFile(fileList[index])
 			return false
 		},
 		// 上传文件
-		uploadFile(file,index,number){
+		uploadFile(file){
+			console.log(file)
 			if (this.acceptSize) {
 				const flagSize = file.size / 1024 / 1024 > this.acceptSize;
 				if (flagSize) {
-					this.$message.error(`文件大于${this.acceptSize}m`);
+					// this.$message.error(`文件大于${this.acceptSize}m`);
 					return false;
 				}
 			}
@@ -137,24 +144,17 @@ export default {
 				formData:this.dataUpload,
 				success:(res)=>{
 					console.log(res)
-					if(index===number){
-						this.$emit('onSuccess',{
-							fileName:this.dataUpload.key,
-							key:this.dataUpload.key
-						})
-						uni.hideLoading()
-					}
+					this.$emit('onSuccess',{
+						fileName:this.dataUpload.key,
+						key:this.dataUpload.key
+					})
+					uni.hideLoading()
 				},
 				fail:(err)=>{
 					uni.hideLoading()
 					console.log(err+'error')
 				}
 			})
-		},
-		// 上传成功
-		handleSuccess(response, file, fileList) {
-			file.uploadurl = `${this.ossData.dir}${file.uid}${file.name.slice(file.name.lastIndexOf('.'))}`;
-			this.$emit('changeUpload', fileList);
 		},
 		handleError(err) {
 			console.log(err);

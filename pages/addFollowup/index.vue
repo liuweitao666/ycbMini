@@ -15,7 +15,7 @@
 			</view>
 			<view class="item_single">
 				<u-form-item :border-bottom="false">
-					<upload-file ossPathType="clue-import" @on-success="handleSuccess"/>
+					<upload-file v-if="dataType" :ossPathType="dataType==='0'?'clue-import':'customer-import'" @on-success="handleSuccess"/>
 				</u-form-item>
 			</view>
 			<view class="item_single">
@@ -117,6 +117,7 @@ export default {
 	},
 	onLoad({ id, dataType }) {
 		this.dataType = dataType;
+		console.log(this.dataType)
 		this.id = id;
 	},
 	// 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕

@@ -10,7 +10,7 @@
 				background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D','background-size': '100%'
 			}"
 		>
-			<view class="header" :style="{ height: navTop - 4 + 'px' }"></view>
+			<view class="header" :style="{ height: navTop + 'px' }"></view>
 			<view class="navbar-tabs">
 				<!-- 头像 -->
 				<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="isAvatar"></view>
@@ -139,7 +139,6 @@ export default {
 		getNavHeight() {
 			// const topHeight = uni.getStorageSync('topHeight')
 			// if(topHeight) return
-			if(this.navbarHeight) return 
 			const query = uni.createSelectorQuery().in(this);
 			query
 				.select('#navbar')
