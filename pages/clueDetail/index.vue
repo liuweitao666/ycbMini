@@ -9,9 +9,9 @@
 				<view class="trade_right">
 					<view class="trade_right_title">
 						<view class="title">{{ detailData.name }}</view>
-						<text class="date">{{ $dateFormat(detailData.createTime,'yyyy-mm-dd') }}</text>
+						<text class="date">{{ $dateFormat(detailData.createTime, 'yyyy-mm-dd') }}</text>
 					</view>
-					<view class="card_desc">{{detailData.remark||detailData.provinceName}}</view>
+					<view class="card_desc">{{ detailData.remark || detailData.provinceName }}</view>
 				</view>
 			</view>
 			<!-- 联系方式 -->
@@ -61,9 +61,7 @@
 			</view>
 		</u-sticky>
 		<!-- 展示对应记录页面 -->
-		<followup-log v-if="currentTab === 0" :data="data" :total="total" />
-		<circulation-log v-if="currentTab === 1" :data="data" :total="total" />
-		<operation-log v-if="currentTab === 2" :data="data" :total="total" />
+		<logs :data="data" :total="total" />
 		<!-- 加载完成 -->
 		<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
 		<!-- 加载动画 -->
@@ -94,7 +92,7 @@
 						background: '#00A4FF',
 						'border-radius': '8px'
 					}"
-					@click="JumpTo(`/pages/addFollowup/index?id=${dataType==='0'?clueId:customerId}&dataType=${dataType}`)"
+					@click="JumpTo(`/pages/addFollowup/index?id=${dataType === '0' ? clueId : customerId}&dataType=${dataType}`)"
 				>
 					添加跟进
 				</u-button>
@@ -104,20 +102,18 @@
 </template>
 <script>
 // 组件
-import followupLog from './components/followupLog.vue';
-import circulationLog from './components/circulationLog.vue';
-import operationLog from './components/operationLog.vue';
+import logs from './components/logs.vue';
+// import circulationLog from './components/circulationLog.vue';
+// import operationLog from './components/operationLog.vue';
 import logFooter from '@/components/footer/footer.vue';
 // 导入接口
-import { getCustomerDetail, getFollowRecord, getTransferRecord, getOperationRecord } from '@/api/customer/customer.js';
+import { getCustomerDetail, getCustomFollowRecord, getCustomTransferRecord, getCustomOperationRecord } from '@/api/customer/customer.js';
 import { getClueDetail, getClueFollowList, getCluetransferRecord } from '@/api/clue/clue.js';
 // vuex
 import { mapGetters } from 'vuex';
 export default {
 	components: {
-		followupLog,
-		circulationLog,
-		operationLog,
+		logs,
 		logFooter
 	},
 	data() {
@@ -153,6 +149,24 @@ export default {
 			isLoading: false,
 			// log记录数据
 			data: [],
+			// 记录每次点击的记录数据
+			recordData: [
+				{
+					total: null,
+					data: [],
+					current: 1
+				},
+				{
+					total: null,
+					data: [],
+					current: 1
+				},
+				{
+					total: null,
+					data: [],
+					current: 1
+				}
+			],
 			// 全部条数
 			total: null,
 			isFix: false
@@ -166,11 +180,13 @@ export default {
 		// 距离上边的高度
 		...mapGetters(['navbarHeight'])
 	},
-	async onReachBottom() {
+	onReachBottom() {
 		// 触底函数
 		if (this.isComplete) return;
-		this.current++;
-		await this.handleInitData();
+		if (!this.isLoading) {
+			this.current++;
+			this.handleInitData();
+		}
 	},
 	onLoad({ type, id }) {
 		this.dataType = type;
@@ -183,11 +199,17 @@ export default {
 		// tabs 改变
 		changeTab(value) {
 			this.currentTab = value;
-			this.data = [];
-			this.total=null;
-			this.current = 1;
-			// 改变记录数据
-			this.handleInitData();
+			// 设置对应标签栏的数据
+			this.setData(value);
+		},
+		// 设置数据
+		setData(index) {
+			this.data = this.recordData[index].data;
+			this.total = this.recordData[index].total;
+			if (this.total === null) {
+				return this.handleInitData();
+			}
+			this.current = this.recordData[index].current;
 		},
 		// 跳转对于页面
 		JumpTo(url) {
@@ -197,15 +219,14 @@ export default {
 		},
 		handleInitData() {
 			this.isLoading = true;
-			console.log(this.dataType);
 			setTimeout(async _ => {
 				if (this.dataType === '0') {
 					// 线索记录
-					await this.initClueLogData();
+					await this.initLogsData(getClueFollowList,getCluetransferRecord,getCustomOperationRecord);
 					this.isLoading = false;
 				} else {
 					// 客户记录
-					await this.initCustomerLogData();
+					await this.initLogsData(getCustomFollowRecord,getCustomTransferRecord,getCustomOperationRecord);
 				}
 				this.isLoading = false;
 			}, 500);
@@ -227,56 +248,37 @@ export default {
 			this.detailData = res;
 			console.log(res);
 		},
-		// 初始线索详情 记录数据
-		async initCustomerLogData() {
+		// 初始化对应记录数据
+		async initLogsData(getFollowRecord,getTransferRecord,getOperationRecord) {
 			// 0获取客户跟进记录 1获取客户转让记录  2获取客户操作记录
 			const queryInfo = {
 				size: this.size,
 				current: this.current,
-				customerId: this.customerId
+				// customerId: this.customerId
 			};
+			this.dataType==='0'?queryInfo.clueId = this.clueId:queryInfo.customerId = this.customerId
 			switch (this.currentTab) {
 				case 0:
 					const { data: followRecord } = await getFollowRecord(queryInfo);
-					this.total = followRecord.total;
-					this.data = [...this.data, ...followRecord.records];
+					this.recordData[0].total = followRecord.total;
+					this.recordData[0].current = this.current;
+					this.recordData[0].data = [...this.recordData[0].data, ...followRecord.records];
+					this.setData(0);
 					break;
 				case 1:
 					const { data: transferRecord } = await getTransferRecord(queryInfo);
-					this.total = transferRecord.total;
-					this.data = [...this.data, ...transferRecord.records];
+					this.recordData[1].total = transferRecord.total;
+					this.recordData[1].current = this.current;
+					this.recordData[1].data = [...this.recordData[1].data, ...transferRecord.records];
+					this.setData(1);
 					break;
 				case 2:
 					const { data: operationRecord } = await getOperationRecord(queryInfo);
-					this.total = operationRecord.total;
-					this.data = [...this.data, ...operationRecord.records];
+					this.recordData[2].total = operationRecord.total;
+					this.recordData[2].current = this.current;
+					this.recordData[2].data = [...this.recordData[2].data, ...operationRecord.records];
+					this.setData(2);
 					break;
-			}
-		},
-		// 初始线索详情 记录数据
-		async initClueLogData() {
-			// 0获取线索跟进记录 1获取线索转让记录  2获取线索操作记录
-			const queryInfo = {
-				size: this.size,
-				current: this.current,
-				clueId: this.clueId
-			};
-			console.log(queryInfo);
-			switch (this.currentTab) {
-				case 0:
-					const { data: followRecord } = await getClueFollowList(queryInfo);
-					this.total = followRecord.total;
-					(this.data = [...this.data, ...followRecord.records]);
-					break
-				case 1:
-					const { data: transferRecord } = await getCluetransferRecord(queryInfo);
-					this.total = transferRecord.total;
-					(this.data = [...this.data, ...transferRecord.records]);
-					break
-				case 2:
-					const { data: operationRecord } = await getOperationRecord(queryInfo);
-					this.total = operationRecord.total;
-					return (this.data = [...this.data, ...operationRecord.records]);
 			}
 		},
 		isFixed(isFix) {

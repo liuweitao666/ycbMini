@@ -24,7 +24,7 @@ export const getCustomerDetail = (params) => request.globalRequest({
 })
 
 //客户跟进记录接口
-export const getFollowRecord = (params) => request.globalRequest({
+export const getCustomFollowRecord = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wx-mini/customer/follow_record`,
 	method: 'get',
 	params,
@@ -32,7 +32,7 @@ export const getFollowRecord = (params) => request.globalRequest({
 })
 
 //客户转让记录接口
-export const getTransferRecord = (params) => request.globalRequest({
+export const getCustomTransferRecord = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wx-mini/customer/transfer_record`,
 	method: 'get',
 	params,
@@ -47,7 +47,7 @@ export const addFollowRecord = (params) => request.globalRequest({
 	power: 1
 })
 // 客户操作记录接口
-export const getOperationRecord = (params) => request.globalRequest({
+export const getCustomOperationRecord = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-base/operation-record/list`,
 	method: 'get',
 	params,

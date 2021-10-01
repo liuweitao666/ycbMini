@@ -34,7 +34,7 @@
 						<view class="con_item">
 							<view class="title genjin_bg">跟进</view>
 							<view class="item_block">
-								<view class="item_block_label">{{ performance.followManNum||0 + '/' + performance.followFrequency||0 }}</view>
+								<view class="item_block_label">{{ `${performance.followManNum || 0}/${performance.followFrequency||0}` }}</view>
 								<view class="item_block_desc">人 / 次</view>
 							</view>
 							<view class="item_block">

@@ -5,7 +5,7 @@
 				<view class="custom_title">{{item.createUserName}}</view>
 				<view class="desc">{{$dateFormat(item.createTime)}}</view>
 				<view class="desc">
-					<text style="color: #FC961E;">#{{item.operationType}}#</text>
+					<text style="color: #FC961E;padding-right: 10rpx">#{{item.operationType}}#</text>
 					{{item.operationType}}
 				</view>
 				<view class="image_cneg">

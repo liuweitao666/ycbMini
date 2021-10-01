@@ -131,11 +131,13 @@ export default {
 	},
 	mounted() {
 	},
-	async onReachBottom() {
+	onReachBottom() {
 		// 触底函数
 		if (this.isComplete) return;
-		this.current++;
-		await this.initData();
+		if(!this.isLoading){
+			this.current++;
+			this.initData();
+		}
 	},
 	methods: {
 		changeTab(value) {
