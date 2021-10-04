@@ -10,7 +10,7 @@
 				</view>
 				<view class="form_item"><u-form-item label="跟进内容" :required="true"></u-form-item></view>
 				<view class="form_item">
-					<u-form-item prop="followContent"><u-input v-model="form.followContent" type="textarea" :custom-style="textareaStyle" /></u-form-item>
+					<u-form-item prop="followContent" label-width="0"><u-input v-model="form.followContent" type="textarea" :custom-style="textareaStyle" /></u-form-item>
 				</view>
 			</view>
 			<view class="item_single">

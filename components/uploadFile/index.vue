@@ -77,7 +77,6 @@ export default {
 	data() {
 		return {
 			ossData: {},
-			action: 'http://www.tp5.com/',
 			// 上传前携带的额外的参数
 			dataUpload: {
 				key: '',
@@ -151,6 +150,9 @@ export default {
 					uni.hideLoading()
 				},
 				fail:(err)=>{
+					uni.showToast({
+						title:'上传失败～',
+					})
 					uni.hideLoading()
 					console.log(err+'error')
 				}

@@ -12,7 +12,7 @@ if(process.env.NODE_ENV === 'development'){
     url_config.apiBaseUrl = 'http://19h517z135.iask.in'
 }else{
     // 生产环境
-    url_config.baseUrl = 'http://10.20.50.146:7777'
+    url_config.baseUrl = 'https://ycb-test1.yichuangbao.com/api'
     url_config.apiBaseUrl = 'https://operate-service-api.vcrig.com'
 }
 

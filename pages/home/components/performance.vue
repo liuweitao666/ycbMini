@@ -71,6 +71,9 @@ export default {
 			performanceList: ['1', '2', '3'],
 			// 当前看板
 			performance: null,
+			performanceDay: null,
+			performanceWeek: null,
+			performanceMouth: null,
 			// 轮播数据
 			swiperActive: 0,
 			// title
@@ -83,11 +86,34 @@ export default {
 	},
 	methods: {
 		// 获取线索业绩看板
-		async getCluePerformance(timeType) {
+		getCluePerformance(timeType) {
+			console.log(timeType)
+			switch (timeType) {
+				case 1:
+					this.title = '今天';
+					if(this.performanceDay) return this.performance = this.performanceDay
+					this.setPerformance(1,'performanceDay')
+					break
+				case 2:	
+					this.title = '本周';
+					if(this.performanceWeek) return this.performance = this.performanceWeek
+					this.setPerformance(2,'performanceWeek')
+					break
+				case 3:
+					this.title = '本月';
+					if(this.performanceMouth) return this.performance = this.performanceMouth
+					this.setPerformance(3,'performanceMouth')
+					break
+			}
+		},
+		// 设置看板数据
+		async setPerformance(timeType,performanceKey){
+			console.log(timeType,performanceKey)
 			const { data: performance } = await getCluePerformance({
 				timeType
-			});
-			this.performance = performance;
+			})
+			this[performanceKey] = performance;
+			this.performance = this[performanceKey];
 		},
 		// 轮播图变化
 		change(data) {
@@ -96,14 +122,6 @@ export default {
 			this.swiperActive = current;
 			const timeType = current + 1;
 			this.getCluePerformance(timeType);
-			switch (timeType) {
-				case 1:
-					return this.title = '今天';
-				case 2:
-					return this.title = '本周';
-				case 3:
-					return this.title = '本月';
-			}
 		}
 	}
 };

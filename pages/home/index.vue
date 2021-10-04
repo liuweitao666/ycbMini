@@ -24,10 +24,16 @@
 					</view>
 					<view class="right" v-show="item.phone"><image src="@/static/image/home/phone.png" mode=""></image></view>
 				</view>
-				<!-- 加载完成 -->
-				<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
-				<!-- 加载动画 -->
-				<view :class="['loading_wrap', { hidden: isComplete }]"><u-loading :show="isLoading">正在加载……</u-loading></view>
+				<!-- 空列表 -->
+				<u-empty type="list" v-if="isComplete && total===0"></u-empty>
+				<view class="" v-else>
+					<!-- 加载完成 -->
+					<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
+					<!-- 加载动画 -->
+					<view :class="['loading_wrap', { hidden: isComplete }]">
+						<u-loading type="primary" :show="isLoading"></u-loading>
+					</view>
+				</view>
 			</view>
 			<view class="footer"></view>
 		</view>
@@ -42,6 +48,15 @@ import { getCustomerPage } from '@/api/customer/customer.js';
 // 线索相关接口导入
 import { getCluePage, getCluePerformance } from '@/api/clue/clue.js';
 import { mapGetters } from 'vuex';
+
+import {deepClone} from "@/utils/util.js"
+// 定义请求参数
+const queryInfo = {
+				name:'',
+				createDate:0,
+				status:'0',
+				range:1,
+			}
 export default {
 	components: {
 		performance
@@ -60,16 +75,24 @@ export default {
 			],
 			current: 1,
 			size: 3,
-			queryInfo: {
-				name:''
-			},
+			queryInfo:deepClone(queryInfo),
 			total: null,
-
 			// 数据列表
 			dataList: [],
+			recordData:[
+				{
+					data:[],
+					total:null,
+					current:1,
+				},
+				{
+					data:[],
+					total:null,
+					current:1,
+				},
+			],
 			// 是否展示加载动画
 			isLoading: false,
-
 			content: [
 				{
 					label: '98',
@@ -117,7 +140,7 @@ export default {
 	computed: {
 		// 数据是否加载完成
 		isComplete() {
-			return this.total === this.dataList.length && this.total !== 0;
+			return this.total === this.dataList.length;
 		},
 		...mapGetters(['navbarHeight'])
 	},
@@ -142,19 +165,30 @@ export default {
 	methods: {
 		changeTab(value) {
 			this.dataType = value;
-			this.dataList = [];
-			this.current = 1;
-			this.initData();
+			this.setData(value)
 		},
 		// 更新数据
 		upData(){
 			this.$refs.performance.getCluePerformance(1)
 			this.initData()
 		},
+		// 设置数据
+		setData(index){
+			this.current = this.recordData[index].current
+			this.dataList = this.recordData[index].data
+			if(this.recordData[index].total===null) return this.initData();
+			this.total = this.recordData[index].total
+		},
 		// 搜索
 		handleSearch(value){
-			this.dataList = [];
-			this.current = 1;
+			console.log(value)
+			for(let key in this.queryInfo){
+				this.queryInfo[key] = queryInfo[key]
+			}
+			this.recordData[this.dataType].data = [];
+			this.recordData[this.dataType].total = null
+			this.recordData[this.dataType].current = 1
+			// this.setData(this.dataType)
 			this.queryInfo.name = value
 			this.initData()
 		},
@@ -171,6 +205,7 @@ export default {
 					this.dataType === 0 ? await this.getCluePage(queryInfo) : await this.getCustomerPage(queryInfo);
 					this.isLoading = false;
 				}catch(e){
+					console.log(e)
 					//TODO handle the exception
 					uni.showToast({
 						title: '网络错误，请稍后重试！',
@@ -180,21 +215,22 @@ export default {
 				}
 			}, 500);
 		},
-		// 获取客户分页列表
-		async getCustomerPage(queryInfo) {
-			const { data: res } = await getCustomerPage(queryInfo);
-			this.dataList = [...this.dataList, ...res.records];
-			console.log(res.total);
-			this.total = res.total;
-		},
 		// 获取线索分页列表
 		async getCluePage(queryInfo) {
 			const { data: res } = await getCluePage(queryInfo);
-			console.log(res)
-			this.dataList = [...this.dataList, ...res.records];
-			this.total = res.total;
+			this.recordData[0].data = [...this.recordData[0].data, ...res.records];
+			this.recordData[0].total = res.total
+			this.recordData[0].current = this.current
+			this.setData(0)
 		},
-
+		// 获取客户分页列表
+		async getCustomerPage(queryInfo) {
+			const { data: res } = await getCustomerPage(queryInfo);
+			this.recordData[1].data = [...this.recordData[1].data, ...res.records];
+			this.recordData[1].total = res.total
+			this.recordData[1].current = this.current
+			this.setData(1)
+		},
 		// 跳转对应的线索详情
 		jumpTo(id) {
 			console.log(id)
@@ -251,7 +287,7 @@ export default {
 					font-weight: 400;
 					color: #a4b0be;
 					line-height: 26rpx;
-					padding-top: 12rpx;
+					padding-top: 15rpx;
 				}
 			}
 			.right {

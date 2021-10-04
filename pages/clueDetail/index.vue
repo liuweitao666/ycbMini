@@ -2,6 +2,25 @@
 	<view class="clue_wrap">
 		<!--自定义导航 -->
 		<nav-bar @change="changeNav" :title="dataType === '0' ? '线索详情' : '客户详情'"></nav-bar>
+		<!-- 吸顶导航栏 -->
+		<view :class="['fixTabs',{'showFixTabs':isFix}]" v-if="showFixTabs">
+			<view :class="['isFix','custom_tabs','clue_tabs']">
+				<view class="line"></view>
+				<u-tabs
+					name="cate_name"
+					count="cate_count"
+					:list="list"
+					:height="100"
+					inactive-color="#999"
+					active-color="#333"
+					:bar-style="tabStyle"
+					bar-width="78"
+					:is-scroll="false"
+					:current="currentTab"
+					@change="changeTab"
+				></u-tabs>
+			</view>
+		</view>
 		<view class="clue_header">
 			<!-- 商标部分 -->
 			<view class="trademark">
@@ -42,24 +61,22 @@
 			</view>
 		</view>
 		<!-- 标签 -->
-		<u-sticky :offset-top="navbarHeight" @fixed="isFixed(true)" @unfixed="isFixed(false)">
-			<view :class="['custom_tabs', 'clue_tabs', { isFix }]">
-				<view class="line"></view>
-				<u-tabs
-					name="cate_name"
-					count="cate_count"
-					:list="list"
-					:height="100"
-					inactive-color="#999"
-					active-color="#333"
-					:bar-style="tabStyle"
-					bar-width="78"
-					:is-scroll="false"
-					:current="currentTab"
-					@change="changeTab"
-				></u-tabs>
-			</view>
-		</u-sticky>
+		<view :class="['custom_tabs', 'clue_tabs']" id="tabs_clue_detail">
+			<view class="line"></view>
+			<u-tabs
+				name="cate_name"
+				count="cate_count"
+				:list="list"
+				:height="100"
+				inactive-color="#999"
+				active-color="#333"
+				:bar-style="tabStyle"
+				bar-width="78"
+				:is-scroll="false"
+				:current="currentTab"
+				@change="changeTab"
+			></u-tabs>
+		</view>
 		<!-- 展示对应记录页面 -->
 		<logs :data="data" :total="total" />
 		<!-- 加载完成 -->
@@ -139,6 +156,7 @@ export default {
 			dataType: null,
 			//详情
 			detailData: {},
+			// 分页
 			size: 3,
 			current: 1,
 			// 客户customerID
@@ -154,22 +172,28 @@ export default {
 				{
 					total: null,
 					data: [],
-					current: 1
+					current: 1,
+					scrollTop:0,
 				},
 				{
 					total: null,
 					data: [],
-					current: 1
+					current: 1,
+					scrollTop:0,
 				},
 				{
 					total: null,
 					data: [],
-					current: 1
+					current: 1,
+					scrollTop:0,
 				}
 			],
 			// 全部条数
 			total: null,
-			isFix: false
+			tabsTop:0,
+			scrollTop:-1,
+			// 刚开始不显示吸顶导航
+			showFixTabs:false
 		};
 	},
 	computed: {
@@ -177,8 +201,26 @@ export default {
 		isComplete() {
 			return this.total === this.data.length && this.total !== 0;
 		},
+		isFix(){
+			return this.scrollTop >= this.tabsTop
+		},
 		// 距离上边的高度
-		...mapGetters(['navbarHeight'])
+		...mapGetters(['navbarHeight']),
+		
+	},
+	onPageScroll(e) {
+		this.scrollTop = e.scrollTop
+		switch(this.currentTab){
+			case 0:
+				this.recordData[0].scrollTop = this.scrollTop
+				break
+			case 1:
+				this.recordData[1].scrollTop = this.scrollTop
+				break
+			case 2:
+				this.recordData[2].scrollTop = this.scrollTop
+				break
+		}
 	},
 	onReachBottom() {
 		// 触底函数
@@ -194,22 +236,39 @@ export default {
 		// 获取详情数据
 		this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		this.handleInitData();
+		setTimeout(_=>{
+			this.showFixTabs = true
+		},500)
+	},
+	onHide() {
+		this.scrollTop = null
+	},
+	mounted() {
+		// 获取tabs标签的高度
+		this.getDomInfo()
 	},
 	methods: {
 		// tabs 改变
 		changeTab(value) {
 			this.currentTab = value;
-			// 设置对应标签栏的数据
 			this.setData(value);
+			// 设置对应标签栏的数据
+			setTimeout(_=>{
+				this.scrollTop = this.recordData[value].scrollTop;
+				uni.pageScrollTo({
+					scrollTop:this.scrollTop,
+					duration: 0
+				});
+			},100)
 		},
 		// 设置数据
 		setData(index) {
 			this.data = this.recordData[index].data;
 			this.total = this.recordData[index].total;
-			if (this.total === null) {
+			this.current = this.recordData[index].current;
+			if (this.recordData[index].total === null) {
 				return this.handleInitData();
 			}
-			this.current = this.recordData[index].current;
 		},
 		// 跳转对于页面
 		JumpTo(url) {
@@ -222,11 +281,11 @@ export default {
 			setTimeout(async _ => {
 				if (this.dataType === '0') {
 					// 线索记录
-					await this.initLogsData(getClueFollowList,getCluetransferRecord,getCustomOperationRecord);
+					await this.initLogsData(getClueFollowList, getCluetransferRecord, getCustomOperationRecord);
 					this.isLoading = false;
 				} else {
 					// 客户记录
-					await this.initLogsData(getCustomFollowRecord,getCustomTransferRecord,getCustomOperationRecord);
+					await this.initLogsData(getCustomFollowRecord, getCustomTransferRecord, getCustomOperationRecord);
 				}
 				this.isLoading = false;
 			}, 500);
@@ -249,14 +308,14 @@ export default {
 			console.log(res);
 		},
 		// 初始化对应记录数据
-		async initLogsData(getFollowRecord,getTransferRecord,getOperationRecord) {
+		async initLogsData(getFollowRecord, getTransferRecord, getOperationRecord) {
 			// 0获取客户跟进记录 1获取客户转让记录  2获取客户操作记录
 			const queryInfo = {
 				size: this.size,
-				current: this.current,
+				current: this.current
 				// customerId: this.customerId
 			};
-			this.dataType==='0'?queryInfo.clueId = this.clueId:queryInfo.customerId = this.customerId
+			this.dataType === '0' ? (queryInfo.clueId = this.clueId) : (queryInfo.customerId = this.customerId);
 			switch (this.currentTab) {
 				case 0:
 					const { data: followRecord } = await getFollowRecord(queryInfo);
@@ -281,14 +340,33 @@ export default {
 					break;
 			}
 		},
-		isFixed(isFix) {
-			console.log(isFix);
-			this.isFix = isFix;
+		getDomInfo(){
+			// tabs_clue_detail
+			const query = uni.createSelectorQuery().in(this);
+			query
+				.select('#tabs_clue_detail')
+				.boundingClientRect(data => {
+					console.log(data)
+					this.tabsTop = data.top - (this.navbarHeight/2)
+				})
+				.exec();
 		}
 	}
 };
 </script>
 <style lang="scss">
+.fixTabs {
+	position: fixed;
+	border-radius: 0;
+	width: 100vw;
+	z-index: -2;
+	.custom_tabs{
+		border-radius: 0;
+	}
+}
+.showFixTabs{
+	z-index: 1002;
+}
 .clue_wrap {
 	.clue_header {
 		background-color: #292b4d;
