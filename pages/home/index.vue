@@ -8,9 +8,9 @@
 				<view :class="['screen', { isFix }]" >
 					<u-dropdown title-size="24" border-radius="16">
 						<u-dropdown-item v-model="value1" title="排序方式" menu-icon="arrow-down-fill" :options="createTimeOptions"></u-dropdown-item>
-						<u-dropdown-item v-model="value2" title="范围" :options="options2"></u-dropdown-item>
-						<u-dropdown-item v-model="value1" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
-						<u-dropdown-item v-model="value2" title="状态" :options="options2"></u-dropdown-item>
+						<u-dropdown-item v-model="queryInfo.range" title="范围" :options="rangeOptions"></u-dropdown-item>
+						<u-dropdown-item v-model="queryInfo.createDate" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
+						<u-dropdown-item v-model="queryInfo.status" title="状态" :options="statusOptions"></u-dropdown-item>
 					</u-dropdown>
 				</view>
 			</u-sticky>
@@ -31,7 +31,7 @@
 					<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
 					<!-- 加载动画 -->
 					<view :class="['loading_wrap', { hidden: isComplete }]">
-						<u-loading type="primary" :show="isLoading"></u-loading>
+						<u-loading color="red" :show="isLoading"></u-loading>
 					</view>
 				</view>
 			</view>
@@ -57,6 +57,43 @@ const queryInfo = {
 				status:'0',
 				range:1,
 			}
+// 状态
+const statusOptions = [
+				{
+					label: '去冰',
+					value: 1
+				},
+				{
+					label: '加冰',
+					value: 2
+				}
+			]
+// 范围
+const rangeOptions = [
+				{
+					label: '去冰',
+					value: 1
+				},
+				{
+					label: '加冰',
+					value: 2
+				}
+			]
+// 创建时间
+const createTimeOptions = [
+				{
+					label: '默认排序',
+					value: 1
+				},
+				{
+					label: '距离优先',
+					value: 2
+				},
+				{
+					label: '价格优先',
+					value: 3
+				}
+			]
 export default {
 	components: {
 		performance
@@ -93,46 +130,10 @@ export default {
 			],
 			// 是否展示加载动画
 			isLoading: false,
-			content: [
-				{
-					label: '98',
-					desc: '线索'
-				},
-				{
-					label: '98',
-					desc: '线索'
-				},
-				{
-					label: '98',
-					desc: '线索'
-				}
-			],
 			value1: '',
-			value2: '',
-			createTimeOptions: [
-				{
-					label: '默认排序',
-					value: 1
-				},
-				{
-					label: '距离优先',
-					value: 2
-				},
-				{
-					label: '价格优先',
-					value: 3
-				}
-			],
-			options2: [
-				{
-					label: '去冰',
-					value: 1
-				},
-				{
-					label: '加冰',
-					value: 2
-				}
-			],
+			createTimeOptions: createTimeOptions,
+			rangeOptions: rangeOptions,
+			statusOptions:statusOptions,
 			topHeight: '',
 			isFix: false
 		};
@@ -181,16 +182,19 @@ export default {
 		},
 		// 搜索
 		handleSearch(value){
-			console.log(value)
+			if(value===this.queryInfo.name) return
 			for(let key in this.queryInfo){
 				this.queryInfo[key] = queryInfo[key]
 			}
+			// 显示加载动画
+			this.total = null
+			// 清空当前数据
 			this.recordData[this.dataType].data = [];
 			this.recordData[this.dataType].total = null
 			this.recordData[this.dataType].current = 1
-			// this.setData(this.dataType)
 			this.queryInfo.name = value
-			this.initData()
+			// 搜索数据
+			this.setData(this.dataType)
 		},
 		// 初始化数据
 		initData() {
@@ -205,7 +209,6 @@ export default {
 					this.dataType === 0 ? await this.getCluePage(queryInfo) : await this.getCustomerPage(queryInfo);
 					this.isLoading = false;
 				}catch(e){
-					console.log(e)
 					//TODO handle the exception
 					uni.showToast({
 						title: '网络错误，请稍后重试！',
