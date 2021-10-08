@@ -121,7 +121,7 @@ export default {
 		},
 		// 搜索事件
 		handleSearch(){
-			this.$emit('search',this.searchVal)
+			this.$emit('search',{ searchType:'search',name:this.searchVal})
 		},
 		handleTo() {
 			console.log('goto');

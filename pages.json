@@ -3,14 +3,14 @@
 		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-	{
-		"path": "pages/home/index",
-		"style": {
-			"navigationBarTitleText": "业绩看板",
-			"navigationStyle": "custom",
-			"enablePullDownRefresh": true
-		}
-	},
+		{
+			"path": "pages/home/index",
+			"style": {
+				"navigationBarTitleText": "业绩看板",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
 		{
 			"path": "pages/addFollowup/index",
 			"style": {
@@ -62,5 +62,25 @@
 		"navigationBarTitleText": "业绩看板",
 		"navigationBarBackgroundColor": "#292B4D",
 		"backgroundColor": "#292B4D"
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#3cc51f",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/home/index",
+				"iconPath": "static/image/home/phone.png",
+				"selectedIconPath": "static/image/home/phone.png",
+				"text": "首页"
+			}, {
+				"pagePath": "pages/personalCenter/index",
+				"text": "客户"
+			},
+			{
+				"pagePath": "pages/personalCenter/index",
+				"text": "我的"
+			}
+		]
 	}
 }
