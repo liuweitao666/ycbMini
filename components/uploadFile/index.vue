@@ -125,7 +125,6 @@ export default {
 		},
 		// 上传文件
 		uploadFile(file){
-			console.log(file)
 			if (this.acceptSize) {
 				const flagSize = file.size / 1024 / 1024 > this.acceptSize;
 				if (flagSize) {
