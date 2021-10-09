@@ -55,6 +55,13 @@
 				"enablePullDownRefresh": true,
 				"navigationStyle": "custom"
 			}
+		}, {
+			"path": "pages/customer/index",
+			"style": {
+				"navigationBarTitleText": "客户",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"globalStyle": {
@@ -74,7 +81,7 @@
 				"selectedIconPath": "static/image/home/phone.png",
 				"text": "首页"
 			}, {
-				"pagePath": "pages/personalCenter/index",
+				"pagePath": "pages/customer/index",
 				"text": "客户"
 			},
 			{
