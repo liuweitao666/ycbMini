@@ -4,6 +4,13 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/mine/index",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
 			"path": "pages/home/index",
 			"style": {
 				"navigationBarTitleText": "业绩看板",
@@ -42,7 +49,6 @@
 				"enablePullDownRefresh": false
 			}
 		},
-
 		{
 			"path": "pages/login/index",
 			"style": {
@@ -59,7 +65,8 @@
 			"path": "pages/customer/index",
 			"style": {
 				"navigationBarTitleText": "客户",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
 			}
 
 		}
@@ -85,7 +92,7 @@
 				"text": "客户"
 			},
 			{
-				"pagePath": "pages/personalCenter/index",
+				"pagePath": "pages/mine/index",
 				"text": "我的"
 			}
 		]

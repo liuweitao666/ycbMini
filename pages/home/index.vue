@@ -2,23 +2,23 @@
 	<view>
 		<nav-bar :navList="navList" @change="changeTab"  :isLine="true" :isAvatar="true"></nav-bar>
 		<!-- 看板 -->
-		<performance ref="performance" />
+		<!-- <performance ref="performance" /> -->
+		<!-- tab菜单 -->
+		<u-sticky :offset-top="navbarHeight" @fixed="isFixed(true)" @unfixed="isFixed(false)">
+			<drop-down :data="dropData" @change="dropChange" @selected="handleSearch" :isFix="isFix" v-if="dataType===0">
+				<drop-down-item :selectValue.sync="clueQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 0"></drop-down-item>
+				<drop-down-item :selectValue.sync="clueQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 1"></drop-down-item>
+				<drop-down-item :selectValue.sync="clueQueryInfo.range" :dropList="rangeOptions" v-show="dropActive === 2"></drop-down-item>
+				<drop-down-item :selectValue.sync="clueQueryInfo.status" :dropList="statusOptions" v-show="dropActive === 3"></drop-down-item>
+			</drop-down>
+			<drop-down :data="dropData" @change="dropChange" @selected="handleSearch" :isFix="isFix" v-else>
+				<drop-down-item :selectValue.sync="customerQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 0"></drop-down-item>
+				<drop-down-item :selectValue.sync="customerQueryInfo.createDateType" :dropList="createTimeOptions" v-show="dropActive === 1"></drop-down-item>
+				<drop-down-item :selectValue.sync="customerQueryInfo.scopeType" :dropList="scopeTypeOptions" v-show="dropActive === 2"></drop-down-item>
+				<drop-down-item :selectValue.sync="customerQueryInfo.status" :dropList="statusCustomerOptions" v-show="dropActive === 3"></drop-down-item>
+			</drop-down>
+		</u-sticky>
 		<view class="main">
-			<!-- tab菜单 -->
-			<u-sticky :offset-top="navbarHeight" @fixed="isFixed(true)" @unfixed="isFixed(false)">
-				<drop-down :data="dropData" @change="dropChange" @selected="handleSearch" :isFix="isFix" v-if="dataType===0">
-					<drop-down-item :selectValue.sync="clueQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 0"></drop-down-item>
-					<drop-down-item :selectValue.sync="clueQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 1"></drop-down-item>
-					<drop-down-item :selectValue.sync="clueQueryInfo.range" :dropList="rangeOptions" v-show="dropActive === 2"></drop-down-item>
-					<drop-down-item :selectValue.sync="clueQueryInfo.status" :dropList="statusOptions" v-show="dropActive === 3"></drop-down-item>
-				</drop-down>
-				<drop-down :data="dropData" @change="dropChange" @selected="handleSearch" :isFix="isFix" v-else>
-					<drop-down-item :selectValue.sync="customerQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 0"></drop-down-item>
-					<drop-down-item :selectValue.sync="customerQueryInfo.createDateType" :dropList="createTimeOptions" v-show="dropActive === 1"></drop-down-item>
-					<drop-down-item :selectValue.sync="customerQueryInfo.scopeType" :dropList="scopeTypeOptions" v-show="dropActive === 2"></drop-down-item>
-					<drop-down-item :selectValue.sync="customerQueryInfo.status" :dropList="statusCustomerOptions" v-show="dropActive === 3"></drop-down-item>
-				</drop-down>
-			</u-sticky>
 			<view class="section">
 				<!-- 列表 -->
 				<view class="section_content" v-for="item in dataList" :key="item.id" @click="jumpTo(item.id)">
@@ -45,7 +45,6 @@
 
 <script>
 // 导入组件
-import performance from './components/performance.vue';
 import dropDown from '@/components/dropDown/index.vue';
 import dropDownItem from '@/components/dropdownItem/index.vue';
 // 客户相关接口导入
@@ -60,7 +59,6 @@ import { clueQueryInfo, customerQueryInfo, dropData, createTimeOptions, rangeOpt
 
 export default {
 	components: {
-		performance,
 		dropDown,
 		dropDownItem
 	},
@@ -125,6 +123,9 @@ export default {
 			})
 			.catch(err => {
 				// this.$store.
+				uni.navigateTo({
+					url: `/pages/login/index`
+				});
 				console.log(err);
 			});
 	},
@@ -144,7 +145,6 @@ export default {
 		},
 		// 更新数据
 		upData() {
-			this.$refs.performance.getCluePerformance(1);
 			this.initData();
 		},
 		// 设置数据
@@ -251,7 +251,7 @@ export default {
 
 <style lang="scss" scoped>
 .main {
-	padding: 30rpx;
+	padding: 0rpx 30rpx 30rpx;
 	.screen {
 		padding: 0;
 		height: 80rpx;

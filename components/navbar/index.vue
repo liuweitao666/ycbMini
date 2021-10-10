@@ -1,19 +1,27 @@
 <template>
 	<view
-		:style="{paddingTop:(navbarHeight)+'rpx',height,paddingBottom:'1rpx',background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D','background-size': '100% 100%'}"
+		:style="{
+			paddingTop: navbarHeight + 'rpx',
+			height,
+			paddingBottom: '1rpx',
+			background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : backColor,
+			'background-size': '100% 100%'
+		}"
 	>
 		<view
 			class="navbar"
 			id="navbar"
 			:style="{
 				background: '#292B4D',
-				background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : '#292B4D','background-size': '100%'
+				background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : backColor,
+				'background-size': '100%'
 			}"
 		>
 			<view class="header" :style="{ height: navTop + 'px' }"></view>
 			<view class="navbar-tabs">
 				<!-- 头像 -->
 				<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="isAvatar"></view>
+				<view class="left_slot" v-else-if="customLeft"><slot></slot></view>
 				<view class="avatar back" :style="{ height: '60rpx', width: '60rpx' }" @click="back" v-else><u-icon name="arrow-left" color="#fff" size="35"></u-icon></view>
 				<!-- 导航 -->
 				<view class="navbar-u-tabs" :style="{ height: navList ? 'auto' : 80 + 'rpx' }">
@@ -29,7 +37,7 @@
 						v-if="navList"
 						@change="change"
 					></u-tabs>
-					<view class="nav-title" v-else>{{ title }}</view>
+					<view class="nav-title" :style="{color:textColor}" v-else>{{ title }}</view>
 				</view>
 			</view>
 		</view>
@@ -38,7 +46,7 @@
 		<!-- 搜索区域 -->
 		<view class="search" v-if="isSearch">
 			<input v-model="searchVal" @blur="handleSearch" placeholder="搜索客户、线索" />
-			<button ><u-icon name="search" size="40"></u-icon></button>
+			<button><u-icon name="search" size="40"></u-icon></button>
 		</view>
 	</view>
 </template>
@@ -76,7 +84,16 @@ export default {
 			default: _ => false
 		},
 		// 标题
-		title: ''
+		title: '',
+		// 自定义左侧
+		customLeft: {
+			type: Boolean,
+			default: _ => false
+		},
+		// 自定义背景颜色
+		backColor: { type: String, default: _ => '#292B4D' },
+		// 自定义标题颜色
+		textColor: { type: String, default: _ => '#fff' },
 	},
 	data() {
 		return {
@@ -84,10 +101,10 @@ export default {
 			windowHeight: 0,
 			navTop: 0,
 			current: 0,
-			searchVal: '',
+			searchVal: ''
 		};
 	},
-	computed:{
+	computed: {
 		...mapGetters(['navbarHeight'])
 	},
 	created() {
@@ -120,8 +137,8 @@ export default {
 			this.$emit('change', index);
 		},
 		// 搜索事件
-		handleSearch(){
-			this.$emit('search',{ searchType:'search',name:this.searchVal})
+		handleSearch() {
+			this.$emit('search', { searchType: 'search', name: this.searchVal });
 		},
 		handleTo() {
 			console.log('goto');
@@ -143,9 +160,9 @@ export default {
 			query
 				.select('#navbar')
 				.boundingClientRect(data => {
-					console.log(data)
-					const navbarHeight = data.height/(uni.upx2px(data.height/2)/(data.height/2));
-					this.$store.commit('SET_NAV_BAR_HEIGHT',navbarHeight)
+					console.log(data);
+					const navbarHeight = data.height / (uni.upx2px(data.height / 2) / (data.height / 2));
+					this.$store.commit('SET_NAV_BAR_HEIGHT', navbarHeight);
 				})
 				.exec();
 		}
@@ -167,12 +184,12 @@ export default {
 	z-index: 1000;
 	flex-shrink: 0;
 	background-size: 100% 100%;
-	padding-bottom: 16rpx;
+	// padding-bottom: 16rpx;
 }
 .line {
-		height: 1px;
-		background-color: rgba($color: #ffffff, $alpha: 0.2);
-	}
+	height: 1px;
+	background-color: rgba($color: #ffffff, $alpha: 0.2);
+}
 .search {
 	width: 690rpx;
 	height: 94rpx;
@@ -235,7 +252,14 @@ export default {
 	top: 50%;
 	transform: translateY(-50%);
 	border-radius: 50%;
-	margin-top: 6rpx;
+	// margin-top: 6rpx;
+	z-index: 99;
+}
+.left_slot {
+	position: absolute;
+	left: 40rpx;
+	top: 50%;
+	transform: translateY(-50%);
 	z-index: 99;
 }
 

@@ -60,7 +60,7 @@ request.globalRequest = ({url, method, params, power}) => {
 			throw res[1].data
 		}
 	}).catch(parmas => {
-		// console.log(parmas)
+		console.log(parmas)
 		switch (parmas.code) {
 			case 401:
 				store.dispatch('FedLogOut').then(res=>{
