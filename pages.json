@@ -78,21 +78,25 @@
 		"backgroundColor": "#292B4D"
 	},
 	"tabBar": {
-		"color": "#7A7E83",
-		"selectedColor": "#3cc51f",
+		"color": "#999999",
+		"selectedColor": "#007AC3",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
 		"list": [{
 				"pagePath": "pages/home/index",
-				"iconPath": "static/image/home/phone.png",
-				"selectedIconPath": "static/image/home/phone.png",
-				"text": "首页"
+				"iconPath": "static/image/tabbar/workbench.png",
+				"selectedIconPath": "static/image/tabbar/workbench_select.png",
+				"text": "工作台"
 			}, {
 				"pagePath": "pages/customer/index",
+				"iconPath": "static/image/tabbar/customer.png",
+				"selectedIconPath": "static/image/tabbar/customer_select.png",
 				"text": "客户"
 			},
 			{
 				"pagePath": "pages/mine/index",
+				"iconPath": "static/image/tabbar/mine.png",
+				"selectedIconPath": "static/image/tabbar/mine_select.png",
 				"text": "我的"
 			}
 		]
