@@ -56,6 +56,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import {getCustomerList} from "@/api/customer/customer.js"
 export default {
 	data() {
 		return {
@@ -74,6 +75,9 @@ export default {
 	onPageScroll(e) {
 		this.scrollTop = e.scrollTop - uni.upx2px(this.navbarHeight);
 	},
+	created() {
+		this.getCustomerList()
+	},
 	methods:{
 		selectFn(e){
 			console.log(e)
@@ -87,6 +91,10 @@ export default {
 					duration:200
 				})
 			}).exec()
+		},
+		async getCustomerList(){
+			const data = await getCustomerList()
+			console.log(data)
 		}
 	}
 };

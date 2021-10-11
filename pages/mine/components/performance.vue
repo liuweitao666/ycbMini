@@ -1,5 +1,5 @@
 <template>
-	<!-- 首页业绩看板 -->
+	<!-- 业绩看板 -->
 	<view class="swiper_wrap">
 		<!-- <swiper class="swiper" @change="change">
 			<swiper-item v-for="item in performanceList" :key="item">

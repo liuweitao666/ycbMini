@@ -53,3 +53,10 @@ export const getCustomOperationRecord = (params) => request.globalRequest({
 	params,
 	power: 1
 })
+// 查询客户索引列表
+export const getCustomerList = (params) => request.globalRequest({
+	url: `${baseUrl}/blade-crm/wx-mini/customer/list`,
+	method: 'get',
+	params,
+	power: 1
+})
