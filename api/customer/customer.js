@@ -6,6 +6,17 @@ import configUrl from '@/common/network/config.js'
 const {
 	baseUrl
 } = configUrl
+// 客户新增客户
+export const createCustomer = (data) =>{
+	console.log(data,'api form')
+	return request.globalRequest({
+		url: `${baseUrl}/blade-crm/wx-mini/customer/create`,
+		method: 'POST',
+		data,
+		power: 1,
+		noSerialize:true
+	})
+}
 
 //客户分页接口
 export const getCustomerPage = (params) => request.globalRequest({

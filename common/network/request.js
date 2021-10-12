@@ -7,12 +7,12 @@ import { serialize} from "@/utils/util.js"
 const request = {}
 const headers = {}
 
-request.globalRequest = ({url, method, params, power}) => {
+request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 	/*  权限判断 因为有的接口请求头可能需要添加的参数不一样，所以这里做了区分
 	    1 == 不通过access_token校验的接口
 	    2 == 文件下载接口列表
 	    3 == 验证码登录 */
-	const data = params || {}
+	const realData = params ||data|| {}
 	let token = ''
 	// uni.getStorage({
 	// 	key:'token',
@@ -20,12 +20,13 @@ request.globalRequest = ({url, method, params, power}) => {
 	// 		token = res.data
 	// 	}
 	// })
+	console.log(data)
 	headers['Tenant-Id'] = uni.getStorageSync('tenantId') || ''
 	headers['Content-Type'] = 'application/json'
 	headers['Blade-Auth'] = `bearer ${uni.getStorageSync('token')||''}`  
 	headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
 	//headers中配置serialize为true开启序列化
-	if (method === "POST") {
+	if (method === "POST"&& !noSerialize) {
 		url = `${url}?${serialize(params)}`;
 	}
 	switch (power) {
@@ -49,7 +50,7 @@ request.globalRequest = ({url, method, params, power}) => {
 	return uni.request({
 		url,
 		method,
-		data,
+		data:realData,
 		dataType: 'json',
 		header: headers
 	}).then(res => {

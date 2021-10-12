@@ -218,6 +218,7 @@ export default {
 	color: #fff;
 	justify-content: center;
 	align-items: center;
+	font-size: 28rpx;
 }
 
 .navbar-tabs {
@@ -228,6 +229,7 @@ export default {
 	font-size: 32rpx;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	height: 44px;
 	.back {
 		background-color: transparent;
 		display: flex;

@@ -8,6 +8,12 @@
 				<view class="form_item">
 					<u-form-item label="联系方式" prop="phone" :required="true"><u-input v-model="form.phone" placeholder="联系方式" /></u-form-item>
 				</view>
+				<view class="form_item" v-if="complex">
+					<u-form-item label="公司名称"><u-input v-model="form.companyName" placeholder="公司名称" /></u-form-item>
+				</view>
+				<view class="form_item" v-if="complex">
+					<u-form-item label="公司职位"><u-input v-model="form.position" placeholder="公司职位" /></u-form-item>
+				</view>
 				<!-- <view class="form_item">
 					<u-form-item label="业务类型">
 						<u-input v-model="form.sex" type="select" @click="show = true" />
@@ -22,13 +28,14 @@
 					</u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="客户状态" prop="statusText" :required="true">
+					<u-form-item label="客户类型" prop="statusText" :required="true">
 						<u-input v-model="form.statusText" type="select" @click="statusShow = true" />
 						<u-action-sheet :list="statusList" v-model="statusShow" @click="statusCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
+				 <!-- @click="jumpTo" 跳转标签选择页方法 -->
 				<view class="form_item">
-					<u-form-item label="标签"><u-input v-model="form.labels" type="select" placeholder="请选择标签" @click="jumpTo" /></u-form-item>
+					<u-form-item label="标签"><u-input v-model="form.labels" placeholder="请输入标签" /></u-form-item>
 				</view>
 				<view class="form_item"><u-form-item label="备注"></u-form-item></view>
 				<view class="form_item">
@@ -43,6 +50,7 @@
 
 <script>
 import { clueToCustomer } from '@/api/clue/clue.js';
+import { createCustomer } from "@/api/customer/customer.js"
 import { getRegionTree } from '@/api/region/region.js';
 // 1.潜在客户、2.成交客户
 const statusList = [
@@ -134,19 +142,22 @@ export default {
 			// 显示地区列选择去
 			regionShow: false,
 			// 地区列表
-			regionList: []
+			regionList: [],
+			// 是否新增客户
+			complex:null
 		};
 	},
-	onLoad({id}) {
+	onLoad({id,complex}) {
 		this.form.clueId = id
+		this.complex = complex
 	},
 	// 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
 	onReady() {
 		this.$refs.uForm.setRules(this.rules);
+		this.getRegionTree();
 	},
 	methods: {
 		async showRegion() {
-			await this.getRegionTree();
 			this.regionShow = true;
 		},
 		// 获取城市数据
@@ -175,19 +186,17 @@ export default {
 		jumpTo() {
 			console.log(123);
 		},
-		// 提交添加跟进记录请求
+		// 提交生成客户请求
 		handleSubmit() {
-			console.log(12456);
-			console.log(this.$refs.uForm);
 			this.$refs.uForm.validate(async value => {
-				console.log(value);
+				console.log(this.form,this.complex)
 				if (value) {
 					try {
 						this.isLoading = true;
 						uni.showLoading({
-							title: '正在生成,请稍后'
+							title: '正在生成'
 						});
-						const data = await clueToCustomer(this.form);
+						const data = this.complex?await createCustomer(this.form):await clueToCustomer(this.form);
 						uni.hideLoading();
 						if (data.code === 200) {
 							this.$refs.uToast.show({
@@ -195,6 +204,7 @@ export default {
 								type: 'success'
 							});
 							this.isLoading = false;
+							this.$store.dispatch('getCustomerList')
 						} else {
 							this.$refs.uToast.show({
 								title: '网络错误',
@@ -203,6 +213,7 @@ export default {
 							this.isLoading = false;
 						}
 					} catch (e) {
+						console.log(e)
 						//TODO handle the exception
 						uni.hideLoading();
 						this.isLoading = false;

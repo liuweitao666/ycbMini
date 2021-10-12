@@ -15,11 +15,11 @@
 <script>
 export default {
 	name: 'dropDown',
-	props: ['data','isFix'],
+	props: ['data','isFix','offsetTop'],
 	data() {
 		return {
 			// 下拉列表
-			height: '180rpx',
+			height: '100px',
 			show: false,
 			active: null
 		};
@@ -31,12 +31,19 @@ export default {
 			}
 		}
 	},
+	mounted() {
+		const windowHeight = uni.getStorageSync('windowHeight')
+		this.height = windowHeight - this.pxRpx(this.offsetTop+80)
+	},
 	methods: {
 		changeTabs(index) {
 			if (this.active === index) {
 				return (this.show = false);
 			}
-			this.getNavHeight(index)
+			this.active = index;
+			this.show = true;
+			this.$emit('change', index);
+			// this.getNavHeight(index)
 		},
 		selected() {
 			this.show = false;
@@ -60,9 +67,6 @@ export default {
 					const windowHeight = uni.getStorageSync('windowHeight')
 					const height = this.pxRpx(windowHeight-(data.height+data.top))
 					this.height = `${height+10}rpx`
-					this.active = index;
-					this.show = true;
-					this.$emit('change', index);
 				})
 				.exec();
 		},

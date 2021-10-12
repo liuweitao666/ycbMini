@@ -1,23 +1,13 @@
 <template>
 	<view>
-		<nav-bar :navList="navList" @change="changeTab"  :isLine="true" :isAvatar="true"></nav-bar>
+		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :isAvatar="true"></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->
-		<u-sticky :offset-top="navbarHeight" @fixed="isFixed(true)" @unfixed="isFixed(false)">
-			<drop-down :data="dropData" @change="dropChange" @selected="handleSearch" :isFix="isFix" v-if="dataType===0">
-				<drop-down-item :selectValue.sync="clueQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 0"></drop-down-item>
-				<drop-down-item :selectValue.sync="clueQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 1"></drop-down-item>
-				<drop-down-item :selectValue.sync="clueQueryInfo.range" :dropList="rangeOptions" v-show="dropActive === 2"></drop-down-item>
-				<drop-down-item :selectValue.sync="clueQueryInfo.status" :dropList="statusOptions" v-show="dropActive === 3"></drop-down-item>
-			</drop-down>
-			<drop-down :data="dropData" @change="dropChange" @selected="handleSearch" :isFix="isFix" v-else>
-				<drop-down-item :selectValue.sync="customerQueryInfo.createDate" :dropList="createTimeOptions" v-show="dropActive === 0"></drop-down-item>
-				<drop-down-item :selectValue.sync="customerQueryInfo.createDateType" :dropList="createTimeOptions" v-show="dropActive === 1"></drop-down-item>
-				<drop-down-item :selectValue.sync="customerQueryInfo.scopeType" :dropList="scopeTypeOptions" v-show="dropActive === 2"></drop-down-item>
-				<drop-down-item :selectValue.sync="customerQueryInfo.status" :dropList="statusCustomerOptions" v-show="dropActive === 3"></drop-down-item>
-			</drop-down>
-		</u-sticky>
+		
+		<view style="height: 80rpx;">
+			
+		</view>
 		<view class="main">
 			<view class="section">
 				<!-- 列表 -->
@@ -40,6 +30,20 @@
 			</view>
 			<view class="footer"></view>
 		</view>
+		<view class="tabs"  :style="{ top: tabTop }">
+			<u-dropdown :title-size="24" v-show="dataType === 0">
+				<u-dropdown-item v-model="clueQueryInfo.createDate" @change="dropChange" title="排序方式" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="clueQueryInfo.createDate" @change="dropChange" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="clueQueryInfo.range" @change="dropChange" title="范围" :options="rangeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="clueQueryInfo.status" @change="dropChange" title="状态" :options="statusOptions"></u-dropdown-item>
+			</u-dropdown>
+			<u-dropdown :title-size="24" v-show="dataType === 1">
+				<u-dropdown-item v-model="customerQueryInfo.createDate" @change="dropChange" title="排序方式" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="customerQueryInfo.createDateType" @change="dropChange" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="customerQueryInfo.scopeType" @change="dropChange" title="范围" :options="scopeTypeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="customerQueryInfo.status" @change="dropChange" title="状态" :options="statusCustomerOptions"></u-dropdown-item>
+			</u-dropdown>
+		</view>
 	</view>
 </template>
 
@@ -55,7 +59,7 @@ import { mapGetters } from 'vuex';
 
 import { deepClone } from '@/utils/util.js';
 // 导入数据
-import { clueQueryInfo, customerQueryInfo, dropData, createTimeOptions, rangeOptions, statusOptions, scopeTypeOptions,statusCustomerOptions } from './index.js';
+import { clueQueryInfo, customerQueryInfo, dropData, createTimeOptions, rangeOptions, statusOptions, scopeTypeOptions, statusCustomerOptions } from './index.js';
 
 export default {
 	components: {
@@ -101,11 +105,12 @@ export default {
 			createTimeOptions: createTimeOptions,
 			rangeOptions: rangeOptions,
 			statusOptions: statusOptions,
-			scopeTypeOptions:scopeTypeOptions,
-			statusCustomerOptions:statusCustomerOptions,
+			scopeTypeOptions: scopeTypeOptions,
+			statusCustomerOptions: statusCustomerOptions,
 			topHeight: '',
 			isFix: false,
-			dropActive: 0
+			dropActive: 0,
+			tabTop: '80rpx'
 		};
 	},
 	computed: {
@@ -129,7 +134,10 @@ export default {
 				console.log(err);
 			});
 	},
-	mounted() {},
+	mounted() {
+		this.tabTop = this.navbarHeight + 'rpx';
+		console.log(this.tabTop);
+	},
 	onReachBottom() {
 		// 触底函数
 		if (this.isComplete) return;
@@ -168,13 +176,13 @@ export default {
 		// 搜索
 		handleSearch({ searchType, name }) {
 			if (searchType === 'search') {
-				if(this.dataType===0){
+				if (this.dataType === 0) {
 					if (name === this.clueQueryInfo.name) return;
 					for (let key in this.clueQueryInfo) {
 						this.clueQueryInfo[key] = clueQueryInfo[key];
 					}
 					this.clueQueryInfo.name = name;
-				}else{
+				} else {
 					if (name === this.customerQueryInfo.name) return;
 					for (let key in this.customerQueryInfo) {
 						this.customerQueryInfo[key] = customerQueryInfo[key];
@@ -209,7 +217,7 @@ export default {
 				size: this.size,
 				current: this.current,
 				...this.clueQueryInfo
-			}
+			};
 			const { data: res } = await getCluePage(queryInfo);
 			this.recordData[0].data = [...this.recordData[0].data, ...res.records];
 			this.recordData[0].total = res.total;
@@ -222,7 +230,7 @@ export default {
 				size: this.size,
 				current: this.current,
 				...this.customerQueryInfo
-			}
+			};
 			const { data: res } = await getCustomerPage(queryInfo);
 			this.recordData[1].data = [...this.recordData[1].data, ...res.records];
 			this.recordData[1].total = res.total;
@@ -244,14 +252,23 @@ export default {
 		dropChange(index) {
 			console.log(index);
 			this.dropActive = index;
+			this.handleSearch({ searchType:'rangeSearch' });
 		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
+.tabs {
+	position: fixed;
+	width: 100vw;
+	// padding: 0 30rpx;
+	background-color: #ffffff;
+}
 .main {
 	padding: 0rpx 30rpx 30rpx;
+	// position: relative;
+	// z-index: 99;
 	.screen {
 		padding: 0;
 		height: 80rpx;

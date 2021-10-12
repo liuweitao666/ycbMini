@@ -41,6 +41,7 @@
 		.business_card{
 			padding:48rpx 30rpx 128rpx;
 			background-color: #292B4D;
+			border-top: 1px solid rgba($color: #000000, $alpha: 0.1);
 			.mine_card{
 				padding: 44rpx 48rpx;
 				background-color: #ccc;
