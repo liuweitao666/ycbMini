@@ -142,8 +142,8 @@ export default {
 						// 获取上一页栈
 						let prevPage = pages[ pages.length - 2 ]
 						console.log(prevPage)
-						// 触发上一页 upData 函数(并携带参数)
-						prevPage.$vm.upData()
+						// 触发上一页 initData 函数更新页面
+						prevPage.$vm.initData && prevPage.$vm.initData()
 						setTimeout(_ => {
 							uni.navigateBack({
 								delta: 1,

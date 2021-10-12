@@ -23,7 +23,9 @@ const navbar = {
 			const {
 				data: customerList
 			} = await getCustomerList()
-			const indexList = customerList.map(item => item.nameFirstLetter)
+			let FirstLetter = new Set(customerList.map(item => item.nameFirstLetter))
+			const indexList = [...FirstLetter]
+			console.log(indexList)
 			commit('SET_CUSTOMER_List',customerList)
 			commit('SET_INDEX_LIST',indexList)
 		},
