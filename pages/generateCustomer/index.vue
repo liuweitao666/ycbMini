@@ -2,6 +2,12 @@
 	<view class="add_follow_up">
 		<u-form :model="form" ref="uForm" label-width="140">
 			<view class="form_wrap">
+				<view class="form_item" v-if="complex">
+					<u-form-item label="来源" prop="source" :required="true">
+						<u-input v-model="form.sourceText" type="select" @click="sourceShow = true" />
+						<u-action-sheet :list="sourceList" v-model="sourceShow" @click="sourceCallback"></u-action-sheet>
+					</u-form-item>
+				</view>
 				<view class="form_item">
 					<u-form-item label="客户姓名" prop="name" :required="true"><u-input v-model="form.name" placeholder="姓名" /></u-form-item>
 				</view>
@@ -52,6 +58,7 @@
 import { clueToCustomer } from '@/api/clue/clue.js';
 import { createCustomer } from "@/api/customer/customer.js"
 import { getRegionTree } from '@/api/region/region.js';
+import { getDictionary } from "@/api/dict/index.js"
 // 1.潜在客户、2.成交客户
 const statusList = [
 	{
@@ -95,9 +102,18 @@ export default {
 				qichachaCompanyId: '',
 				status: '',
 				statusText: '',
-				wechat: ''
+				wechat: '',
+				source:'',
+				sourceText:''
 			},
 			rules: {
+				source:[
+					{
+						required: true,
+						message: '请选择来源',
+						trigger: ['blur']
+					}
+				],
 				name: [
 					{
 						required: true,
@@ -137,8 +153,11 @@ export default {
 			isLoading: false,
 			// 表格状态
 			statusShow: false,
+			sourceShow: false,
 			// 客户状态列表
 			statusList: statusList,
+			// 客户来源列表
+			sourceList:[],
 			// 显示地区列选择去
 			regionShow: false,
 			// 地区列表
@@ -155,10 +174,22 @@ export default {
 	onReady() {
 		this.$refs.uForm.setRules(this.rules);
 		this.getRegionTree();
+		this.getsourceList()
 	},
 	methods: {
 		async showRegion() {
 			this.regionShow = true;
+		},
+		// 获取来源渠道
+		async getsourceList(){
+			const {data:res} = await getDictionary({ code: 'source' })
+			console.log(res)
+			this.sourceList = res.map(item=>{
+				return {
+					text:item.dictValue,
+					id:item.id
+				}
+			})
 		},
 		// 获取城市数据
 		async getRegionTree() {
@@ -181,6 +212,11 @@ export default {
 			this.form.provinceCode = region[0].value;
 			this.form.cityName = region[1].label;
 			this.form.cityCode = region[1].value;
+		},
+		// 选择客户状态的回调
+		sourceCallback(value){
+			this.form.source = this.sourceList[value].id
+			this.form.sourceText = this.sourceList[value].text
 		},
 		// 跳转标签页面
 		jumpTo() {

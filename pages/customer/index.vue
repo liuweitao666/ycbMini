@@ -48,7 +48,7 @@ export default {
 		this.scrollTop = e.scrollTop - uni.upx2px(this.navbarHeight);
 	},
 	created() {
-		this.getCustomerList()
+		this.initData()
 	},
 	methods:{
 		selectFn(e){
@@ -66,7 +66,7 @@ export default {
 		getAlphabeticList(Alphabetic){
 			return this.customerList.filter(item=>item.nameFirstLetter===Alphabetic)
 		},
-		getCustomerList(){
+		initData(){
 			this.$store.dispatch('getCustomerList')
 		},
 		jumpTo(){
