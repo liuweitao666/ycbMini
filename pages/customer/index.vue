@@ -115,6 +115,7 @@ export default {
 		}
 	}
 }
+
 .navbar_left{
 	margin-top: 6rpx;
 	color: #007AC3;

@@ -71,3 +71,10 @@ export const getCustomerList = (params) => request.globalRequest({
 	params,
 	power: 1
 })
+// 搜索公司名称数据
+export const searchCompany = (params) => request.globalRequest({
+	url: `${baseUrl}/blade-crm/wx-mini/customer/list`,
+	method: 'get',
+	params,
+	power: 1
+})

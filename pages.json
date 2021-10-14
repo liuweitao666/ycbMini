@@ -4,6 +4,12 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/generateCustomer/searchCompany",
+			"style": {
+				"navigationBarTitleText": "选择公司"
+			}
+		},
+		{
 			"path": "pages/customer/index",
 			"style": {
 				"navigationBarTitleText": "客户",
@@ -70,6 +76,7 @@
 				"navigationStyle": "custom"
 			}
 		}
+
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

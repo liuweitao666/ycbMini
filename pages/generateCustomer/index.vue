@@ -15,10 +15,10 @@
 					<u-form-item label="联系方式" prop="phone" :required="true"><u-input v-model="form.phone" placeholder="联系方式" /></u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
-					<u-form-item label="公司名称"><u-input v-model="form.companyName" placeholder="公司名称" /></u-form-item>
+					<u-form-item label="公司名称"><u-input v-model="form.companyName" type="select" @click="jumpTo('/pages/generateCustomer/searchCompany')" placeholder="公司名称" /></u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
-					<u-form-item label="公司职位"><u-input v-model="form.position" placeholder="公司职位" /></u-form-item>
+					<u-form-item label="公司职位"><u-input v-model="form.position"  placeholder="公司职位" /></u-form-item>
 				</view>
 				<!-- <view class="form_item">
 					<u-form-item label="业务类型">
@@ -51,6 +51,7 @@
 		</u-form>
 		<u-button :custom-style="customSubmit" :disabled="isLoading" @click="handleSubmit">确认提交</u-button>
 		<u-toast ref="uToast"></u-toast>
+		<!-- 搜索公司组件 -->
 	</view>
 </template>
 
@@ -59,6 +60,7 @@ import { clueToCustomer } from '@/api/clue/clue.js';
 import { createCustomer } from "@/api/customer/customer.js"
 import { getRegionTree } from '@/api/region/region.js';
 import { getDictionary } from "@/api/dict/index.js"
+
 // 1.潜在客户、2.成交客户
 const statusList = [
 	{
@@ -69,6 +71,8 @@ const statusList = [
 	}
 ];
 export default {
+	components:{
+	},
 	data() {
 		return {
 			// 自定义提交按钮
@@ -177,6 +181,10 @@ export default {
 		this.getsourceList()
 	},
 	methods: {
+		// 展示弹窗搜索公司弹窗
+		showCompany(){
+			this.$refs['company'].show = true
+		},
 		async showRegion() {
 			this.regionShow = true;
 		},
@@ -218,9 +226,11 @@ export default {
 			this.form.source = this.sourceList[value].id
 			this.form.sourceText = this.sourceList[value].text
 		},
-		// 跳转标签页面
-		jumpTo() {
-			console.log(123);
+		// 跳转对应页面
+		jumpTo(url) {
+			uni.navigateTo({
+				url
+			})
 		},
 		// 提交生成客户请求
 		handleSubmit() {
