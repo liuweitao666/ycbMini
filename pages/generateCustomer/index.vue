@@ -181,9 +181,10 @@ export default {
 		this.getsourceList()
 	},
 	methods: {
-		// 展示弹窗搜索公司弹窗
-		showCompany(){
-			this.$refs['company'].show = true
+		// 设置公司信息
+		setCompany(companyInfo){
+			this.form.companyName = companyInfo.companyName;
+			this.form.qichachaCompanyId = companyInfo.qichachaCompanyId;
 		},
 		async showRegion() {
 			this.regionShow = true;
@@ -232,6 +233,7 @@ export default {
 				url
 			})
 		},
+		
 		// 提交生成客户请求
 		handleSubmit() {
 			this.$refs.uForm.validate(async value => {
