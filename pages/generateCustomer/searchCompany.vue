@@ -98,7 +98,7 @@ export default {
 			let pages = getCurrentPages();
 			// 获取上一页栈
 			let prevPage = pages[pages.length - 2];
-			// 触发上一页 initData 函数更新页面
+			// 设置添加页面公司数据
 			prevPage.$vm.setCompany(companyInfo)
 			uni.navigateBack({
 				delta: 1

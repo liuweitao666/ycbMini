@@ -12,7 +12,7 @@
 							<text>{{ userInfo.nick_name }}</text>
 						</view>
 						<view class="desc">{{ userInfo.role_name }}</view>
-						<view class="desc company">深圳市金信恒企业管理有限公司</view>
+						<view class="desc company">{{userInfo.id}}</view>
 					</view>
 					<u-icon name="weixin-circle-fill" @click="jumpTo" class="qr_code"></u-icon>
 				</view>
@@ -63,9 +63,9 @@
 				></u-tabs>
 			</view>
 			<!-- 个人介绍 -->
-			<person-intro v-show="current === 0" />
+			<person-intro v-show="current === 0" :data="personData" />
 			<!-- 我的业务 -->
-			<enterprise-intro v-show="current === 1" />
+			<enterprise-intro v-show="current === 1" :data="myEnterpriseData" />
 			<!-- 业务介绍 -->
 			<business-intro v-show="current === 2" />
 		</view>
@@ -96,6 +96,7 @@ import personFooter from '@/components/footer/footer.vue';
 import enterpriseIntro from './components/enterpriseIntro.vue';
 import businessIntro from './components/businessIntro.vue';
 import { mapGetters } from 'vuex';
+import { getUserInfo,getTenantInfo } from "@/api/personalCenter/index.js"
 export default {
 	components: {
 		personIntro,
@@ -119,7 +120,6 @@ export default {
 	},
 	mounted() {
 		this.getScrollHeight();
-		console.log(this.userInfo);
 	},
 	data() {
 		return {
@@ -175,7 +175,27 @@ export default {
 			businessData: null
 		};
 	},
+	mounted() {
+		this.getTenantInfo()
+		this.getUserInfo()
+		console.log(this.userInfo)
+	},
 	methods: {
+		// 获取租户信息
+		async getTenantInfo(){
+			const data = await getTenantInfo()
+			console.log(data)
+			this.myEnterpriseData = data
+		},
+		// 获取用户信息
+		async getUserInfo(){
+			const {user_id} = this.userInfo
+			const data = await getUserInfo(user_id)
+			this.personData = data
+			setTimeout(() => {
+				this.getScrollHeight();
+			}, 200);
+		},
 		changeNav(value) {
 			console.log(value);
 		},
