@@ -1,8 +1,8 @@
 <template>
-	<view class="person_intro introduce">
+	<view class="person_intro introduce" v-if="data">
 		<view class="content">
 			<view class="top">
-				<view class="item">
+				<!-- <view class="item">
 					<text class="label">服务订单：</text>
 					<text>637单</text>
 				</view>
@@ -21,7 +21,7 @@
 						<u-icon name="checkmark-circle"></u-icon>
 						<text class="">实名认证</text>
 					</view>
-				</view>
+				</view> -->
 				<view class="intro_for_audio item">
 					<view style="height: 90rpx;">
 						<u-avatar size="90"></u-avatar>
@@ -37,17 +37,8 @@
 					个人职称
 				</view>
 				<view class="card_desc title">
-					<view class="flex_li">
-						·中国注册会计师(CPA)
-					</view>
-					<view class="flex_li">
-						·中国注册会计师(CPA)
-					</view>
-					<view class="flex_li">
-						·中国注册会计师(CPA)
-					</view>
-					<view class="flex_li">
-						·中国注册会计师(CPA)
+					<view class="flex_li" v-for="(item,index) in data.personalRank.split(',')" :key="index">
+						·{{item}}
 					</view>
 				</view>
 			</view>
@@ -56,29 +47,15 @@
 		<view class="card">
 			<view class="card_title">个人经历</view>
 			<view class="card_desc">
-				2020年5月创建深圳金米税务师事务所有限公司
-				<br />
-				2020年4月创建金米创客空间
-				<br />
-				2019年就读厦门大学工商管理硕士(MBA)
-				<br />
-				2019年3月任金米科技有限公司财务总监
-				<br />
-				2018年3月任谷川联行有限公司高级税务顾问
-				<br />
-				2016年12月任金米(深圳)投资管理有限公司(金米科技有限公司前身)产品经理
-				<br />
-				2015年7月任顺丰速运有限公司企划储备干部
-				<br />
-				2015年6月毕业于华南师范大学经济学专业
-				<br />
+				{{data.workExperience||'暂无'}}
 			</view>
 		</view>
 		<view class="card">
 			<view class="card_title">服务范围</view>
-			<view class="card_desc">
-				企业战略规划、战略执行与落地体系、流程再造和优化、企业内训体系规划、财务咨询、税务筹划、财务战略规划、全面风险管理体系搭建、投融资规划、财务数字化与信息化规划、财务共享服务搭建、创业指导与培训。
+			<view class="card_desc" >
+				{{data.serverScope || '暂未录入'}}
 			</view>
+			
 		</view>
 	</view>
 </template>
@@ -88,6 +65,9 @@ export default {
 	props: ['data'],
 	data() {
 		return {};
+	},
+	created() {
+		console.log(this.data)
 	}
 };
 </script>

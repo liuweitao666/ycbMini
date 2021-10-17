@@ -201,7 +201,7 @@ export default {
 					border-radius: 8rpx;
 					border: 2rpx solid rgba(255, 255, 255, 0.2);
 					text-align: center;
-					margin-top: 20rpx;
+					margin: 20rpx auto;
 					.item_block_label {
 						font-size: 28rpx;
 						font-family: Impact;

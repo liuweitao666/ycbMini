@@ -1,7 +1,7 @@
 <template>
 	<view id="personCenter">
 		<audio :src="audioSrc" class="audio"></audio>
-		<nav-bar @change="changeNav" :isBackground="true" title="徐小凯" height="482rpx"></nav-bar>
+		<nav-bar :isBackground="true" title="徐小凯" height="482rpx"></nav-bar>
 		<view class="main">
 			<!-- 卡片 -->
 			<view class="card">
@@ -9,10 +9,10 @@
 					<u-avatar :src="src" :size="160"></u-avatar>
 					<view class="info">
 						<view class="name">
-							<text>{{ userInfo.nick_name }}</text>
+							<text>{{ personData.name }}</text>
 						</view>
-						<view class="desc">{{ userInfo.role_name }}</view>
-						<view class="desc company">{{userInfo.id}}</view>
+						<view class="desc">{{ personData.role_name || 'CTO' }}</view>
+						<view class="desc company">{{ personData.id }}</view>
 					</view>
 					<u-icon name="weixin-circle-fill" @click="jumpTo" class="qr_code"></u-icon>
 				</view>
@@ -20,30 +20,30 @@
 					<view class="item">
 						<view class="left">
 							<u-icon name="phone" color="#fff" :hair-line="false" size="44"></u-icon>
-							<text class="left_text">192-100-230</text>
+							<text class="left_text">{{ personData.phone }}</text>
 						</view>
-						<u-button size="mini" shape="circle" :custom-style="customContact">立即联系</u-button>
+						<u-button size="mini" shape="circle" :custom-style="customContact" @click="phoneCall">立即联系</u-button>
 					</view>
 					<view class="item">
 						<view class="left">
 							<u-icon name="email" color="#fff" size="44"></u-icon>
-							<text class="left_text">jingxh@163.com</text>
+							<text class="left_text">{{ personData.email }}</text>
 						</view>
-						<u-button size="mini" shape="circle" :custom-style="customStyle">点击复制</u-button>
+						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.email)">点击复制</u-button>
 					</view>
 					<view class="item">
 						<view class="left">
 							<u-icon name="weixin-fill" color="#fff" size="44"></u-icon>
-							<text class="left_text">xukai666</text>
+							<text class="left_text">{{ personData.wechat }}</text>
 						</view>
-						<u-button size="mini" shape="circle" :custom-style="customStyle">点击复制</u-button>
+						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.wechat)">点击复制</u-button>
 					</view>
 				</view>
 			</view>
 			<!-- 一键分享 存入通讯录 -->
 			<view class="share">
-				<button class="share_btn">一键分享</button>
-				<button class="save_btn">存入通讯录</button>
+				<button class="share_btn" open-type="share">一键分享</button>
+				<button class="save_btn" @click="savePhone">存入通讯录</button>
 			</view>
 			<!-- introduce 介绍tabs -->
 			<view class="custom_tabs">
@@ -84,7 +84,7 @@
 					<text>邮箱</text>
 				</view>
 			</view>
-			<u-button type="primary" :custom-style="customContact">拨打电话</u-button>
+			<u-button type="primary" :custom-style="customContact" @click="phoneCall">拨打电话</u-button>
 		</person-footer>
 	</view>
 </template>
@@ -96,7 +96,7 @@ import personFooter from '@/components/footer/footer.vue';
 import enterpriseIntro from './components/enterpriseIntro.vue';
 import businessIntro from './components/businessIntro.vue';
 import { mapGetters } from 'vuex';
-import { getUserInfo,getTenantInfo } from "@/api/personalCenter/index.js"
+import { getUserInfo, getTenantInfo } from '@/api/personalCenter/index.js';
 export default {
 	components: {
 		personIntro,
@@ -117,9 +117,6 @@ export default {
 	},
 	computed: {
 		...mapGetters(['userInfo'])
-	},
-	mounted() {
-		this.getScrollHeight();
 	},
 	data() {
 		return {
@@ -172,39 +169,63 @@ export default {
 			// 我的企业数据
 			myEnterpriseData: null,
 			// 业务数据
-			businessData: null
+			businessData: null,
+			user_id: '',
+			tenant_id: ''
 		};
 	},
-	mounted() {
-		this.getTenantInfo()
-		this.getUserInfo()
-		console.log(this.userInfo)
+	onShareAppMessage: function(res) {
+		console.log(res);
+		// if (res.from === 'button') {
+		// 	// 来自页面内转发按钮
+		// 	console.log(res)
+		// 	return
+		// }
+		return {
+			title: `易创宝-${this.personData.name}的名片`,
+			path: `/pages/personalCenter/index?id=${this.personData.id}&tenantId=${this.userInfo.tenantId}`,
+			imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
+		};
+	},
+	onLoad({ id, tenantId }) {
+		this.user_id = this.userInfo.user_id;
+		this.tenant_id = this.userInfo.tenantId;
+		if (id && tenantId) {
+			console.log(id, tenantId);
+			this.user_id = id;
+			this.tenant_id = tenantId;
+		}
+		this.getUserInfo();
 	},
 	methods: {
 		// 获取租户信息
-		async getTenantInfo(){
-			const data = await getTenantInfo()
-			console.log(data)
-			this.myEnterpriseData = data
-		},
-		// 获取用户信息
-		async getUserInfo(){
-			const {user_id} = this.userInfo
-			const data = await getUserInfo(user_id)
-			this.personData = data
+		async getTenantInfo(tenant_id) {
+			console.log(tenant_id);
+			const data = await getTenantInfo();
+			this.myEnterpriseData = data;
 			setTimeout(() => {
 				this.getScrollHeight();
 			}, 200);
 		},
-		changeNav(value) {
-			console.log(value);
+		// 获取用户信息
+		async getUserInfo() {
+			const { data: res } = await getUserInfo(this.user_id);
+			this.personData = res;
+			setTimeout(() => {
+				this.getScrollHeight();
+			}, 200);
 		},
 		// tabs 改变
 		change(value) {
+			switch (value) {
+				case 0:
+					this.getUserInfo();
+					break;
+				case 1:
+					this.getTenantInfo();
+					break;
+			}
 			this.current = value;
-			setTimeout(() => {
-				this.getScrollHeight();
-			}, 200);
 		},
 		// 获取当前页面高度，并计算可以滚动区域高度
 		getScrollHeight() {
@@ -217,11 +238,48 @@ export default {
 				})
 				.exec();
 		},
-		jumpTo(){
+		jumpTo() {
 			uni.navigateTo({
-				url:`/pages/personalQRcode/personalQRcode?id=${this.userInfo.user_id}`
-			})
+				url: `/pages/personalQRcode/personalQRcode?id=${this.userInfo.user_id}`
+			});
+		},
+		// 复制文本
+		handleCopy(value) {
+			uni.setClipboardData({
+				data: value, //要被复制的内容
+				success: () => {
+					//复制成功的回调函数
+					uni.showToast({
+						//提示
+						title: '复制成功'
+					});
+				}
+			});
+		},
+		phoneCall() {
+			uni.makePhoneCall({
+				phoneNumber: this.personData.phone,
+				// 成功回调
+				success: res => {
+					console.log('调用成功!');
+				},
+				// 失败回调
+				fail: res => {
+					console.log('调用失败!');
+				}
+			});
+		},
+		// 存入通讯录
+		savePhone() {
+			wx.addPhoneContact({
+				firstName: this.personData.name, //联系人姓名
+				mobilePhoneNumber: this.personData.phone, //联系人手机号
+				weChatNumber: this.personData.wechat,
+				organization: '金信恒', //公司
+				title: 'Cto' //职位
+			});
 		}
+		// 分享个人名片页面
 	}
 };
 </script>
