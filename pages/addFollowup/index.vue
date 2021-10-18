@@ -21,7 +21,8 @@
 			<view class="item_single">
 				<u-form-item label="下次跟进时间" :border-bottom="false">
 					<u-input v-model="form.nextFollowTime" type="select" input-align="right" :custom-style="{ paddingRight: '20rpx' }" @click="showCalendar = true" />
-					<u-calendar v-model="showCalendar" mode="date" @change="calendarChange"></u-calendar>
+					<u-picker mode="time" v-model="showCalendar" start-year="2021" @confirm="calendarChange"></u-picker>
+					<!-- <u-calendar v-model="showCalendar" mode="date" @change="calendarChange"></u-calendar> -->
 				</u-form-item>
 			</view>
 		</u-form>
@@ -132,8 +133,9 @@ export default {
 		},
 		actionSheetCallback() {},
 		calendarChange(date) {
+			console.log(date)
 			const hms = this.$dateFormat(new Date(), 'hh:mm:ss');
-			this.form.nextFollowTime = date.result + ' ' + hms;
+			this.form.nextFollowTime = date.year+'-'+date.month +'-'+ date.day + ' ' + hms;
 		},
 		// 文件上传成功钩子
 		handleSuccess(file){
@@ -166,7 +168,16 @@ export default {
 								title: '添加成功',
 								type: 'success'
 							});
-							this.$refs.followForm.resetFields();
+							let pages = getCurrentPages()
+							// 获取上一页栈
+							let prevPage = pages[ pages.length - 2 ]
+							// 触发上一页 initData 函数更新页面
+							prevPage.$vm.refreshData && prevPage.$vm.refreshData()
+							setTimeout(_ => {
+								uni.navigateBack({
+									delta: 1,
+								});
+							}, 500);
 							this.isLoading = false;
 						} else {
 							this.$refs.uToast.show({

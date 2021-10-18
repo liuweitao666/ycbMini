@@ -189,7 +189,7 @@ export default {
 	},
 	onLoad({ id, tenantId }) {
 		this.user_id = this.userInfo.user_id;
-		this.tenant_id = this.userInfo.tenantId;
+		this.tenant_id = this.userInfo.tenant_id;
 		if (id && tenantId) {
 			console.log(id, tenantId);
 			this.user_id = id;
@@ -199,9 +199,8 @@ export default {
 	},
 	methods: {
 		// 获取租户信息
-		async getTenantInfo(tenant_id) {
-			console.log(tenant_id);
-			const data = await getTenantInfo();
+		async getTenantInfo() {
+			const data = await getTenantInfo(this.tenant_id);
 			this.myEnterpriseData = data;
 			setTimeout(() => {
 				this.getScrollHeight();

@@ -115,6 +115,12 @@ export default {
 			this[performanceKey] = performance;
 			this.performance = this[performanceKey];
 		},
+		async Refresh(){
+			const { data: performance } = await getCluePerformance({
+				timeType:this.Active
+			})
+			this.performance = performance
+		},
 		// 轮播图变化
 		change(data) {
 			console.log(data)
@@ -126,7 +132,6 @@ export default {
 		handleClick(index){
 			this.Active = ++index
 			this.getCluePerformance(this.Active)
-			console.log(this.Active)
 		}
 	}
 };

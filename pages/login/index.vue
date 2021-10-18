@@ -9,8 +9,8 @@
 				<view class="title">选择您的组织</view>
 				<view class="desc">你在以下组织中担任成员</view>
 				<view class="userList">
-					<view :class="['user_item', 'align-items', { selected: selected === index }]" v-for="(item, index) in userList" :key="item.id" @click="selectUser(item)">
-						<text>{{ item.name }}</text>
+					<view :class="['user_item', 'align-items', { selected: selected === index }]" v-for="(item, index) in userList" :key="item.tenantId" @click="selectUser(item)">
+						<text>{{ item.tenantName }}</text>
 						<u-icon name="arrow-right"></u-icon>
 					</view>
 				</view>
@@ -34,18 +34,6 @@ export default {
 			unionid: '',
 			loginParams: null,
 			userList: [
-				{
-					name: '金米财税',
-					id: 1
-				},
-				{
-					name: '深圳金信恒',
-					id: 2
-				},
-				{
-					name: '海边大楼',
-					id: 3
-				}
 			],
 			// 当前选中用户
 			selected: 0
@@ -93,7 +81,10 @@ export default {
 							title: '您还未注册，请联系管理员！',
 							type: 'warning'
 						});
-					if (result.length > 1) return (this.show = true);
+					if (result.length > 1) {
+						this.userList = result
+						return (this.show = true)
+					};
 					this.postLogin({
 						code,
 						grant_type:'wxmini',
@@ -120,12 +111,15 @@ export default {
 		// 选择用户
 		selectUser(user) {
 			this.postLogin({
-				code,
+				code:this.code,
+				username:user.account,
+				grant_type:'wxmini',
 				...user
 			});
 		},
 		// 用户登录
 		postLogin(loginParams) {
+			this.$store.commit('SET_TENANT_ID',loginParams.tenantId)
 			const _this = this;
 			uni.showLoading({
 				title: '正在登录...'

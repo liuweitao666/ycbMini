@@ -9,7 +9,7 @@ export const clueQueryInfo = {
 export const customerQueryInfo = {
 	name: '',
 	createDateType: 0,
-	status: 1,
+	status: '',
 	scopeType: 1
 };
 export const dropData = ['排序方式', '创建时间', '范围', '状态'];
@@ -29,11 +29,11 @@ export const createTimeOptions = [
 	},
 	{
 		label: '上周',
-		value: 3
+		value: 4
 	},
 	{
 		label: '当月',
-		value: 4
+		value: 3
 	},
 	{
 		label: '上月',
@@ -104,6 +104,10 @@ export const scopeTypeOptions = [
 ]
 // 客户状态
 export const statusCustomerOptions = [
+	{
+		label: '全部',
+		value: ''
+	},
 	{
 		label: '潜在客户',
 		value: 1

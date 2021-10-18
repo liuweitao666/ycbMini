@@ -63,10 +63,6 @@ const user = {
 		}, params) {
 			return new Promise((resolve, reject) => {
 				getUsers(params).then(res => {
-					console.log(res.data)
-					if (res.data.length === 1) {
-						commit('SET_TENANT_ID', res.data[0].tenantId)
-					}
 					resolve(res)
 				}).catch(err => {
 					console.log(err)

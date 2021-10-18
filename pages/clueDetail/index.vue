@@ -3,8 +3,8 @@
 		<!--自定义导航 -->
 		<nav-bar @change="changeNav" :title="dataType === '0' ? '线索详情' : '客户详情'"></nav-bar>
 		<!-- 吸顶导航栏 -->
-		<view :class="['fixTabs',{'showFixTabs':isFix}]" v-if="showFixTabs">
-			<view :class="['isFix','custom_tabs','clue_tabs']">
+		<view :class="['fixTabs', { showFixTabs: isFix }]" v-if="showFixTabs">
+			<view :class="['isFix', 'custom_tabs', 'clue_tabs']">
 				<view class="line"></view>
 				<u-tabs
 					name="cate_name"
@@ -28,7 +28,7 @@
 				<view class="trade_right">
 					<view class="trade_right_title">
 						<view class="title">{{ detailData.name }}</view>
-						<text class="date">{{ $dateFormat(detailData.createTime, 'yyyy-mm-dd') }}</text>
+						<text class="date">{{ detailData.createTime }}</text>
 					</view>
 					<view class="card_desc">{{ detailData.remark || detailData.provinceName }}</view>
 				</view>
@@ -173,27 +173,27 @@ export default {
 					total: null,
 					data: [],
 					current: 1,
-					scrollTop:0,
+					scrollTop: 0
 				},
 				{
 					total: null,
 					data: [],
 					current: 1,
-					scrollTop:0,
+					scrollTop: 0
 				},
 				{
 					total: null,
 					data: [],
 					current: 1,
-					scrollTop:0,
+					scrollTop: 0
 				}
 			],
 			// 全部条数
 			total: null,
-			tabsTop:0,
-			scrollTop:-1,
+			tabsTop: 0,
+			scrollTop: -1,
 			// 刚开始不显示吸顶导航
-			showFixTabs:false
+			showFixTabs: false
 		};
 	},
 	computed: {
@@ -201,25 +201,24 @@ export default {
 		isComplete() {
 			return this.total === this.data.length && this.total !== 0;
 		},
-		isFix(){
-			return this.scrollTop >= this.tabsTop
+		isFix() {
+			return this.scrollTop >= this.tabsTop;
 		},
 		// 距离上边的高度
-		...mapGetters(['navbarHeight']),
-		
+		...mapGetters(['navbarHeight'])
 	},
 	onPageScroll(e) {
-		this.scrollTop = e.scrollTop
-		switch(this.currentTab){
+		this.scrollTop = e.scrollTop;
+		switch (this.currentTab) {
 			case 0:
-				this.recordData[0].scrollTop = this.scrollTop
-				break
+				this.recordData[0].scrollTop = this.scrollTop;
+				break;
 			case 1:
-				this.recordData[1].scrollTop = this.scrollTop
-				break
+				this.recordData[1].scrollTop = this.scrollTop;
+				break;
 			case 2:
-				this.recordData[2].scrollTop = this.scrollTop
-				break
+				this.recordData[2].scrollTop = this.scrollTop;
+				break;
 		}
 	},
 	onReachBottom() {
@@ -236,16 +235,16 @@ export default {
 		// 获取详情数据
 		this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		this.handleInitData();
-		setTimeout(_=>{
-			this.showFixTabs = true
-		},500)
+		setTimeout(_ => {
+			this.showFixTabs = true;
+		}, 500);
 	},
 	onHide() {
-		this.scrollTop = null
+		this.scrollTop = null;
 	},
 	mounted() {
 		// 获取tabs标签的高度
-		this.getDomInfo()
+		this.getDomInfo();
 	},
 	methods: {
 		// tabs 改变
@@ -253,13 +252,23 @@ export default {
 			this.currentTab = value;
 			this.setData(value);
 			// 设置对应标签栏的数据
-			setTimeout(_=>{
+			setTimeout(_ => {
 				this.scrollTop = this.recordData[value].scrollTop;
 				uni.pageScrollTo({
-					scrollTop:this.scrollTop,
+					scrollTop: this.scrollTop,
 					duration: 0
 				});
-			},100)
+			}, 100);
+		},
+		// 刷新数据
+		refreshData() {
+			this.recordData.forEach(item => {
+				item.data = [];
+				item.total = null;
+				item.current = 1;
+				item.scrollTop = 0;
+			});
+			this.handleInitData();
 		},
 		// 设置数据
 		setData(index) {
@@ -340,14 +349,14 @@ export default {
 					break;
 			}
 		},
-		getDomInfo(){
+		getDomInfo() {
 			// tabs_clue_detail
 			const query = uni.createSelectorQuery().in(this);
 			query
 				.select('#tabs_clue_detail')
 				.boundingClientRect(data => {
-					console.log(data)
-					this.tabsTop = data.top - (this.navbarHeight/2)
+					console.log(data);
+					this.tabsTop = data.top - this.navbarHeight / 2;
 				})
 				.exec();
 		}
@@ -360,14 +369,18 @@ export default {
 	border-radius: 0;
 	width: 100vw;
 	z-index: -2;
-	.custom_tabs{
+	opacity: 0;
+	.custom_tabs {
 		border-radius: 0;
 	}
 }
-.showFixTabs{
+.showFixTabs {
 	z-index: 1002;
+	opacity: 1;
 }
 .clue_wrap {
+	height: 100vh;
+	background-color: #ffffff;
 	.clue_header {
 		background-color: #292b4d;
 		padding: 12rpx 30rpx 30rpx;
@@ -398,6 +411,12 @@ export default {
 						font-family: PingFangSC-Semibold, PingFang SC;
 						font-weight: 600;
 						letter-spacing: 2rpx;
+						display: -webkit-box;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						word-break: break-all;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 1;
 					}
 					.date {
 						font-size: 12px;
@@ -405,6 +424,8 @@ export default {
 						font-weight: 400;
 						color: #999999;
 						line-height: 17px;
+						min-width: 216rpx;
+						margin-left: 20rpx;
 					}
 				}
 				.card_desc {

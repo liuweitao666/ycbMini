@@ -3,7 +3,7 @@
 		<view class="followUp_log" v-if="data.length>0">
 			<view class="follow_item" v-for="item in data" :key="item.id">
 				<view class="custom_title">{{item.createUserName}}</view>
-				<view class="desc">{{$dateFormat(item.createTime)}}</view>
+				<view class="desc">{{item.createTime}}</view>
 				<view class="desc">
 					<text style="color: #FC961E;padding-right: 10rpx">#{{followType[item.type] || item.operationType}}#</text>
 					{{item.followContent || item.operationType}}
@@ -54,6 +54,7 @@
 			.custom_title {
 				padding-top:30rpx;
 				padding-bottom: 10rpx;
+				
 			}
 			.desc{
 				line-height: 45rpx;

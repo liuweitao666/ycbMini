@@ -18,7 +18,7 @@
 			</view>
 		</view>
 		<view class="Kanban">
-			<performance />
+			<performance ref="performance" />
 		</view>
 	</view>
 </template>
@@ -38,6 +38,12 @@
 		},
 		computed:{
 			...mapGetters(['userInfo'])
+		},
+		onPullDownRefresh() {
+			 this.$refs['performance'].Refresh()
+			  setTimeout(function () {
+			      uni.stopPullDownRefresh();
+			  }, 1000);
 		},
 		created() {
 			this.getUserInfo()

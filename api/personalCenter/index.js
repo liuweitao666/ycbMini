@@ -9,7 +9,7 @@ const {
 
 // 通过id 查看用户详情
 export const getUserInfo = (id) => request.globalRequest({
-	url: `${baseUrl}/blade-user/user-info`,
+	url: `${baseUrl}/blade-user/wx-mini/user-info`,
 	method: 'get',
 	params:{
 		id
@@ -18,9 +18,11 @@ export const getUserInfo = (id) => request.globalRequest({
 })
 
 // 查看当前租户详情
-export const getTenantInfo = (params) => request.globalRequest({
-	url: `${baseUrl}/blade-system/tenant/tenant-info`,
+export const getTenantInfo = (tenantId) => request.globalRequest({
+	url: `${baseUrl}/blade-system/tenant/wx-mini/tenant-info`,
 	method: 'get',
-	params,
+	params:{
+		tenantId
+	},
 	power: 1
 })

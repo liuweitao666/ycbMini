@@ -4,46 +4,53 @@
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->
-		
-		<view style="height: 80rpx;">
-			
-		</view>
-		<view class="main">
-			<view class="section">
-				<!-- 列表 -->
-				<view class="section_content" v-for="item in dataList" :key="item.id" @click="jumpTo(item.id)">
-					<view class="left">
-						<view class="title">{{ item.name }}</view>
-						<view class="text_desc">{{ $dateFormat(item.createTime) }}</view>
-						<view class="text_desc">{{ item.provinceName + '/' + item.cityName }}</view>
-					</view>
-					<view class="right" v-show="item.phone"><image src="@/static/image/home/phone.png" mode=""></image></view>
-				</view>
-				<!-- 空列表 -->
-				<u-empty type="list" v-if="isComplete && total === 0"></u-empty>
-				<view class="" v-else>
-					<!-- 加载完成 -->
-					<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
-					<!-- 加载动画 -->
-					<view :class="['loading_wrap', { hidden: isComplete }]"><u-loading color="red" :show="isLoading"></u-loading></view>
-				</view>
-			</view>
-			<view class="footer"></view>
-		</view>
-		<view class="tabs"  :style="{ top: tabTop }">
+		<view class="tabs">
 			<u-dropdown :title-size="24" v-show="dataType === 0">
-				<u-dropdown-item v-model="clueQueryInfo.createDate" @change="dropChange" title="排序方式" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="clueQueryInfo.createDate" @change="dropChange" title="联系方式" :options="createTimeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="clueQueryInfo.createDate" @change="dropChange" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="clueQueryInfo.range" @change="dropChange" title="范围" :options="rangeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="clueQueryInfo.status" @change="dropChange" title="状态" :options="statusOptions"></u-dropdown-item>
 			</u-dropdown>
 			<u-dropdown :title-size="24" v-show="dataType === 1">
-				<u-dropdown-item v-model="customerQueryInfo.createDate" @change="dropChange" title="排序方式" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="customerQueryInfo.createDate" @change="dropChange" title="联系方式" :options="createTimeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="customerQueryInfo.createDateType" @change="dropChange" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="customerQueryInfo.scopeType" @change="dropChange" title="范围" :options="scopeTypeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="customerQueryInfo.status" @change="dropChange" title="状态" :options="statusCustomerOptions"></u-dropdown-item>
 			</u-dropdown>
 		</view>
+		<scroll-view
+			:scroll-top="scrollTop"
+			scroll-y="true"
+			class="main_wrap"
+			:style="{ height: contentHeight + 'px' }"
+			:show-scrollbar="true"
+			@scrolltoupper="upper"
+			@scroll="scroll"
+			@scrolltolower="touchBottom"
+		>
+			<view class="main">
+				<view class="section">
+					<!-- 列表 -->
+					<view class="section_content" v-for="item in dataList" :key="item.id" @click="jumpTo(item.id)">
+						<view class="left">
+							<view class="title">{{ item.name }}</view>
+							<view class="text_desc">{{ item.createTime }}</view>
+							<view class="text_desc">{{ item.provinceName + '/' + item.cityName }}</view>
+						</view>
+						<view class="right" v-show="item.phone"><image src="@/static/image/home/phone.png" mode=""></image></view>
+					</view>
+					<!-- 空列表 -->
+					<u-empty type="list" v-if="isComplete && total === 0"></u-empty>
+					<view class="" v-else>
+						<!-- 加载完成 -->
+						<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
+						<!-- 加载动画 -->
+						<view :class="['loading_wrap', { hidden: isComplete }]"><u-loading color="red" :show="isLoading"></u-loading></view>
+					</view>
+				</view>
+				<view class="footer"></view>
+			</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -107,10 +114,12 @@ export default {
 			statusOptions: statusOptions,
 			scopeTypeOptions: scopeTypeOptions,
 			statusCustomerOptions: statusCustomerOptions,
-			topHeight: '',
+			// 滑动区域的高度
+			contentHeight: '',
 			isFix: false,
 			dropActive: 0,
-			tabTop: '80rpx'
+			tabTop: '80rpx',
+			isUpLoading: false
 		};
 	},
 	computed: {
@@ -119,6 +128,11 @@ export default {
 			return this.total === this.dataList.length;
 		},
 		...mapGetters(['navbarHeight'])
+	},
+	watch: {
+		navbarHeight() {
+			this.handleHeight();
+		}
 	},
 	created() {
 		this.$store
@@ -135,25 +149,37 @@ export default {
 			});
 	},
 	mounted() {
-		this.tabTop = this.navbarHeight + 'rpx';
-		console.log(this.tabTop);
-	},
-	onReachBottom() {
-		// 触底函数
-		if (this.isComplete) return;
-		if (!this.isLoading) {
-			this.current++;
-			this.initData();
-		}
+		// this.tabTop = this.navbarHeight + 'rpx';
+		this.handleHeight();
 	},
 	methods: {
 		changeTab(value) {
 			this.dataType = value;
 			this.setData(value);
 		},
+		handleHeight() {
+			const windowHeight = uni.getStorageSync('windowHeight');
+			this.contentHeight = windowHeight - uni.upx2px(this.navbarHeight + 86);
+		},
+		// 触顶函数
+		upper() {
+			// this.setSearchData()
+		},
+		touchBottom() {
+			// 触底函数
+			if (this.isComplete) return;
+			if (!this.isLoading) {
+				this.current++;
+				this.initData();
+			}
+		},
 		// 更新数据
 		upData() {
 			this.initData();
+		},
+		scroll(data) {
+			// let {scrollTop} = detail
+			this.scrollTop = data.detail.scrollTop;
 		},
 		// 设置数据
 		setData(index) {
@@ -252,7 +278,7 @@ export default {
 		dropChange(index) {
 			console.log(index);
 			this.dropActive = index;
-			this.handleSearch({ searchType:'rangeSearch' });
+			this.handleSearch({ searchType: 'rangeSearch' });
 		}
 	}
 };
@@ -260,61 +286,69 @@ export default {
 
 <style lang="scss" scoped>
 .tabs {
-	position: fixed;
 	width: 100vw;
 	// padding: 0 30rpx;
 	background-color: #ffffff;
 }
-.main {
-	padding: 0rpx 30rpx 30rpx;
-	// position: relative;
-	// z-index: 99;
-	.screen {
-		padding: 0;
-		height: 80rpx;
-		background: #ffffff;
-		box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.04);
-		border-radius: 16rpx;
-	}
-	.isFix {
-		width: 100vw;
-		margin-left: -30rpx;
-		padding: 0 30rpx;
-	}
-	.section {
-		margin-top: 30rpx;
-		.section_content {
-			width: 100%;
+.main_wrap {
+	height: 600rpx;
+	.main {
+		padding: 0rpx 30rpx 30rpx;
+		// position: relative;
+		// z-index: 99;
+		.screen {
+			padding: 0;
+			height: 80rpx;
 			background: #ffffff;
 			box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.04);
 			border-radius: 16rpx;
-			margin-bottom: 30rpx;
-			padding: 20rpx 30rpx;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			.left {
-				font-family: PingFangSC-Regular, PingFang SC;
-				.title {
-					font-size: 28rpx;
-					font-weight: 600;
-					color: #333333;
-					line-height: 32rpx;
+		}
+		.isFix {
+			width: 100vw;
+			margin-left: -30rpx;
+			padding: 0 30rpx;
+		}
+		.section {
+			padding-top: 30rpx;
+			.section_content {
+				width: 100%;
+				background: #ffffff;
+				box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.04);
+				border-radius: 16rpx;
+				margin-bottom: 30rpx;
+				padding: 20rpx 30rpx;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				.left {
+					font-family: PingFangSC-Regular, PingFang SC;
+					.title {
+						font-size: 28rpx;
+						font-weight: 600;
+						color: #333333;
+						line-height: 32rpx;
+						display: -webkit-box;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						word-break: break-all;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 1;
+					}
+					.text_desc {
+						font-size: 24rpx;
+						font-weight: 400;
+						color: #a4b0be;
+						line-height: 26rpx;
+						padding-top: 15rpx;
+					}
 				}
-				.text_desc {
-					font-size: 24rpx;
-					font-weight: 400;
-					color: #a4b0be;
-					line-height: 26rpx;
-					padding-top: 15rpx;
-				}
-			}
-			.right {
-				width: 48rpx;
-				height: 48rpx;
-				image {
-					width: 100%;
-					height: 100%;
+				.right {
+					min-width: 48rpx;
+					height: 48rpx;
+					image {
+						width: 100%;
+						height: 100%;
+					}
 				}
 			}
 		}
