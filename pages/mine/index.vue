@@ -12,9 +12,9 @@
 					<view class="intro">
 						{{personData.name}}<br/>
 					</view>
-					<view class="company" v-if="tenantList.length>1">
+					<view class="company" >
 						<text>{{personData.tenantName}}</text>
-						<view class="switch" type="default" @click="transfer"> <image src="../../static/image/mine/switch.png" mode=""></image> 切换组织</view>
+						<view class="switch" @click="transfer" v-if="tenantList.length>1"> <image src="../../static/image/mine/switch.png" mode=""></image> 切换组织</view>
 					</view>
 					<u-icon name="zhuanfa" class="zhuanfa" size="50"></u-icon>
 				</view>

@@ -32,10 +32,10 @@ export default {
 		// 预览图片多张
 		previewImg() {
 			let _this = this;
-			let imgsArray = ['https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto','https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto','https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto'];
+			let imgsArray = ['https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto','https://img0.baidu.com/it/u=1491879962,2497148542&fm=26&fmt=auto','https://img1.baidu.com/it/u=2697747062,2540797278&fm=26&fmt=auto'];
 			
 			uni.previewImage({
-				current: index - 1,
+				current: imgsArray[1],
 				urls: imgsArray,
 				indicator: 'number',
 				loop: true

@@ -113,7 +113,7 @@ export default {
 			windowHeight: 0,
 			navTop: 0,
 			current: 0,
-			searchVal: ''
+			searchVal: '',
 		};
 	},
 	computed: {
