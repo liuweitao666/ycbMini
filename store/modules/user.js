@@ -11,21 +11,33 @@ const getuserInfo = _ => {
 	return info ? JSON.parse(info) : []
 }
 
+const getTenantList = _ => {
+	const tenantList = uni.getStorageSync('tenantList')
+	return tenantList ? JSON.parse(tenantList) : []
+}
+
+
 const user = {
 	state: {
 		tenantId: uni.getStorageSync('tenantId') || '',
 		userInfo: getuserInfo(),
 		token: uni.getStorageSync('token') || '',
 		refreshToken: uni.getStorageSync('refreshToken') || '',
+		// 租户列表
+		tenantList:getTenantList()
 	},
 	actions: {
 		//根据用户名登录
 		Login({
 			commit
 		}, userInfo) {
+			uni.setStorageSync('tenantId', userInfo.tenantId)
 			return new Promise((resolve, reject) => {
-				login(userInfo).then(res => {
-					console.log(res)
+				login({
+					username: userInfo.account,
+					grant_type: 'wxmini',
+					...userInfo
+				}).then(res => {
 					const data = res;
 					if (data.error_description) {
 						Message({
@@ -45,8 +57,8 @@ const user = {
 						commit('SET_USER_INFO', data);
 					}
 					resolve({
-						code:200,
-						data:res
+						code: 200,
+						data: res
 					});
 				}).catch(error => {
 					reject({
@@ -63,6 +75,7 @@ const user = {
 		}, params) {
 			return new Promise((resolve, reject) => {
 				getUsers(params).then(res => {
+					commit('SET_TENANT_LIST',res.data)
 					resolve(res)
 				}).catch(err => {
 					console.log(err)
@@ -118,7 +131,7 @@ const user = {
 				commit('SET_REFRESH_TOKEN', '');
 				commit('SET_TENANT_ID', '');
 				commit('SET_USER_INFO', '');
-				commit('SET_USER_INFO', '');
+				commit('SET_TENANT_LIST', '');
 				uni.removeStorageSync('token_time')
 				resolve();
 			})
@@ -142,6 +155,13 @@ const user = {
 			const userinfostr = JSON.stringify(userInfo)
 			uni.setStorageSync('userInfo', userinfostr)
 		},
+		// 保存租户列表
+		SET_TENANT_LIST:(state, tenantList)=>{
+			state.tenantList = tenantList;
+			const tenantListstr = JSON.stringify(tenantList)
+			console.log(state.tenantList)
+			uni.setStorageSync('tenantList', tenantListstr)
+		}
 	}
 }
 export default user

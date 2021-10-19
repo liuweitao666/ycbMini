@@ -253,6 +253,12 @@ export default {
 							});
 							this.isLoading = false;
 							this.$store.dispatch('getCustomerList')
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta: 1,
+								});
+							},500)
+							
 						} else {
 							this.$refs.uToast.show({
 								title: '网络错误',

@@ -3,19 +3,9 @@
 	<view class="wrap">
 		<view class="back_logo"><image src="../../static/image/login/logo_back.png" mode=""></image></view>
 		<view class="logo"><image src="../../static/image/login/logo.png"></image></view>
+		<tenant-popup ref="tenant"  @selectTenant="selectTenant" />
 		<button open-type="getPhoneNumber" class="button" @getphonenumber="getPhoneNumber">微信一键登录</button>
-		<u-popup v-model="show" mode="center" border-radius="16" width="690rpx">
-			<view class="pop_wrap">
-				<view class="title">选择您的组织</view>
-				<view class="desc">你在以下组织中担任成员</view>
-				<view class="userList">
-					<view :class="['user_item', 'align-items', { selected: selected === index }]" v-for="(item, index) in userList" :key="item.tenantId" @click="selectUser(item)">
-						<text>{{ item.tenantName }}</text>
-						<u-icon name="arrow-right"></u-icon>
-					</view>
-				</view>
-			</view>
-		</u-popup>
+		<tenant-popup ref="tenant"  @selectTenant="selectTenant" />
 		<!-- toast提示 -->
 		<u-toast ref="uToast" />
 	</view>
@@ -24,7 +14,11 @@
 <script>
 import { checkCode } from '@/api/login/index.js';
 import { mapActions } from 'vuex';
+import tenantPopup from "@/components/tenantPopup/index.vue"
 export default {
+	components:{
+		tenantPopup
+	},
 	data() {
 		return {
 			show: false,
@@ -33,12 +27,11 @@ export default {
 			openid: '',
 			unionid: '',
 			loginParams: null,
-			userList: [
-			],
 			// 当前选中用户
 			selected: 0
 		};
 	},
+
 	created() {
 		this.login();
 	},
@@ -74,23 +67,26 @@ export default {
 				code
 			})
 				.then(async res => {
-					// 获取当前用户组
-					const { data: result } = await this.GetUserInfo(loginParams);
-					if (result.length === 0)
-						return this.$refs.uToast.show({
-							title: '您还未注册，请联系管理员！',
-							type: 'warning'
+					try{
+						// 获取当前用户组
+						const { data: result } = await this.GetUserInfo(loginParams);
+						if (result.length === 0)
+							return this.$refs.uToast.show({
+								title: '您还未注册，请联系管理员！',
+								type: 'warning'
+							});
+						if (result.length > 1) {
+							this.userList = result
+							return (this.$refs['tenant'].show = true)
+						};
+						this.postLogin({
+							code,
+							...result[0]
 						});
-					if (result.length > 1) {
-						this.userList = result
-						return (this.show = true)
-					};
-					this.postLogin({
-						code,
-						grant_type:'wxmini',
-						username:result[0].account,
-						...result[0]
-					});
+					}catch(e){
+						//TODO handle the exception
+						console.log(e)
+					}
 				})
 				.catch(err => {
 					wx.login({
@@ -109,17 +105,14 @@ export default {
 			});
 		},
 		// 选择用户
-		selectUser(user) {
+		selectTenant(tenantInfo) {
 			this.postLogin({
 				code:this.code,
-				username:user.account,
-				grant_type:'wxmini',
-				...user
+				...tenantInfo
 			});
 		},
 		// 用户登录
 		postLogin(loginParams) {
-			this.$store.commit('SET_TENANT_ID',loginParams.tenantId)
 			const _this = this;
 			uni.showLoading({
 				title: '正在登录...'
@@ -132,12 +125,6 @@ export default {
 							title: '登录成功',
 							type: 'success'
 						});
-						let pages = getCurrentPages()	
-						// 获取上一页栈
-						let prevPage = pages[ pages.length - 2 ]
-						console.log(prevPage)
-						// 触发上一页 initData 函数更新页面
-						prevPage.$vm.initData && prevPage.$vm.initData()
 						setTimeout(_ => {
 							uni.navigateBack({
 								delta: 1,
@@ -196,32 +183,6 @@ image {
 		color: #fff;
 		margin-top: 246rpx;
 		font-size: 32rpx;
-	}
-	.pop_wrap {
-		padding: 30rpx;
-		.title {
-			font-size: 42rpx;
-			font-family: PingFangSC-Medium, PingFang SC;
-			font-weight: 500;
-			color: #333333;
-			line-height: 48rpx;
-		}
-		// 用户列表样式
-		.userList {
-			// height: 460rpx;
-			.user_item {
-				justify-content: space-between;
-				background-color: #1683c5;
-				color: #ffffff;
-				padding: 40rpx;
-				font-size: 28rpx;
-				margin-top: 20rpx;
-				border-radius: 10rpx;
-			}
-			.selected {
-				border: 4rpx solid #ffffff;
-			}
-		}
 	}
 }
 </style>

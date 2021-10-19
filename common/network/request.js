@@ -72,8 +72,8 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 					let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
 					let curRoute = routes[routes.length-1]
 					console.log(curRoute)
+					if(curRoute && curRoute.route ==='pages/login/index') return
 					setTimeout(()=>{
-						if(curRoute && curRoute.route ==='pages/login/index') return
 						uni.navigateTo({
 							url: `/pages/login/index`
 						});

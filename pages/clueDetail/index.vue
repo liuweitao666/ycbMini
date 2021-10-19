@@ -1,7 +1,7 @@
 <template>
 	<view class="clue_wrap">
 		<!--自定义导航 -->
-		<nav-bar @change="changeNav" :title="dataType === '0' ? '线索详情' : '客户详情'"></nav-bar>
+		<nav-bar @change="changeNav" :title="dataType === '0' ? '线索详情' : '客户详情'" :isBack="true"></nav-bar>
 		<!-- 吸顶导航栏 -->
 		<view :class="['fixTabs', { showFixTabs: isFix }]" v-if="showFixTabs">
 			<view :class="['isFix', 'custom_tabs', 'clue_tabs']">

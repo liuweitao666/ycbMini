@@ -9,7 +9,7 @@
 		<u-index-list :scroll-top="scrollTop" :sticky="false" :z-index="98" :index-list="indexList" :offset-top="navbarHeight" @select="selectFn">
 			<view v-for="(item, index) in indexList" :key="index" :id="`item${item}`">
 				<u-index-anchor :index="item" :custom-style="customStyle" />
-				<view class="list-cell" v-for="customer in getAlphabeticList(item)" :key="customer.id">
+				<view class="list-cell" v-for="customer in getAlphabeticList(item)" :key="customer.id" @click="goDetail(customer.id)">
 					<view :class="['sex',customer.sex===1?'man':'woman']">
 						{{customer.sex===0?'铭':(customer.sex===1?'男':'女')}}
 					</view>
@@ -42,7 +42,12 @@ export default {
 		};
 	},
 	computed: {
-		...mapGetters(['navbarHeight','customerList','indexList'])
+		...mapGetters(['navbarHeight','customerList','indexList','tenantId'])
+	},
+	watch:{
+		tenantId(){
+			this.initData()
+		}
 	},
 	onPageScroll(e) {
 		this.scrollTop = e.scrollTop - uni.upx2px(this.navbarHeight);
@@ -73,6 +78,11 @@ export default {
 			uni.navigateTo({
 				url:'/pages/generateCustomer/index?complex=yes'
 			})
+		},
+		goDetail(id){
+			uni.navigateTo({
+				url: `/pages/clueDetail/index?id=${id}&type=1`
+			})
 		}
 	}
 };
@@ -86,7 +96,7 @@ export default {
 	display: flex;
 	box-sizing: border-box;
 	width: 100%;
-	padding: 10px 30rpx;
+	padding: 10rpx 30rpx;
 	overflow: hidden;
 	color: #323233;
 	font-size: 14px;
@@ -110,9 +120,7 @@ export default {
 	}
 	.info{
 		margin-left:40rpx;
-		.desc{
-			font-size: 28rpx;
-		}
+		font-size: 28rpx;
 	}
 }
 

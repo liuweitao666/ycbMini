@@ -7,11 +7,14 @@
 				<view class="content">
 					<u-avatar src="" size="120"></u-avatar>
 					<view class="name">
-						{{personData.name}}
+						{{personData.realName}}
 					</view>
 					<view class="intro">
-						技术总监CTO<br/>
-						深圳市金信恒企业管理有限公司
+						{{personData.name}}<br/>
+					</view>
+					<view class="company" v-if="tenantList.length>1">
+						<text>{{personData.tenantName}}</text>
+						<view class="switch" type="default" @click="transfer"> <image src="../../static/image/mine/switch.png" mode=""></image> 切换组织</view>
 					</view>
 					<u-icon name="zhuanfa" class="zhuanfa" size="50"></u-icon>
 				</view>
@@ -20,16 +23,22 @@
 		<view class="Kanban">
 			<performance ref="performance" />
 		</view>
+		<!-- 组合列表 -->
+		<tenant-popup ref="tenant" @selectTenant="selectTenant" />
+		<!-- 提示 -->
+		<u-toast ref="uToast" />
 	</view>
 </template>
 
 <script>
 	import performance from './components/performance.vue';
+	import tenantPopup from "@/components/tenantPopup/index.vue"
 	import { getUserInfo,getTenantInfo } from "@/api/personalCenter/index.js"
-	import { mapGetters } from 'vuex';
+	import { mapGetters,mapActions } from 'vuex';
 	export default {
 		components:{
-			performance
+			performance,
+			tenantPopup
 		},
 		data() {
 			return {
@@ -37,7 +46,13 @@
 			};
 		},
 		computed:{
-			...mapGetters(['userInfo'])
+			...mapGetters(['userInfo','tenantId','tenantList'])
+		},
+		watch:{
+			tenantId(){
+				this.getUserInfo()
+				this.$refs['performance'].Refresh()
+			}
 		},
 		onPullDownRefresh() {
 			 this.$refs['performance'].Refresh()
@@ -49,12 +64,58 @@
 			this.getUserInfo()
 		},
 		methods:{
+			...mapActions(['Login']),
 			// 获取用户信息
 			async getUserInfo(){
 				const {user_id} = this.userInfo
 				const {data:res} = await getUserInfo(user_id)
 				this.personData = res
 				console.log(this.personData)
+			},
+			// 展示租户列表
+			transfer(){
+				this.$refs['tenant'].show = true
+			},
+			selectTenant(tenantInfo){
+				return this.$refs.uToast.show({
+								title: '暂未开放',
+								type: 'warning'
+							});
+				wx.login({
+					success: res => {
+						const code = res.code;
+						this.postLogin({
+							code,
+							...tenantInfo
+						})
+					}
+				})
+			},
+			// 用户登录
+			postLogin(loginParams) {
+				const _this = this;
+				uni.showLoading({
+					title: '正在登录...'
+				});
+				this.Login(loginParams)
+					.then(res => {
+						if (res.code) {
+							uni.hideLoading();
+							this.$refs.uToast.show({
+								title: '切换成功',
+								type: 'success'
+							});
+						}
+					})
+					.catch(err => {
+						console.log(err);
+						this.$refs.uToast.show({
+							title: '切换失败，请重试!',
+							type: 'error'
+						});
+						// 重新获取code
+						uni.hideLoading();
+					});
 			},
 		}
 	}
@@ -95,6 +156,30 @@
 						color: #FFFFFF;
 						line-height: 46rpx;
 						font-size: 24rpx;
+						height: 44rpx;
+						line-height: 44rpx;
+					}
+					.company{
+						color: #FFFFFF;
+						height: 44rpx;
+						font-size: 24rpx;
+						display: flex;
+						align-items: center;
+						.switch{
+							background-color: #7065A5;
+							color: #FFFFFF;
+							border: 1px solid #A299C8;
+							border-radius: 60rpx;
+							padding: 6rpx 18rpx;
+							font-size: 24rpx;
+							display: flex;
+							align-items: center;
+							margin-left: 16rpx;
+							image{
+								width: 24rpx;
+								height: 24rpx;
+							}
+						}
 					}
 					.zhuanfa{
 						position: absolute;

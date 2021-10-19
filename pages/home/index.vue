@@ -1,18 +1,18 @@
 <template>
 	<view>
-		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :isAvatar="true"></nav-bar>
+		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="Avatar"></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->
 		<view class="tabs">
 			<u-dropdown :title-size="24" v-show="dataType === 0">
-				<u-dropdown-item v-model="clueQueryInfo.createDate" @change="dropChange" title="联系方式" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="clueQueryInfo.contactTypes" @change="dropChange" title="联系方式" :options="contactTypesOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="clueQueryInfo.createDate" @change="dropChange" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="clueQueryInfo.range" @change="dropChange" title="范围" :options="rangeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="clueQueryInfo.status" @change="dropChange" title="状态" :options="statusOptions"></u-dropdown-item>
 			</u-dropdown>
 			<u-dropdown :title-size="24" v-show="dataType === 1">
-				<u-dropdown-item v-model="customerQueryInfo.createDate" @change="dropChange" title="联系方式" :options="createTimeOptions"></u-dropdown-item>
+				<u-dropdown-item v-model="customerQueryInfo.contactTypes" @change="dropChange" title="联系方式" :options="contactTypesOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="customerQueryInfo.createDateType" @change="dropChange" title="创建时间" :options="createTimeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="customerQueryInfo.scopeType" @change="dropChange" title="范围" :options="scopeTypeOptions"></u-dropdown-item>
 				<u-dropdown-item v-model="customerQueryInfo.status" @change="dropChange" title="状态" :options="statusCustomerOptions"></u-dropdown-item>
@@ -66,7 +66,7 @@ import { mapGetters } from 'vuex';
 
 import { deepClone } from '@/utils/util.js';
 // 导入数据
-import { clueQueryInfo, customerQueryInfo, dropData, createTimeOptions, rangeOptions, statusOptions, scopeTypeOptions, statusCustomerOptions } from './index.js';
+import { clueQueryInfo, customerQueryInfo, dropData, createTimeOptions, rangeOptions, statusOptions, scopeTypeOptions, statusCustomerOptions,contactTypesOptions } from './index.js';
 
 export default {
 	components: {
@@ -106,6 +106,7 @@ export default {
 					current: 1
 				}
 			],
+			Avatar:'头像',
 			// 是否展示加载动画
 			isLoading: false,
 			value1: '',
@@ -114,6 +115,7 @@ export default {
 			statusOptions: statusOptions,
 			scopeTypeOptions: scopeTypeOptions,
 			statusCustomerOptions: statusCustomerOptions,
+			contactTypesOptions:contactTypesOptions,
 			// 滑动区域的高度
 			contentHeight: '',
 			isFix: false,
@@ -127,26 +129,29 @@ export default {
 		isComplete() {
 			return this.total === this.dataList.length;
 		},
-		...mapGetters(['navbarHeight'])
+		...mapGetters(['navbarHeight','tenantId'])
 	},
 	watch: {
 		navbarHeight() {
 			this.handleHeight();
+		},
+		tenantId(){
+			this.initData();
 		}
 	},
 	created() {
-		this.$store
-			.dispatch('refreshToken')
-			.then(res => {
-				this.initData();
-			})
-			.catch(err => {
-				// this.$store.
-				uni.navigateTo({
-					url: `/pages/login/index`
-				});
-				console.log(err);
-			});
+		// this.$store
+		// 	.dispatch('refreshToken')
+		// 	.then(res => {
+		// 	})
+		// 	.catch(err => {
+		// 		// this.$store.
+		// 		uni.navigateTo({
+		// 			url: `/pages/login/index`
+		// 		});
+		// 		console.log(err);
+		// 	});
+		this.initData();
 	},
 	mounted() {
 		// this.tabTop = this.navbarHeight + 'rpx';

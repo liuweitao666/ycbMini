@@ -1,7 +1,7 @@
 <template>
 	<view id="personCenter">
 		<audio :src="audioSrc" class="audio"></audio>
-		<nav-bar :isBackground="true" title="徐小凯" height="482rpx"></nav-bar>
+		<nav-bar :isBackground="true" :Home="isHome" :title="personData.realName" :isBack="isBack" height="482rpx"></nav-bar>
 		<view class="main">
 			<!-- 卡片 -->
 			<view class="card">
@@ -9,10 +9,10 @@
 					<u-avatar :src="src" :size="160"></u-avatar>
 					<view class="info">
 						<view class="name">
-							<text>{{ personData.name }}</text>
+							<text>{{ personData.realName }}</text>
 						</view>
-						<view class="desc">{{ personData.role_name || 'CTO' }}</view>
-						<view class="desc company">{{ personData.id }}</view>
+						<view class="desc">{{ personData.name || '暂无' }}</view>
+						<view class="desc company">{{ personData.tenantName }}</view>
 					</view>
 					<u-icon name="weixin-circle-fill" @click="jumpTo" class="qr_code"></u-icon>
 				</view>
@@ -124,6 +124,8 @@ export default {
 			audioSrc: '',
 			// 页面高度
 			scrollHeight: 0,
+			isHome:false,
+			isBack:true,
 			// 滚动高度
 			scrollTop: 0,
 			hiddenFooter: true,
@@ -194,6 +196,8 @@ export default {
 			console.log(id, tenantId);
 			this.user_id = id;
 			this.tenant_id = tenantId;
+			this.isBack = false
+			this.isHome = true
 		}
 		this.getUserInfo();
 	},
@@ -312,6 +316,8 @@ export default {
 	z-index: 999;
 	.card {
 		background-color: #015abc;
+		background: url(https://ycbfiles.oss-cn-shenzhen.aliyuncs.com/public/wxmini/card_person.png) no-repeat;
+		background-size: 100% 100%;
 		padding: 30rpx;
 		border-radius: 20rpx;
 		.header {

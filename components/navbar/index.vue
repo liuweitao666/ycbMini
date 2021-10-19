@@ -4,7 +4,7 @@
 			paddingTop: navbarHeight + 'rpx',
 			height,
 			paddingBottom: '1rpx',
-			background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : backColor,
+			background: isBackground ? 'url(https://ycbfiles.oss-cn-shenzhen.aliyuncs.com/public/wxmini/back_navbar.png) no-repeat' : backColor,
 			'background-size': '100% 100%'
 		}"
 	>
@@ -13,16 +13,19 @@
 			id="navbar"
 			:style="{
 				background: '#292B4D',
-				background: isBackground ? 'url(/static/image/personalCenter/back_navbar.png) no-repeat' : backColor,
+				background: isBackground ? 'url(https://ycbfiles.oss-cn-shenzhen.aliyuncs.com/public/wxmini/back_navbar.png) no-repeat' : backColor,
 				'background-size': '100%'
 			}"
 		>
 			<view class="header" :style="{ height: navTop + 'px' }"></view>
 			<view class="navbar-tabs">
 				<!-- 头像 -->
-				<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="isAvatar"></view>
-				<view class="left_slot" v-else-if="customLeft"><slot></slot></view>
-				<view class="avatar back" :style="{ height: '60rpx', width: '60rpx' }" @click="back" v-else><u-icon name="arrow-left" color="#fff" size="35"></u-icon></view>
+				<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="Avatar"></view>
+				<!-- 返回首页 -->
+				<u-icon name="home" class="avatar back" color="#fff"  :size="45" @click="goHome" v-if="Home"></u-icon>
+				<!-- 左侧插槽 -->
+				<view class="left_slot" v-if="customLeft"><slot></slot></view>
+				<view class="avatar back" :style="{ height: '60rpx', width: '60rpx' }" @click="back" v-if="isBack"><u-icon name="arrow-left" color="#fff" size="35"></u-icon></view>
 				<!-- 导航 -->
 				<view class="navbar-u-tabs" :style="{ height: navList ? 'auto' : 80 + 'rpx' }">
 					<u-tabs
@@ -75,9 +78,9 @@ export default {
 			default: _ => false
 		},
 		// 是否展示头像
-		isAvatar: {
-			type: Boolean,
-			default: _ => false
+		Avatar: {
+			type: String,
+			default: _ => ''
 		},
 		isBackground: {
 			type: Boolean,
@@ -94,6 +97,15 @@ export default {
 		backColor: { type: String, default: _ => '#292B4D' },
 		// 自定义标题颜色
 		textColor: { type: String, default: _ => '#fff' },
+		// 返回首页
+		Home:{
+			type: Boolean,
+			default: _ => false
+		},
+		isBack:{
+			type: Boolean,
+			default: _ => false
+		}
 	},
 	data() {
 		return {
@@ -126,6 +138,12 @@ export default {
 		this.getNavHeight();
 	},
 	methods: {
+		// 返回首页
+		goHome(){
+			uni.switchTab({
+				url:'/pages/home/index'
+			})
+		},
 		// 回到上一页
 		back: function() {
 			uni.navigateBack({
@@ -141,7 +159,6 @@ export default {
 			this.$emit('search', { searchType: 'search', name: this.searchVal });
 		},
 		handleTo() {
-			console.log('goto');
 			const token = uni.getStorageSync('token');
 			if (!token) {
 				return uni.navigateTo({

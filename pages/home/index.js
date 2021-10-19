@@ -3,16 +3,45 @@ export const clueQueryInfo = {
 	name: '',
 	createDate: 0,
 	status: '0',
-	range: 1
+	range: 1,
+	contactTypes:1
 };
 // 定义请求参数
 export const customerQueryInfo = {
 	name: '',
 	createDateType: 0,
 	status: '',
-	scopeType: 1
+	scopeType: 1,
+	contactTypes:1
 };
-export const dropData = ['排序方式', '创建时间', '范围', '状态'];
+export const dropData = ['联系方式', '创建时间', '范围', '状态'];
+// 1：手机，2：电话，3：旺旺，4：qq，5：微信，6：邮箱
+export const contactTypesOptions = [
+	{
+		label: '手机',
+		value: 1
+	},
+	{
+		label: '电话',
+		value: 2
+	},
+	{
+		label: '旺旺',
+		value: 4
+	},
+	{
+		label: 'qq',
+		value: 3
+	},
+	{
+		label: '微信',
+		value: 5
+	},
+	{
+		label: '邮箱',
+		value: 6
+	}
+];
 // (0：全部，1：今日，2：本周，3：上周，4：当月，5:上月)
 export const createTimeOptions = [
 	{
