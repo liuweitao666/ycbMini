@@ -9,7 +9,7 @@
 					{{ item.followContent || item.operationType }}
 				</view>
 				<view class="image_cneg" v-if="item.files" >
-					<image @click="previewImg(item.files,i,item)" :key="'img'+i" :src="item2.fileName" v-for="(item2,i) in item.files" ></image>
+					<image @click="previewImg(item.files,i)" :key="i" :src="item2.fileName" v-for="(item2,i) in item.files" ></image>
 				</view>
 			</view>
 		</view>
