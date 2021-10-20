@@ -6,7 +6,7 @@
 			<!-- 卡片 -->
 			<view class="card">
 				<view class="header">
-					<u-avatar :src="src" :size="160"></u-avatar>
+					<u-avatar :src="personData.avatar" :size="160"></u-avatar>
 					<view class="info">
 						<view class="name">
 							<text>{{ personData.realName }}</text>
@@ -185,7 +185,7 @@ export default {
 		// }
 		return {
 			title: `易创宝-${this.personData.name}的名片`,
-			path: `/pages/personalCenter/index?id=${this.personData.id}&tenantId=${this.userInfo.tenantId}`,
+			path: `/pages/personalCenter/index?id=${encodeURIComponent(this.personData.id)}&tenantId=${encodeURIComponent(this.userInfo.tenantId)}`,
 			imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
 		};
 	},
@@ -194,8 +194,8 @@ export default {
 		this.tenant_id = this.userInfo.tenant_id;
 		if (id && tenantId) {
 			console.log(id, tenantId);
-			this.user_id = id;
-			this.tenant_id = tenantId;
+			this.user_id = decodeURIComponent(id);
+			this.tenant_id = decodeURIComponent(tenantId);
 			this.isBack = false
 			this.isHome = true
 		}

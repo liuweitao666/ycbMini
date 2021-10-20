@@ -5,7 +5,7 @@
 			<view class="mine_card">
 				<image src="../../static/image/personalCenter/card_back.png" class="background" mode=""></image>
 				<view class="content">
-					<u-avatar src="" size="120"></u-avatar>
+					<u-avatar :src="personData.avatar" size="120"></u-avatar>
 					<view class="name">
 						{{personData.realName}}
 					</view>

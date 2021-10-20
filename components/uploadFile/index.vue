@@ -144,7 +144,7 @@ export default {
 					console.log(res)
 					this.$emit('onSuccess',{
 						fileName:this.dataUpload.key,
-						key:this.dataUpload.key
+						fileKey:this.dataUpload.key
 					})
 					uni.hideLoading()
 				},

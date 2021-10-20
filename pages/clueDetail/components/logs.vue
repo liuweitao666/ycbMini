@@ -1,18 +1,15 @@
 <template>
 	<view class="logs_card">
 		<view class="followUp_log" v-if="data.length > 0">
-			<view class="follow_item" v-for="item in data" :key="item.id">
+			<view class="follow_item" v-for="(item,index) in data" :key="index" @click="handle(item.followContent)">
 				<view class="custom_title">{{ item.createUserName }}</view>
 				<view class="desc">{{ item.createTime }}</view>
 				<view class="desc">
 					<text style="color: #FC961E;padding-right: 10rpx">#{{ followType[item.type] || item.operationType }}#</text>
 					{{ item.followContent || item.operationType }}
 				</view>
-				<view class="image_cneg">
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="widthFix" @click="previewImg"></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="" @click="previewImg"></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="" @click="previewImg"></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="" @click="previewImg"></image>
+				<view class="image_cneg" v-if="item.files" >
+					<image @click="previewImg(item.files,i,item)" :key="'img'+i" :src="item2.fileName" v-for="(item2,i) in item.files" ></image>
 				</view>
 			</view>
 		</view>
@@ -29,14 +26,17 @@ export default {
 		};
 	},
 	methods: {
+		handle(item){
+			console.log(item)
+		},
 		// 预览图片多张
-		previewImg() {
-			let _this = this;
-			let imgsArray = ['https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto','https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto','https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto'];
-			
+		previewImg(files,index,item) {
+			console.log(item)
+			const urls = files.map(item=>item.fileName)
+			console.log(urls)
 			uni.previewImage({
-				current: index - 1,
-				urls: imgsArray,
+				current: files[index].fileName,
+				urls,
 				indicator: 'number',
 				loop: true
 			});

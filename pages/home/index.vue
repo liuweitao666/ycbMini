@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="Avatar"></nav-bar>
+		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="userInfo.avatar" isAvatar></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->
@@ -37,7 +37,7 @@
 							<view class="text_desc">{{ item.createTime }}</view>
 							<view class="text_desc">{{ item.provinceName + '/' + item.cityName }}</view>
 						</view>
-						<view class="right" v-show="item.phone"><image src="@/static/image/home/phone.png" mode=""></image></view>
+						<view class="right" v-show="item.phone" @click.stop="phoneCall(item.phone)"><image src="@/static/image/home/phone.png" mode=""></image></view>
 					</view>
 					<!-- 空列表 -->
 					<u-empty type="list" v-if="isComplete && total === 0"></u-empty>
@@ -106,7 +106,6 @@ export default {
 					current: 1
 				}
 			],
-			Avatar:'头像',
 			// 是否展示加载动画
 			isLoading: false,
 			value1: '',
@@ -129,7 +128,7 @@ export default {
 		isComplete() {
 			return this.total === this.dataList.length;
 		},
-		...mapGetters(['navbarHeight','tenantId'])
+		...mapGetters(['navbarHeight','tenantId','userInfo'])
 	},
 	watch: {
 		navbarHeight() {
@@ -284,7 +283,21 @@ export default {
 			console.log(index);
 			this.dropActive = index;
 			this.handleSearch({ searchType: 'rangeSearch' });
-		}
+		},
+		// 打电话
+		phoneCall(phone) {
+			uni.makePhoneCall({
+				phoneNumber: phone,
+				// 成功回调
+				success: res => {
+					console.log('调用成功!');
+				},
+				// 失败回调
+				fail: res => {
+					console.log('调用失败!');
+				}
+			});
+		},
 	}
 };
 </script>
