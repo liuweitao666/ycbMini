@@ -78,7 +78,7 @@
 			></u-tabs>
 		</view>
 		<!-- 展示对应记录页面 -->
-		<logs :data="data" :total="total" />
+		<logs :data="data" :currentTab="currentTab" :total="total" />
 		<!-- 加载完成 -->
 		<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
 		<!-- 加载动画 -->
@@ -157,7 +157,7 @@ export default {
 			//详情
 			detailData: {},
 			// 分页
-			size: 3,
+			size: 20,
 			current: 1,
 			// 客户customerID
 			customerId: '',
@@ -269,6 +269,7 @@ export default {
 				item.scrollTop = 0;
 			});
 			this.handleInitData();
+			this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		},
 		// 设置数据
 		setData(index) {
@@ -342,6 +343,8 @@ export default {
 					this.setData(1);
 					break;
 				case 2:
+				  delete queryInfo.customerId
+				  queryInfo.dataId = this.customerId
 					const { data: operationRecord } = await getOperationRecord(queryInfo);
 					this.recordData[2].total = operationRecord.total;
 					this.recordData[2].current = this.current;

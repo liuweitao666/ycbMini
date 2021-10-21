@@ -15,7 +15,7 @@
 					<u-form-item label="联系方式" prop="phone" :required="true"><u-input v-model="form.phone" placeholder="联系方式" /></u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
-					<u-form-item label="公司名称"><u-input v-model="form.companyName" type="select" @click="jumpTo('/pages/generateCustomer/searchCompany')" placeholder="公司名称" /></u-form-item>
+					<u-form-item label="公司名称"><u-input v-model="form.companyName" type="select" @click="jumpTo('/pages/searchPage/index?type=1')" placeholder="公司名称" /></u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
 					<u-form-item label="公司职位"><u-input v-model="form.position"  placeholder="公司职位" /></u-form-item>

@@ -118,3 +118,41 @@ button::after { border: none }
 	z-index: 1002;
 	width: 100vw;
 }
+
+// 搜索页面
+.search_page{
+	.list-cell {
+		display: flex;
+		box-sizing: border-box;
+		width: 100%;
+		padding: 10px 30rpx;
+		overflow: hidden;
+		color: #323233;
+		font-size: 14px;
+		line-height: 24px;
+		background-color: #fff;
+		border-bottom: 2rpx solid #f8f8f8;
+		.icon {
+			min-width: 96rpx;
+			height: 96rpx;
+			text-align: center;
+			line-height: 96rpx;
+			font-size: 42rpx;
+			color: #ffffff;
+			border-radius: 10rpx;
+			background-color: #d2e4f8;
+		}
+		.info {
+			margin-left: 40rpx;
+			.name {
+				width: 500rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.desc {
+				font-size: 28rpx;
+			}
+		}
+	}
+}

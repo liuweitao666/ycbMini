@@ -12,12 +12,6 @@
 			}
 		},
 		{
-			"path": "pages/generateCustomer/searchCompany",
-			"style": {
-				"navigationBarTitleText": "选择公司"
-			}
-		},
-		{
 			"path": "pages/customer/index",
 			"style": {
 				"navigationBarTitleText": "客户",
@@ -78,7 +72,16 @@
 			}
 		}
 
-	],
+	    ,{
+            "path" : "pages/searchPage/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "业绩看板",

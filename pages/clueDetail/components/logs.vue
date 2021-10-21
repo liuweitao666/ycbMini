@@ -1,39 +1,43 @@
 <template>
 	<view class="logs_card">
-		<view class="followUp_log" v-if="data.length > 0">
-			<view class="follow_item" v-for="(item,index) in data" :key="index" @click="handle(item.followContent)">
+		<!-- 跟进记录 -->
+		<view class="followUp_log" v-if="data.length > 0 && currentTab === 0">
+			<view class="follow_item" v-for="(item, index) in data" :key="index">
 				<view class="custom_title">{{ item.createUserName }}</view>
 				<view class="desc">{{ item.createTime }}</view>
 				<view class="desc">
-					<text style="color: #FC961E;padding-right: 10rpx">#{{ followType[item.type] || item.operationType }}#</text>
-					{{ item.followContent || item.operationType }}
+					<text style="color: #FC961E;padding-right: 10rpx">#{{ followType[item.type] }}#</text>
+					{{ item.followContent }}
 				</view>
-				<view class="image_cneg" v-if="item.files" >
-					<image @click="previewImg(item.files,i)" :key="i" :src="item2.fileName" v-for="(item2,i) in item.files" ></image>
-				</view>
+				<view class="image_cneg" v-if="item.files"><image @click="previewImg(item.files, i)" :key="i" :src="item2.fileName" v-for="(item2, i) in item.files"></image></view>
 			</view>
 		</view>
+		<circulationLog :data="data" v-if="data.length > 0 && currentTab === 1"/>
+		<operationLog :data="data" v-if="data.length > 0 && currentTab === 2"/>
 		<view class="empty_view" v-if="total === 0"><u-empty text="暂无数据" mode="list"></u-empty></view>
 	</view>
 </template>
 
 <script>
+import circulationLog from './circulationLog.vue';
+import operationLog from './operationLog.vue';
 export default {
-	props: ['data', 'total'],
+	components:{
+		circulationLog,
+		operationLog
+	},
+	props: ['data', 'total', 'currentTab'],
 	data() {
 		return {
 			followType: ['', '电话', '微信', '旺旺', '线下', '其他']
 		};
 	},
 	methods: {
-		handle(item){
-			console.log(item)
-		},
 		// 预览图片多张
-		previewImg(files,index,item) {
-			console.log(item)
-			const urls = files.map(item=>item.fileName)
-			console.log(urls)
+		previewImg(files, index, item) {
+			console.log(item);
+			const urls = files.map(item => item.fileName);
+			console.log(urls);
 			uni.previewImage({
 				current: files[index].fileName,
 				urls,

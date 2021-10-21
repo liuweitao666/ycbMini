@@ -187,10 +187,10 @@ export default {
 							this.isLoading = false;
 						}
 					} catch (e) {
-						console.log(e);
-						this.isLoading = false;
-						uni.hideLoading();
-						//TODO handle the exception
+						console.log(e,'=======');
+						setTimeout(()=>{
+							this.isLoading = false;
+						},1000)
 					}
 				}
 			});

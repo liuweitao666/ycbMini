@@ -2,15 +2,15 @@
 	<view class="customer_wrap">
 		<nav-bar backColor="#F0FCFD" textColor="#000" :customLeft="true" title="客户">
 			<view class="navbar_left">
-				<u-icon name="search" size="36"></u-icon>
-				<u-icon name="plus" style="padding-left: 34rpx;" size="36" @click="jumpTo"></u-icon>
+				<u-icon name="search" size="36" @click="jumpTo('/pages/searchPage/index?type=2')"></u-icon>
+				<u-icon name="plus" style="padding-left: 34rpx;" size="36" @click="jumpTo('/pages/generateCustomer/index?complex=yes')"></u-icon>
 			</view>
 		</nav-bar>
 		<u-index-list :scroll-top="scrollTop" :sticky="false" :z-index="98" :index-list="indexList" :offset-top="navbarHeight" @select="selectFn">
 			<view v-for="(item, index) in indexList" :key="index" :id="`item${item}`">
 				<u-index-anchor :index="item" :custom-style="customStyle" />
 				<view class="list-cell" v-for="customer in getAlphabeticList(item)" :key="customer.id" @click="goDetail(customer.id)">
-					<view :class="['sex',customer.sex===1?'man':'woman']">
+					<view :class="['sex',switchClass(customer.sex)]">
 						{{customer.sex===0?'铭':(customer.sex===1?'男':'女')}}
 					</view>
 					<view class="info">
@@ -74,15 +74,25 @@ export default {
 		initData(){
 			this.$store.dispatch('getCustomerList')
 		},
-		jumpTo(){
+		jumpTo(url){
 			uni.navigateTo({
-				url:'/pages/generateCustomer/index?complex=yes'
+				url
 			})
 		},
 		goDetail(id){
 			uni.navigateTo({
 				url: `/pages/clueDetail/index?id=${id}&type=1`
 			})
+		},
+		switchClass(val){
+			switch(val){
+				case 0:
+				return 'unknown';
+				case 1:
+				return 'man';
+				case 2:
+				return 'woman';
+			}
 		}
 	}
 };
@@ -111,6 +121,9 @@ export default {
 		font-size: 42rpx;
 		color: #FFFFFF;
 		border-radius: 10rpx;
+	}
+	.unknown{
+		background-color: #6269b8;
 	}
 	.woman{
 		background-color: #F6C0CE;

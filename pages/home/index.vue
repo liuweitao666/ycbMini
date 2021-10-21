@@ -233,10 +233,10 @@ export default {
 					this.isLoading = false;
 				} catch (e) {
 					//TODO handle the exception
-					uni.showToast({
-						title: '网络错误，请稍后重试！',
-						icon: 'none'
-					});
+					// uni.showToast({
+					// 	title: '网络错误，请稍后重试！',
+					// 	icon: 'none'
+					// });
 					this.isLoading = false;
 				}
 			}, 500);
