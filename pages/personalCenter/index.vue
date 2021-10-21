@@ -14,7 +14,7 @@
 						<view class="desc">{{ personData.name || '暂无' }}</view>
 						<view class="desc company">{{ personData.tenantName }}</view>
 					</view>
-					<u-icon name="weixin-circle-fill" @click="jumpTo" class="qr_code"></u-icon>
+					<image @click="jumpTo" class="qr_code" src="../../static/image/personalCenter/qrcode.png"></image>
 				</view>
 				<view class="contact">
 					<view class="item">
@@ -348,8 +348,9 @@ export default {
 				position: absolute;
 				top: 0;
 				right: 0;
+				width: 60rpx;
+				height: 60rpx;
 				font-size: 62rpx;
-				margin-right: 40rpx;
 			}
 		}
 		// 联系方式

@@ -196,6 +196,16 @@ export default {
 			showFixTabs: false
 		};
 	},
+	onPullDownRefresh() {
+		 this.refreshData()
+		  setTimeout(function () {
+				  uni.showToast({
+				  	title:'页面已刷新',
+						icon:'none'
+				  })
+		      uni.stopPullDownRefresh();
+		  }, 1000);
+	},
 	computed: {
 		// 数据是否加载完成
 		isComplete() {
@@ -262,6 +272,8 @@ export default {
 		},
 		// 刷新数据
 		refreshData() {
+			this.size = 20
+			this.current = 1
 			this.recordData.forEach(item => {
 				item.data = [];
 				item.total = null;

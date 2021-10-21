@@ -5,7 +5,13 @@
 				<view class="form_item" v-if="complex">
 					<u-form-item label="来源" prop="source" :required="true">
 						<u-input v-model="form.sourceText" type="select" @click="sourceShow = true" />
-						<u-action-sheet :list="sourceList" v-model="sourceShow" @click="sourceCallback"></u-action-sheet>
+						<u-select :list="sourceList" mode="mutil-column-auto" value-name="dictKey" label-name="dictValue" v-model="sourceShow" @confirm="sourceCallback"></u-select>
+					</u-form-item>
+				</view>
+				<view class="form_item" v-if="complex">
+					<u-form-item label="性别" >
+						<u-input v-model="form.sexText" type="select" @click="sexShow = true" />
+						<u-action-sheet :list="sexList" v-model="sexShow" @click="sexCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
 				<view class="form_item">
@@ -59,7 +65,7 @@
 import { clueToCustomer } from '@/api/clue/clue.js';
 import { createCustomer } from "@/api/customer/customer.js"
 import { getRegionTree } from '@/api/region/region.js';
-import { getDictionary } from "@/api/dict/index.js"
+import { getDictionaryTree } from "@/api/dict/index.js"
 
 // 1.潜在客户、2.成交客户
 const statusList = [
@@ -108,7 +114,9 @@ export default {
 				statusText: '',
 				wechat: '',
 				source:'',
-				sourceText:''
+				sourceText:'',
+				sexText:'',
+				sex:0
 			},
 			rules: {
 				source:[
@@ -142,17 +150,18 @@ export default {
 					}
 				]
 			},
-			actionSheetList: [
+			sexList: [
+				{
+					text: '保密'
+				},
 				{
 					text: '男'
 				},
 				{
 					text: '女'
-				},
-				{
-					text: '保密'
 				}
 			],
+			sexShow:false,
 			// 提交禁止状态
 			isLoading: false,
 			// 表格状态
@@ -191,14 +200,9 @@ export default {
 		},
 		// 获取来源渠道
 		async getsourceList(){
-			const {data:res} = await getDictionary({ code: 'source' })
+			const {data:res} = await getDictionaryTree('source')
 			console.log(res)
-			this.sourceList = res.map(item=>{
-				return {
-					text:item.dictValue,
-					id:item.id
-				}
-			})
+			this.sourceList = res
 		},
 		// 获取城市数据
 		async getRegionTree() {
@@ -223,9 +227,15 @@ export default {
 			this.form.cityCode = region[1].value;
 		},
 		// 选择客户状态的回调
-		sourceCallback(value){
-			this.form.source = this.sourceList[value].id
-			this.form.sourceText = this.sourceList[value].text
+		sourceCallback(data){
+			this.form.source = data[1].value
+			this.form.sourceText = data[0].label+'-'+data[1].label
+		},
+		// 选择性别回调
+		sexCallback(index){
+			console.log(index)
+			this.form.sexText = this.sexList[index].text
+			this.form.sex = index
 		},
 		// 跳转对应页面
 		jumpTo(url) {

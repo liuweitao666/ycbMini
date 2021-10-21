@@ -3,9 +3,8 @@
 	<view class="wrap">
 		<view class="back_logo"><image src="../../static/image/login/logo_back.png" mode=""></image></view>
 		<view class="logo"><image src="../../static/image/login/logo.png"></image></view>
-		<tenant-popup ref="tenant"  @selectTenant="selectTenant" />
 		<button open-type="getPhoneNumber" class="button" @getphonenumber="getPhoneNumber">微信一键登录</button>
-		<tenant-popup ref="tenant"  @selectTenant="selectTenant" />
+		<tenant-popup ref="tenant"  @selectTenant="selectTenant" :isLogin="true" />
 		<!-- toast提示 -->
 		<u-toast ref="uToast" />
 	</view>

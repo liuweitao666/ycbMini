@@ -8,7 +8,7 @@
 			"style": {
 				"navigationBarTitleText": "首页",
 				"navigationStyle": "custom",
-				"enablePullDownRefresh": true
+				"enablePullDownRefresh": false
 			}
 		},
 		{
@@ -72,16 +72,15 @@
 			}
 		}
 
-	    ,{
-            "path" : "pages/searchPage/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+		, {
+			"path": "pages/searchPage/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "业绩看板",

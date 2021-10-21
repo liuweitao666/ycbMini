@@ -135,25 +135,13 @@ export default {
 			this.handleHeight();
 		},
 		tenantId(){
-			this.initData();
+			this.refreshData();
 		}
 	},
 	created() {
-		// this.$store
-		// 	.dispatch('refreshToken')
-		// 	.then(res => {
-		// 	})
-		// 	.catch(err => {
-		// 		// this.$store.
-		// 		uni.navigateTo({
-		// 			url: `/pages/login/index`
-		// 		});
-		// 		console.log(err);
-		// 	});
 		this.initData();
 	},
 	mounted() {
-		// this.tabTop = this.navbarHeight + 'rpx';
 		this.handleHeight();
 	},
 	methods: {
@@ -191,6 +179,16 @@ export default {
 			this.dataList = this.recordData[index].data;
 			if (this.recordData[index].total === null) return this.initData();
 			this.total = this.recordData[index].total;
+		},
+		// 刷新页面
+		refreshData(){
+			this.total = null;
+			this.recordData.forEach(item=>{
+				item.data = []
+				item.total = null
+				item.current = 1
+			})
+			this.setData(this.dataType);
 		},
 		// 搜索重置数据
 		setSearchData() {
