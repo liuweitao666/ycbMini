@@ -27,6 +27,12 @@
 			@scrolltoupper="upper"
 			@scroll="scroll"
 			@scrolltolower="touchBottom"
+			:refresher-threshold="45"
+			:refresher-enabled="true"
+			:refresher-triggered="refresherTriggered"
+			@refresherrefresh="refresherrefresh"
+			@refresherrestore="refresherrestore"
+			@refresherabort="refresherabort"
 		>
 			<view class="main">
 				<view class="section">
@@ -66,7 +72,17 @@ import { mapGetters } from 'vuex';
 
 import { deepClone } from '@/utils/util.js';
 // 导入数据
-import { clueQueryInfo, customerQueryInfo, dropData, createTimeOptions, rangeOptions, statusOptions, scopeTypeOptions, statusCustomerOptions,contactTypesOptions } from './index.js';
+import {
+	clueQueryInfo,
+	customerQueryInfo,
+	dropData,
+	createTimeOptions,
+	rangeOptions,
+	statusOptions,
+	scopeTypeOptions,
+	statusCustomerOptions,
+	contactTypesOptions
+} from './index.js';
 
 export default {
 	components: {
@@ -75,6 +91,9 @@ export default {
 	},
 	data() {
 		return {
+			// 下拉刷新
+			refresherTriggered: false,
+			_refresherTriggered: false,
 			// 0线索 1 客户
 			dataType: 0,
 			navList: [
@@ -114,7 +133,7 @@ export default {
 			statusOptions: statusOptions,
 			scopeTypeOptions: scopeTypeOptions,
 			statusCustomerOptions: statusCustomerOptions,
-			contactTypesOptions:contactTypesOptions,
+			contactTypesOptions: contactTypesOptions,
 			// 滑动区域的高度
 			contentHeight: '',
 			isFix: false,
@@ -128,13 +147,13 @@ export default {
 		isComplete() {
 			return this.total === this.dataList.length;
 		},
-		...mapGetters(['navbarHeight','tenantId','userInfo'])
+		...mapGetters(['navbarHeight', 'tenantId', 'userInfo'])
 	},
 	watch: {
 		navbarHeight() {
 			this.handleHeight();
 		},
-		tenantId(){
+		tenantId() {
 			this.refreshData();
 		}
 	},
@@ -145,6 +164,37 @@ export default {
 		this.handleHeight();
 	},
 	methods: {
+		refresherrefresh() {
+			console.log('自定义下拉刷新被触发');
+			let _this = this;
+			if (_this._refresherTriggered) {
+				return;
+			}
+			_this._refresherTriggered = true;
+			//界面下拉触发，triggered可能不是true，要设为true
+			if (!_this.refresherTriggered) {
+				_this.refresherTriggered = true;
+			}
+			this.loadStoreData();
+		},
+		refresherrestore() {
+			console.log('自定义下拉刷新被复位');
+			let _this = this;
+			_this.refresherTriggered = false;
+			_this._refresherTriggered = false;
+		},
+		refresherabort() {
+			console.log('自定义下拉刷新被中止	');
+			let _this = this;
+			_this.refresherTriggered = false;
+			_this._refresherTriggered = false;
+		},
+		async loadStoreData() {
+			let _this = this;
+			await this.refreshData();
+			_this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
+			_this._refresherTriggered = false;
+		},
 		changeTab(value) {
 			this.dataType = value;
 			this.setData(value);
@@ -181,13 +231,13 @@ export default {
 			this.total = this.recordData[index].total;
 		},
 		// 刷新页面
-		refreshData(){
+		refreshData() {
 			this.total = null;
-			this.recordData.forEach(item=>{
-				item.data = []
-				item.total = null
-				item.current = 1
-			})
+			this.recordData.forEach(item => {
+				item.data = [];
+				item.total = null;
+				item.current = 1;
+			});
 			this.setData(this.dataType);
 		},
 		// 搜索重置数据
@@ -295,7 +345,7 @@ export default {
 					console.log('调用失败!');
 				}
 			});
-		},
+		}
 	}
 };
 </script>

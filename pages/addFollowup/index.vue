@@ -21,7 +21,7 @@
 			<view class="item_single">
 				<u-form-item label="下次跟进时间" :border-bottom="false">
 					<u-input v-model="form.nextFollowTime" type="select" input-align="right" :custom-style="{ paddingRight: '20rpx' }" @click="showCalendar = true" />
-					<u-picker mode="time" v-model="showCalendar" start-year="2021" @confirm="calendarChange"></u-picker>
+					<u-picker mode="time" v-model="showCalendar" :params="timeParams" :start-year="currentYear" @confirm="calendarChange"></u-picker>
 					<!-- <u-calendar v-model="showCalendar" mode="date" @change="calendarChange"></u-calendar> -->
 				</u-form-item>
 			</view>
@@ -113,7 +113,17 @@ export default {
 			// 当前添加类型 0 线索 1 客户
 			dataType: '',
 			// 当前id
-			id: ''
+			id: '',
+			// 时间选择器配置
+			timeParams: {
+				year: true,
+				month: true,
+				day: true,
+				hour: true,
+				minute: true,
+				second: true
+			},
+			currentYear:new Date().getFullYear()
 		};
 	},
 	onLoad({ id, dataType }) {
