@@ -5,6 +5,7 @@ import {
 	refreshToken,
 	logout
 } from '@/api/login/index.js';
+import {getfetchUrl} from "@/utils/getFileUrls.js"
 
 const getuserInfo = _ => {
 	const info = uni.getStorageSync('userInfo')
@@ -37,7 +38,7 @@ const user = {
 					username: userInfo.account,
 					grant_type: 'wxmini',
 					...userInfo
-				}).then(res => {
+				}).then(async res => {
 					const data = res;
 					if (data.error_description) {
 						Message({
@@ -51,6 +52,10 @@ const user = {
 							datatype: 'string'
 						}
 						uni.setStorageSync('token_time', JSON.stringify(token_time))
+						if(data.avatar){
+							data.avatar = await getfetchUrl(data.avatar)
+							console.log(data.avatar)
+						}
 						commit('SET_TOKEN', data.access_token);
 						commit('SET_REFRESH_TOKEN', data.refresh_token);
 						commit('SET_TENANT_ID', data.tenant_id);

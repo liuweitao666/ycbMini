@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="Avatar"></nav-bar>
+		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="userInfo.avatar" isAvatar></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->
@@ -27,6 +27,12 @@
 			@scrolltoupper="upper"
 			@scroll="scroll"
 			@scrolltolower="touchBottom"
+			:refresher-threshold="45"
+			:refresher-enabled="true"
+			:refresher-triggered="refresherTriggered"
+			@refresherrefresh="refresherrefresh"
+			@refresherrestore="refresherrestore"
+			@refresherabort="refresherabort"
 		>
 			<view class="main">
 				<view class="section">
@@ -37,7 +43,7 @@
 							<view class="text_desc">{{ item.createTime }}</view>
 							<view class="text_desc">{{ item.provinceName + '/' + item.cityName }}</view>
 						</view>
-						<view class="right" v-show="item.phone"><image src="@/static/image/home/phone.png" mode=""></image></view>
+						<view class="right" v-show="item.phone" @click.stop="phoneCall(item.phone)"><image src="@/static/image/home/phone.png" mode=""></image></view>
 					</view>
 					<!-- 空列表 -->
 					<u-empty type="list" v-if="isComplete && total === 0"></u-empty>
@@ -66,7 +72,17 @@ import { mapGetters } from 'vuex';
 
 import { deepClone } from '@/utils/util.js';
 // 导入数据
-import { clueQueryInfo, customerQueryInfo, dropData, createTimeOptions, rangeOptions, statusOptions, scopeTypeOptions, statusCustomerOptions,contactTypesOptions } from './index.js';
+import {
+	clueQueryInfo,
+	customerQueryInfo,
+	dropData,
+	createTimeOptions,
+	rangeOptions,
+	statusOptions,
+	scopeTypeOptions,
+	statusCustomerOptions,
+	contactTypesOptions
+} from './index.js';
 
 export default {
 	components: {
@@ -75,6 +91,9 @@ export default {
 	},
 	data() {
 		return {
+			// 下拉刷新
+			refresherTriggered: false,
+			_refresherTriggered: false,
 			// 0线索 1 客户
 			dataType: 0,
 			navList: [
@@ -106,7 +125,6 @@ export default {
 					current: 1
 				}
 			],
-			Avatar:'头像',
 			// 是否展示加载动画
 			isLoading: false,
 			value1: '',
@@ -115,7 +133,7 @@ export default {
 			statusOptions: statusOptions,
 			scopeTypeOptions: scopeTypeOptions,
 			statusCustomerOptions: statusCustomerOptions,
-			contactTypesOptions:contactTypesOptions,
+			contactTypesOptions: contactTypesOptions,
 			// 滑动区域的高度
 			contentHeight: '',
 			isFix: false,
@@ -129,35 +147,54 @@ export default {
 		isComplete() {
 			return this.total === this.dataList.length;
 		},
-		...mapGetters(['navbarHeight','tenantId'])
+		...mapGetters(['navbarHeight', 'tenantId', 'userInfo'])
 	},
 	watch: {
 		navbarHeight() {
 			this.handleHeight();
 		},
-		tenantId(){
-			this.initData();
+		tenantId() {
+			this.refreshData();
 		}
 	},
 	created() {
-		// this.$store
-		// 	.dispatch('refreshToken')
-		// 	.then(res => {
-		// 	})
-		// 	.catch(err => {
-		// 		// this.$store.
-		// 		uni.navigateTo({
-		// 			url: `/pages/login/index`
-		// 		});
-		// 		console.log(err);
-		// 	});
 		this.initData();
 	},
 	mounted() {
-		// this.tabTop = this.navbarHeight + 'rpx';
 		this.handleHeight();
 	},
 	methods: {
+		refresherrefresh() {
+			console.log('自定义下拉刷新被触发');
+			let _this = this;
+			if (_this._refresherTriggered) {
+				return;
+			}
+			_this._refresherTriggered = true;
+			//界面下拉触发，triggered可能不是true，要设为true
+			if (!_this.refresherTriggered) {
+				_this.refresherTriggered = true;
+			}
+			this.loadStoreData();
+		},
+		refresherrestore() {
+			console.log('自定义下拉刷新被复位');
+			let _this = this;
+			_this.refresherTriggered = false;
+			_this._refresherTriggered = false;
+		},
+		refresherabort() {
+			console.log('自定义下拉刷新被中止	');
+			let _this = this;
+			_this.refresherTriggered = false;
+			_this._refresherTriggered = false;
+		},
+		async loadStoreData() {
+			let _this = this;
+			await this.refreshData();
+			_this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
+			_this._refresherTriggered = false;
+		},
 		changeTab(value) {
 			this.dataType = value;
 			this.setData(value);
@@ -192,6 +229,16 @@ export default {
 			this.dataList = this.recordData[index].data;
 			if (this.recordData[index].total === null) return this.initData();
 			this.total = this.recordData[index].total;
+		},
+		// 刷新页面
+		refreshData() {
+			this.total = null;
+			this.recordData.forEach(item => {
+				item.data = [];
+				item.total = null;
+				item.current = 1;
+			});
+			this.setData(this.dataType);
 		},
 		// 搜索重置数据
 		setSearchData() {
@@ -234,10 +281,10 @@ export default {
 					this.isLoading = false;
 				} catch (e) {
 					//TODO handle the exception
-					uni.showToast({
-						title: '网络错误，请稍后重试！',
-						icon: 'none'
-					});
+					// uni.showToast({
+					// 	title: '网络错误，请稍后重试！',
+					// 	icon: 'none'
+					// });
 					this.isLoading = false;
 				}
 			}, 500);
@@ -284,6 +331,20 @@ export default {
 			console.log(index);
 			this.dropActive = index;
 			this.handleSearch({ searchType: 'rangeSearch' });
+		},
+		// 打电话
+		phoneCall(phone) {
+			uni.makePhoneCall({
+				phoneNumber: phone,
+				// 成功回调
+				success: res => {
+					console.log('调用成功!');
+				},
+				// 失败回调
+				fail: res => {
+					console.log('调用失败!');
+				}
+			});
 		}
 	}
 };

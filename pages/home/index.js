@@ -4,7 +4,7 @@ export const clueQueryInfo = {
 	createDate: 0,
 	status: '0',
 	range: 1,
-	contactTypes:1
+	contactTypes:''
 };
 // 定义请求参数
 export const customerQueryInfo = {
@@ -12,11 +12,15 @@ export const customerQueryInfo = {
 	createDateType: 0,
 	status: '',
 	scopeType: 1,
-	contactTypes:1
+	contactTypes:''
 };
 export const dropData = ['联系方式', '创建时间', '范围', '状态'];
 // 1：手机，2：电话，3：旺旺，4：qq，5：微信，6：邮箱
 export const contactTypesOptions = [
+	{
+		label:'全部',
+		value:''
+	},
 	{
 		label: '手机',
 		value: 1

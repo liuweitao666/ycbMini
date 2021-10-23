@@ -24,7 +24,7 @@
 		<view class="clue_header">
 			<!-- 商标部分 -->
 			<view class="trademark">
-				<view class="trade_left">商标</view>
+				<view class="trade_left">{{dataType==='0'?'线索':'客户'}}</view>
 				<view class="trade_right">
 					<view class="trade_right_title">
 						<view class="title">{{ detailData.name }}</view>
@@ -78,7 +78,7 @@
 			></u-tabs>
 		</view>
 		<!-- 展示对应记录页面 -->
-		<logs :data="data" :total="total" />
+		<logs :data="data" :currentTab="currentTab" :total="total" />
 		<!-- 加载完成 -->
 		<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
 		<!-- 加载动画 -->
@@ -120,9 +120,9 @@
 <script>
 // 组件
 import logs from './components/logs.vue';
-// import circulationLog from './components/circulationLog.vue';
-// import operationLog from './components/operationLog.vue';
 import logFooter from '@/components/footer/footer.vue';
+// 导入工具
+import {getfetchUrl} from "@/utils/getFileUrls.js"
 // 导入接口
 import { getCustomerDetail, getCustomFollowRecord, getCustomTransferRecord, getCustomOperationRecord } from '@/api/customer/customer.js';
 import { getClueDetail, getClueFollowList, getCluetransferRecord } from '@/api/clue/clue.js';
@@ -157,7 +157,7 @@ export default {
 			//详情
 			detailData: {},
 			// 分页
-			size: 3,
+			size: 20,
 			current: 1,
 			// 客户customerID
 			customerId: '',
@@ -195,6 +195,16 @@ export default {
 			// 刚开始不显示吸顶导航
 			showFixTabs: false
 		};
+	},
+	onPullDownRefresh() {
+		 this.refreshData()
+		  setTimeout(function () {
+				  uni.showToast({
+				  	title:'页面已刷新',
+						icon:'none'
+				  })
+		      uni.stopPullDownRefresh();
+		  }, 1000);
 	},
 	computed: {
 		// 数据是否加载完成
@@ -262,6 +272,8 @@ export default {
 		},
 		// 刷新数据
 		refreshData() {
+			this.size = 20
+			this.current = 1
 			this.recordData.forEach(item => {
 				item.data = [];
 				item.total = null;
@@ -269,6 +281,7 @@ export default {
 				item.scrollTop = 0;
 			});
 			this.handleInitData();
+			this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		},
 		// 设置数据
 		setData(index) {
@@ -330,7 +343,8 @@ export default {
 					const { data: followRecord } = await getFollowRecord(queryInfo);
 					this.recordData[0].total = followRecord.total;
 					this.recordData[0].current = this.current;
-					this.recordData[0].data = [...this.recordData[0].data, ...followRecord.records];
+					const records = await this.getfetchUrl(followRecord.records)
+					this.recordData[0].data = [...this.recordData[0].data, ...records];
 					this.setData(0);
 					break;
 				case 1:
@@ -341,6 +355,8 @@ export default {
 					this.setData(1);
 					break;
 				case 2:
+				  delete queryInfo.customerId
+				  queryInfo.dataId = this.customerId
 					const { data: operationRecord } = await getOperationRecord(queryInfo);
 					this.recordData[2].total = operationRecord.total;
 					this.recordData[2].current = this.current;
@@ -359,6 +375,32 @@ export default {
 					this.tabsTop = data.top - this.navbarHeight / 2;
 				})
 				.exec();
+		},
+		// 转化真实图片地址
+		async getfetchUrl(data){
+			let length = data.length - 1
+			return new Promise((resolve,reject)=>{
+				// 数据为空直接返回
+				if(data.length === 0){
+					return resolve(data)
+				}
+				try{
+					data.forEach(async (item,index)=>{
+						if(item.files.length===0){
+							if(index === length) resolve(data)
+							return
+						}
+						await item.files.forEach(async item=>{
+							console.log(item.fileName,'filename')
+							item.fileName = await getfetchUrl(item.fileKey)
+						})
+						if(index === length) resolve(data)
+					})
+				}catch(e){
+					//TODO handle the exception
+					console.log(e)
+				}
+			})
 		}
 	}
 };

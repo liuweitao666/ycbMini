@@ -5,20 +5,26 @@
 				<view class="form_item" v-if="complex">
 					<u-form-item label="来源" prop="source" :required="true">
 						<u-input v-model="form.sourceText" type="select" @click="sourceShow = true" />
-						<u-action-sheet :list="sourceList" v-model="sourceShow" @click="sourceCallback"></u-action-sheet>
+						<u-select :list="sourceList" mode="mutil-column-auto" value-name="dictKey" label-name="dictValue" v-model="sourceShow" @confirm="sourceCallback"></u-select>
 					</u-form-item>
 				</view>
 				<view class="form_item">
 					<u-form-item label="客户姓名" prop="name" :required="true"><u-input v-model="form.name" placeholder="姓名" /></u-form-item>
 				</view>
+				<view class="form_item" v-if="complex">
+					<u-form-item label="性别">
+						<u-input v-model="form.sexText" type="select" @click="sexShow = true" />
+						<u-action-sheet :list="sexList" v-model="sexShow" @click="sexCallback"></u-action-sheet>
+					</u-form-item>
+				</view>
 				<view class="form_item">
 					<u-form-item label="联系方式" prop="phone" :required="true"><u-input v-model="form.phone" placeholder="联系方式" /></u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
-					<u-form-item label="公司名称"><u-input v-model="form.companyName" type="select" @click="jumpTo('/pages/generateCustomer/searchCompany')" placeholder="公司名称" /></u-form-item>
+					<u-form-item label="公司名称"><u-input v-model="form.companyName" type="select" @click="jumpTo('/pages/searchPage/index?type=1')" placeholder="公司名称" /></u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
-					<u-form-item label="公司职位"><u-input v-model="form.position"  placeholder="公司职位" /></u-form-item>
+					<u-form-item label="公司职位"><u-input v-model="form.position" placeholder="公司职位" /></u-form-item>
 				</view>
 				<!-- <view class="form_item">
 					<u-form-item label="业务类型">
@@ -39,9 +45,9 @@
 						<u-action-sheet :list="statusList" v-model="statusShow" @click="statusCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
-				 <!-- @click="jumpTo" 跳转标签选择页方法 -->
+				<!-- @click="jumpTo" 跳转标签选择页方法 -->
 				<view class="form_item">
-					<u-form-item label="标签"><u-input v-model="form.labels" placeholder="请输入标签" /></u-form-item>
+					<u-form-item label="标签"><u-input v-model="form.labels" type="select" placeholder="请输入标签" @click="jumpTo('/pages/generateCustomer/labels/labels')" /></u-form-item>
 				</view>
 				<view class="form_item"><u-form-item label="备注"></u-form-item></view>
 				<view class="form_item">
@@ -57,9 +63,9 @@
 
 <script>
 import { clueToCustomer } from '@/api/clue/clue.js';
-import { createCustomer } from "@/api/customer/customer.js"
+import { createCustomer } from '@/api/customer/customer.js';
 import { getRegionTree } from '@/api/region/region.js';
-import { getDictionary } from "@/api/dict/index.js"
+import { getDictionaryTree } from '@/api/dict/index.js';
 
 // 1.潜在客户、2.成交客户
 const statusList = [
@@ -71,8 +77,7 @@ const statusList = [
 	}
 ];
 export default {
-	components:{
-	},
+	components: {},
 	data() {
 		return {
 			// 自定义提交按钮
@@ -94,6 +99,8 @@ export default {
 			},
 			// 地区名称
 			region: '',
+			// 标签名称
+			labels: '',
 			form: {
 				name: '',
 				cityCode: '',
@@ -107,11 +114,13 @@ export default {
 				status: '',
 				statusText: '',
 				wechat: '',
-				source:'',
-				sourceText:''
+				source: '',
+				sourceText: '',
+				sexText: '',
+				sex: 0
 			},
 			rules: {
-				source:[
+				source: [
 					{
 						required: true,
 						message: '请选择来源',
@@ -142,17 +151,18 @@ export default {
 					}
 				]
 			},
-			actionSheetList: [
+			sexList: [
+				{
+					text: '保密'
+				},
 				{
 					text: '男'
 				},
 				{
 					text: '女'
-				},
-				{
-					text: '保密'
 				}
 			],
+			sexShow: false,
 			// 提交禁止状态
 			isLoading: false,
 			// 表格状态
@@ -161,44 +171,43 @@ export default {
 			// 客户状态列表
 			statusList: statusList,
 			// 客户来源列表
-			sourceList:[],
+			sourceList: [],
 			// 显示地区列选择去
 			regionShow: false,
 			// 地区列表
 			regionList: [],
 			// 是否新增客户
-			complex:null
+			complex: null,
 		};
 	},
-	onLoad({id,complex}) {
-		this.form.clueId = id
-		this.complex = complex
+	onLoad({ id, complex }) {
+		this.form.clueId = id;
+		this.complex = complex;
 	},
 	// 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
 	onReady() {
 		this.$refs.uForm.setRules(this.rules);
 		this.getRegionTree();
-		this.getsourceList()
+		this.getsourceList();
 	},
 	methods: {
 		// 设置公司信息
-		setCompany(companyInfo){
+		setCompany(companyInfo) {
 			this.form.companyName = companyInfo.companyName;
 			this.form.qichachaCompanyId = companyInfo.qichachaCompanyId;
+		},
+		// 设置标签值
+		setLabels(labels) {
+			this.form.labels = labels;
 		},
 		async showRegion() {
 			this.regionShow = true;
 		},
 		// 获取来源渠道
-		async getsourceList(){
-			const {data:res} = await getDictionary({ code: 'source' })
-			console.log(res)
-			this.sourceList = res.map(item=>{
-				return {
-					text:item.dictValue,
-					id:item.id
-				}
-			})
+		async getsourceList() {
+			const { data: res } = await getDictionaryTree('source');
+			console.log(res);
+			this.sourceList = res;
 		},
 		// 获取城市数据
 		async getRegionTree() {
@@ -223,28 +232,34 @@ export default {
 			this.form.cityCode = region[1].value;
 		},
 		// 选择客户状态的回调
-		sourceCallback(value){
-			this.form.source = this.sourceList[value].id
-			this.form.sourceText = this.sourceList[value].text
+		sourceCallback(data) {
+			this.form.source = data[1].value;
+			this.form.sourceText = data[0].label + '-' + data[1].label;
+		},
+		// 选择性别回调
+		sexCallback(index) {
+			console.log(index);
+			this.form.sexText = this.sexList[index].text;
+			this.form.sex = index;
 		},
 		// 跳转对应页面
 		jumpTo(url) {
 			uni.navigateTo({
 				url
-			})
+			});
 		},
-		
+
 		// 提交生成客户请求
 		handleSubmit() {
 			this.$refs.uForm.validate(async value => {
-				console.log(this.form,this.complex)
+				console.log(this.form, this.complex);
 				if (value) {
 					try {
 						this.isLoading = true;
 						uni.showLoading({
 							title: '正在生成'
 						});
-						const data = this.complex?await createCustomer(this.form):await clueToCustomer(this.form);
+						const data = this.complex ? await createCustomer(this.form) : await clueToCustomer(this.form);
 						uni.hideLoading();
 						if (data.code === 200) {
 							this.$refs.uToast.show({
@@ -252,13 +267,12 @@ export default {
 								type: 'success'
 							});
 							this.isLoading = false;
-							this.$store.dispatch('getCustomerList')
-							setTimeout(()=>{
+							this.$store.dispatch('getCustomerList');
+							setTimeout(() => {
 								uni.navigateBack({
-									delta: 1,
+									delta: 1
 								});
-							},500)
-							
+							}, 500);
 						} else {
 							this.$refs.uToast.show({
 								title: '网络错误',
@@ -267,9 +281,8 @@ export default {
 							this.isLoading = false;
 						}
 					} catch (e) {
-						console.log(e)
+						console.log(e);
 						//TODO handle the exception
-						uni.hideLoading();
 						this.isLoading = false;
 					}
 				}

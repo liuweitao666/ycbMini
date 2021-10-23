@@ -61,7 +61,6 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 			throw res[1].data
 		}
 	}).catch(parmas => {
-		console.log(parmas)
 		switch (parmas.code) {
 			case 401:
 				store.dispatch('FedLogOut').then(res=>{
@@ -78,13 +77,14 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 							url: `/pages/login/index`
 						});
 					},500)
-					return Promise.reject(parmas)
+					// return Promise.reject(parmas)
 				})
 				break
 			default:
 				uni.showToast({
 					title: parmas.msg,
-					icon: 'none'
+					icon: 'none',
+					duration:1000
 				})
 				return Promise.reject(parmas)
 				break

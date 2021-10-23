@@ -20,7 +20,9 @@
 			<view class="header" :style="{ height: navTop + 'px' }"></view>
 			<view class="navbar-tabs">
 				<!-- 头像 -->
-				<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="Avatar"></view>
+				<view class="avatar" :style="{ height: '60rpx', width: '60rpx' }" @click="handleTo" v-if="isAvatar">
+					<u-avatar :src="Avatar" size="60"></u-avatar>
+				</view>
 				<!-- 返回首页 -->
 				<u-icon name="home" class="avatar back" color="#fff"  :size="45" @click="goHome" v-if="Home"></u-icon>
 				<!-- 左侧插槽 -->
@@ -78,6 +80,11 @@ export default {
 			default: _ => false
 		},
 		// 是否展示头像
+		isAvatar:{
+			type: Boolean,
+			default: _ => false
+		},
+		// 头像数据
 		Avatar: {
 			type: String,
 			default: _ => ''

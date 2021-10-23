@@ -6,7 +6,7 @@
 			<!-- 卡片 -->
 			<view class="card">
 				<view class="header">
-					<u-avatar :src="src" :size="160"></u-avatar>
+					<u-avatar :src="personData.avatar" :size="160"></u-avatar>
 					<view class="info">
 						<view class="name">
 							<text>{{ personData.realName }}</text>
@@ -14,7 +14,7 @@
 						<view class="desc">{{ personData.name || '暂无' }}</view>
 						<view class="desc company">{{ personData.tenantName }}</view>
 					</view>
-					<u-icon name="weixin-circle-fill" @click="jumpTo" class="qr_code"></u-icon>
+					<image @click="jumpTo" class="qr_code" src="../../static/image/personalCenter/qrcode.png"></image>
 				</view>
 				<view class="contact">
 					<view class="item">
@@ -29,14 +29,14 @@
 							<u-icon name="email" color="#fff" size="44"></u-icon>
 							<text class="left_text">{{ personData.email }}</text>
 						</view>
-						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.email)">点击复制</u-button>
+						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.email, '邮箱')">点击复制</u-button>
 					</view>
 					<view class="item">
 						<view class="left">
 							<u-icon name="weixin-fill" color="#fff" size="44"></u-icon>
 							<text class="left_text">{{ personData.wechat }}</text>
 						</view>
-						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.wechat)">点击复制</u-button>
+						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.wechat, '微信号')">点击复制</u-button>
 					</view>
 				</view>
 			</view>
@@ -75,14 +75,16 @@
 		<view class="spacing"></view>
 		<person-footer :hidden="hiddenFooter">
 			<view class="footer_left">
-				<view class="wechat">
-					<view><u-icon name="chat" size="60"></u-icon></view>
-					<text>微信</text>
+				<view class="wechat" @click="showQrcode">
+					<view class="wrap">
+						<u-icon name="chat" size="60"></u-icon>
+						<text style="padding-left: 10rpx;">微信</text>
+					</view>
 				</view>
-				<view class="email">
+				<!-- <view class="email" @click="handleCopy(personData.email,'邮箱')">
 					<view><u-icon name="email" size="60"></u-icon></view>
 					<text>邮箱</text>
-				</view>
+				</view> -->
 			</view>
 			<u-button type="primary" :custom-style="customContact" @click="phoneCall">拨打电话</u-button>
 		</person-footer>
@@ -124,8 +126,8 @@ export default {
 			audioSrc: '',
 			// 页面高度
 			scrollHeight: 0,
-			isHome:false,
-			isBack:true,
+			isHome: false,
+			isBack: true,
 			// 滚动高度
 			scrollTop: 0,
 			hiddenFooter: true,
@@ -185,7 +187,7 @@ export default {
 		// }
 		return {
 			title: `易创宝-${this.personData.name}的名片`,
-			path: `/pages/personalCenter/index?id=${this.personData.id}&tenantId=${this.userInfo.tenantId}`,
+			path: `/pages/personalCenter/index?id=${encodeURIComponent(this.personData.id)}&tenantId=${encodeURIComponent(this.userInfo.tenantId)}`,
 			imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
 		};
 	},
@@ -194,10 +196,10 @@ export default {
 		this.tenant_id = this.userInfo.tenant_id;
 		if (id && tenantId) {
 			console.log(id, tenantId);
-			this.user_id = id;
-			this.tenant_id = tenantId;
-			this.isBack = false
-			this.isHome = true
+			this.user_id = decodeURIComponent(id);
+			this.tenant_id = decodeURIComponent(tenantId);
+			this.isBack = false;
+			this.isHome = true;
 		}
 		this.getUserInfo();
 	},
@@ -247,14 +249,15 @@ export default {
 			});
 		},
 		// 复制文本
-		handleCopy(value) {
+		handleCopy(value, prompt) {
 			uni.setClipboardData({
 				data: value, //要被复制的内容
 				success: () => {
 					//复制成功的回调函数
 					uni.showToast({
 						//提示
-						title: '复制成功'
+						title: prompt + '复制成功',
+						icon: 'none'
 					});
 				}
 			});
@@ -281,8 +284,11 @@ export default {
 				organization: '金信恒', //公司
 				title: 'Cto' //职位
 			});
+		},
+		// 个人二维码展示
+		showQrcode() {
+			console.log(123);
 		}
-		// 分享个人名片页面
 	}
 };
 </script>
@@ -294,6 +300,10 @@ export default {
 	.wechat {
 		padding-left: 20rpx;
 		text-align: center;
+		.wrap{
+			display: flex;
+			align-items: center;
+		}
 	}
 	.email {
 		padding-left: 72rpx;
@@ -348,8 +358,9 @@ export default {
 				position: absolute;
 				top: 0;
 				right: 0;
+				width: 60rpx;
+				height: 60rpx;
 				font-size: 62rpx;
-				margin-right: 40rpx;
 			}
 		}
 		// 联系方式

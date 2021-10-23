@@ -3,65 +3,70 @@
 		<view id="companyWrap">
 			<u-sticky>
 				<view class="search">
-					<input v-model="queryInfo.name" class="s_input" placeholder="请输入公司名称" />
+					<input v-model="name" class="s_input" :placeholder="type === '1' ? '请输入公司名称' : '输入客户名称搜索'" />
 					<text class="search_text" @click="handleSearch">搜索</text>
 					<u-icon name="search" class="search_icon" size="30" />
 				</view>
 			</u-sticky>
 			<!-- 公司列表 -->
-			<view v-if="companyList.length > 0">
-				<view class="list-cell" v-for="company in companyList" :key="company.id" @click="selectCompany(company)">
-					<view :class="['icon']">公</view>
-					<view class="info">
-						<view class="name">{{ company.companyName }}</view>
-						<view class="desc">法人：{{ company.legalPerson || '暂无' }}</view>
-					</view>
-				</view>
-			</view>
+			<company :data="data" v-if="type === '1'" :emptyText="emptyText" />
+			<!-- 客户列表 -->
+			<customers :data="data" v-else :emptyText="emptyText" />
 			<!-- 空状态 -->
-			<u-empty :text="emptyText" mode="search" margin-top="100" v-else></u-empty>
+			<view class="" v-if="data.length === 0 || complete">
+				<view class="no_more" v-if="complete">没有更多了~</view>
+				<u-empty :text="emptyText" mode="search" margin-top="100" v-else></u-empty>
+			</view>
 		</view>
 	</scroll-view>
 </template>
 
 <script>
-import { searchCompany } from '@/api/customer/customer.js';
+import { searchCompany, getCustomerList } from '@/api/customer/customer.js';
+import company from './components/company.vue';
+import customers from './components/customers.vue';
 import { mapGetters } from 'vuex';
 export default {
+	components: {
+		company,
+		customers
+	},
 	data() {
 		return {
+			total: null,
+			name: '',
 			queryInfo: {
-				name: '',
 				size: 20,
 				current: 1
 			},
-			companyList: [
-				// {
-				// 	name:'湖南科技有限公司',
-				// 	desc:'哈哈哈哈哈'
-				// },
-				// {
-				// 	name:'长沙金兴哼有限公司',
-				// 	desc:'哈哈哈哈哈'
-				// },
-			],
+			data: [],
 			emptyText: '输入公司名称搜索',
 			// 页面可滚动的高度
-			scrollTop: 0
+			scrollTop: 0,
+			type: '',
+			complete: false
 		};
 	},
 	computed: {
 		...mapGetters(['navbarHeight'])
 	},
+	onLoad({ type }) {
+		// type 1 公司 2 客户
+		this.type = type;
+		uni.setNavigationBarTitle({
+			title: type === '1' ? '搜索公司' : '搜索客户' //此处写页面的title
+		});
+		type === '1' ? (this.emptyText = '输入公司名称搜索') : (this.emptyText = '输入客户名称搜索');
+	},
 	methods: {
 		async handleSearch() {
-			if (!this.queryInfo.name)
+			if (!this.name)
 				return uni.showToast({
 					title: '名称不能为空',
 					icon: 'none'
 				});
 			this.queryInfo.current = 1;
-			this.companyList = [];
+			this.data = [];
 			await this.getList();
 			uni.pageScrollTo({
 				scrollTop: 0,
@@ -69,40 +74,47 @@ export default {
 			});
 		},
 		scroll(data) {
-			// let {scrollTop} = detail
 			this.scrollTop = data.detail.scrollTop;
 		},
+		upper() {},
 		// 获取公司列表
-		async getList() {
+		async getList(istouchBottom) {
 			try {
 				uni.showLoading({
 					title: '正在加载...'
 				});
-				const { data: res } = await searchCompany(this.queryInfo);
+				if (this.type === '2') {
+					this.queryInfo.name = this.name;
+				} else {
+					this.queryInfo.name = this.name;
+				}
+				const { data: res } = this.type === '1' ? await searchCompany(this.queryInfo) : await getCustomerList(this.queryInfo);
+				console.log(res);
 				setTimeout(() => {
+					const data = this.handleData(res, istouchBottom);
 					uni.hideLoading();
-					this.companyList = [...this.companyList, ...res];
+					this.data = [...this.data, ...data];
 				}, 500);
 			} catch (e) {
+				console.log(e);
 				//TODO handle the exception
 				uni.hideLoading();
 			}
 		},
 		//
 		touchBottom() {
+			if (this.complete) return;
 			this.queryInfo.current++;
-			this.getList();
+			this.getList(true);
 		},
-		// 选择公司时
-		selectCompany(companyInfo) {
-			let pages = getCurrentPages();
-			// 获取上一页栈
-			let prevPage = pages[pages.length - 2];
-			// 设置添加页面公司数据
-			prevPage.$vm.setCompany(companyInfo)
-			uni.navigateBack({
-				delta: 1
-			});
+		handleData(data, istouchBottom) {
+			if (data.length === 0) {
+				this.emptyText = '搜索结果为空';
+			}
+			if (istouchBottom) {
+				this.complete = true;
+			}
+			return this.type === '1' ? data : data;
 		}
 	}
 };
@@ -139,38 +151,9 @@ export default {
 		}
 	}
 }
-.list-cell {
-	display: flex;
-	box-sizing: border-box;
-	width: 100%;
-	padding: 10px 30rpx;
-	overflow: hidden;
-	color: #323233;
-	font-size: 14px;
-	line-height: 24px;
-	background-color: #fff;
-	border-bottom: 2rpx solid #f8f8f8;
-	.icon {
-		min-width: 96rpx;
-		height: 96rpx;
-		text-align: center;
-		line-height: 96rpx;
-		font-size: 42rpx;
-		color: #ffffff;
-		border-radius: 10rpx;
-		background-color: #d2e4f8;
-	}
-	.info {
-		margin-left: 40rpx;
-		.name {
-			width: 500rpx;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.desc {
-			font-size: 28rpx;
-		}
-	}
+.no_more {
+	text-align: center;
+	padding: 30rpx 0;
+	color: #666;
 }
 </style>

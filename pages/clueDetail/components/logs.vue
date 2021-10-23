@@ -1,28 +1,32 @@
 <template>
 	<view class="logs_card">
-		<view class="followUp_log" v-if="data.length > 0">
-			<view class="follow_item" v-for="item in data" :key="item.id">
+		<!-- 跟进记录 -->
+		<view class="followUp_log" v-if="data.length > 0 && currentTab === 0">
+			<view class="follow_item" v-for="(item, index) in data" :key="index">
 				<view class="custom_title">{{ item.createUserName }}</view>
 				<view class="desc">{{ item.createTime }}</view>
 				<view class="desc">
-					<text style="color: #FC961E;padding-right: 10rpx">#{{ followType[item.type] || item.operationType }}#</text>
-					{{ item.followContent || item.operationType }}
+					<text style="color: #FC961E;padding-right: 10rpx">#{{ followType[item.type] }}#</text>
+					{{ item.followContent }}
 				</view>
-				<view class="image_cneg">
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="widthFix" @click="previewImg"></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="" @click="previewImg"></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="" @click="previewImg"></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="" @click="previewImg"></image>
-				</view>
+				<view class="image_cneg" v-if="item.files"><image @click="previewImg(item.files, i)" :key="i" :src="item2.fileName" v-for="(item2, i) in item.files"></image></view>
 			</view>
 		</view>
+		<circulationLog :data="data" v-if="data.length > 0 && currentTab === 1"/>
+		<operationLog :data="data" v-if="data.length > 0 && currentTab === 2"/>
 		<view class="empty_view" v-if="total === 0"><u-empty text="暂无数据" mode="list"></u-empty></view>
 	</view>
 </template>
 
 <script>
+import circulationLog from './circulationLog.vue';
+import operationLog from './operationLog.vue';
 export default {
-	props: ['data', 'total'],
+	components:{
+		circulationLog,
+		operationLog
+	},
+	props: ['data', 'total', 'currentTab'],
 	data() {
 		return {
 			followType: ['', '电话', '微信', '旺旺', '线下', '其他']
@@ -30,13 +34,13 @@ export default {
 	},
 	methods: {
 		// 预览图片多张
-		previewImg() {
-			let _this = this;
-			let imgsArray = ['https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto','https://img0.baidu.com/it/u=1491879962,2497148542&fm=26&fmt=auto','https://img1.baidu.com/it/u=2697747062,2540797278&fm=26&fmt=auto'];
-			
+		previewImg(files, index, item) {
+			console.log(item);
+			const urls = files.map(item => item.fileName);
+			console.log(urls);
 			uni.previewImage({
-				current: imgsArray[1],
-				urls: imgsArray,
+				current: files[index].fileName,
+				urls,
 				indicator: 'number',
 				loop: true
 			});

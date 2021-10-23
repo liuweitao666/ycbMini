@@ -11,3 +11,14 @@ export const getDictionary =params=>request.globalRequest({
 		params,
 		power: 1
 })
+
+// 获取系统字典树
+export const getDictionaryTree = code=>request.globalRequest({
+		url: `${baseUrl}/blade-system/dict/dictionary-tree`,
+		method: 'get',
+		params:{
+			code
+		},
+		power: 1
+})
+

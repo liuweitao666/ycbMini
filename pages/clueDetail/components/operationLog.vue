@@ -3,24 +3,15 @@
 		<view class="opration_log" v-if="data.length>0">
 			<view class="follow_item" v-for="item in data" :key="item.id">
 				<view class="custom_title">{{item.createUserName}}</view>
-				<view class="desc">{{$dateFormat(item.createTime)}}</view>
-				<view class="desc">
-					<text style="color: #FC961E;padding-right: 10rpx">#{{item.operationType}}#</text>
-					{{item.operationType}}
-				</view>
-				<view class="image_cneg">
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode="widthFix"></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode=""></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode=""></image>
-					<image src="https://img1.baidu.com/it/u=3517333914,639949515&fm=26&fmt=auto" mode=""></image>
+				<view class="desc">{{item.createTime}}</view>
+				<view class="desc" v-for="(item2,index2) in item.updateContent" :key="index2">
+					<text style="color: #FC961E">#{{switchField(item.operationType)}}</text>
+					<text style="color: #FC961E;padding-right: 10rpx">{{switchField(item.dataType)}}#</text>
+					<text>{{`${item2.fieldName?item2.fieldName+'更新':''} ${item2.oldValue?item2.oldValue+'变更为':''}${item2.newValue}`}}</text>
 				</view>
 			</view>
 		</view>
-		<view class="empty_view" v-if="total===0">
-			<u-empty text="暂无数据" mode="list"></u-empty>
-		</view>
 	</view>
-
 </template>
 
 <script>
@@ -40,6 +31,24 @@
 		},
 		created(){
 			console.log(this.data)
+		},
+		methods:{
+			switchField(field){
+				switch(field){
+					case 'create':
+						return '新增'
+					case 'update':
+						return '修改'
+					case 'delete':
+						return '删除'
+					case 'clue':
+						return '线索'
+					case 'customer':
+						return '客户'
+					case 'niche':
+						return '商机'
+				}
+			}
 		}
 	}
 </script>
