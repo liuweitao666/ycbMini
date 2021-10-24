@@ -5,7 +5,12 @@ import {
 	refreshToken,
 	logout
 } from '@/api/login/index.js';
-import {getfetchUrl} from "@/utils/getFileUrls.js"
+import {
+	getfetchUrl
+} from "@/utils/getFileUrls.js"
+import {
+	getUserInfo
+} from '@/api/personalCenter/index.js';
 
 const getuserInfo = _ => {
 	const info = uni.getStorageSync('userInfo')
@@ -25,12 +30,13 @@ const user = {
 		token: uni.getStorageSync('token') || '',
 		refreshToken: uni.getStorageSync('refreshToken') || '',
 		// 租户列表
-		tenantList:getTenantList()
+		tenantList: getTenantList()
 	},
 	actions: {
 		//根据用户名登录
 		Login({
-			commit
+			commit,
+			dispatch
 		}, userInfo) {
 			uni.setStorageSync('tenantId', userInfo.tenantId)
 			return new Promise((resolve, reject) => {
@@ -52,14 +58,10 @@ const user = {
 							datatype: 'string'
 						}
 						uni.setStorageSync('token_time', JSON.stringify(token_time))
-						if(data.avatar){
-							data.avatar = await getfetchUrl(data.avatar)
-							console.log(data.avatar)
-						}
 						commit('SET_TOKEN', data.access_token);
 						commit('SET_REFRESH_TOKEN', data.refresh_token);
 						commit('SET_TENANT_ID', data.tenant_id);
-						commit('SET_USER_INFO', data);
+						dispatch('GetUserDetail',data.user_id)
 					}
 					resolve({
 						code: 200,
@@ -72,7 +74,29 @@ const user = {
 				})
 			})
 		},
-
+		// 获取用户详情
+		GetUserDetail({
+			commit,
+			dispatch
+		}, user_id) {
+				
+			return new Promise((resolve, reject)=>{
+				getUserInfo(user_id).then(async res=>{
+					if(res.data.avatar){
+						res.data.avatar = await getfetchUrl(res.data.avatar)
+					}
+					if(res.data.wechatQrCode){
+						res.data.wechatQrCode = await getfetchUrl(res.data.wechatQrCode)
+					}
+					console.log(res.data)
+					commit('SET_USER_INFO',res.data)
+					resolve(res.data)
+				}).catch(err=>{
+					reject(err)
+				})
+			})
+			
+		},
 		//获取用户信息
 		GetUserInfo({
 			commit,
@@ -80,7 +104,7 @@ const user = {
 		}, params) {
 			return new Promise((resolve, reject) => {
 				getUsers(params).then(res => {
-					commit('SET_TENANT_LIST',res.data)
+					commit('SET_TENANT_LIST', res.data)
 					resolve(res)
 				}).catch(err => {
 					console.log(err)
@@ -161,7 +185,7 @@ const user = {
 			uni.setStorageSync('userInfo', userinfostr)
 		},
 		// 保存租户列表
-		SET_TENANT_LIST:(state, tenantList)=>{
+		SET_TENANT_LIST: (state, tenantList) => {
 			state.tenantList = tenantList;
 			const tenantListstr = JSON.stringify(tenantList)
 			console.log(state.tenantList)

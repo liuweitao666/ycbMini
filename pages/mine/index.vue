@@ -5,14 +5,14 @@
 			<view class="mine_card">
 				<image src="../../static/image/personalCenter/card_back.png" class="background" mode=""></image>
 				<view class="content">
-					<u-avatar :src="personData.avatar" size="120"></u-avatar>
-					<view class="name">{{ personData.realName }}</view>
+					<u-avatar :src="userInfo.avatar || wxUserInfo.avatarUrl" size="120"></u-avatar>
+					<view class="name">{{ userInfo.realName }}</view>
 					<view class="intro">
-						{{ personData.name }}
+						{{ userInfo.name }}
 						<br />
 					</view>
 					<view class="company" v-if="tenantList.length > 1">
-						<text>{{ personData.tenantName }}</text>
+						<text>{{ userInfo.tenantName }}</text>
 						<view class="switch" type="default" @click="transfer">
 							<image src="../../static/image/mine/switch.png" mode=""></image>
 							切换组织
@@ -42,6 +42,7 @@ export default {
 	},
 	data() {
 		return {
+			wxUserInfo:uni.getStorageSync('wxUserInfo'),
 			personData: {}
 		};
 	},
@@ -50,14 +51,14 @@ export default {
 	},
 	watch: {
 		tenantId() {
-			this.getUserInfo();
+			this.GetUserDetail();
 			this.$refs['performance'].Refresh();
 		}
 	},
 	// 下拉刷新
 	onPullDownRefresh() {
 		this.$refs['performance'].Refresh();
-		this.getUserInfo()
+		this.GetUserDetail()
 		setTimeout(function() {
 			uni.showToast({
 				title: '页面已刷新',
@@ -67,17 +68,9 @@ export default {
 		}, 1000);
 	},
 	created() {
-		this.getUserInfo();
 	},
 	methods: {
-		...mapActions(['Login']),
-		// 获取用户信息
-		async getUserInfo() {
-			const { user_id } = this.userInfo;
-			const { data: res } = await getUserInfo(user_id);
-			this.personData = res;
-			console.log(this.personData);
-		},
+		...mapActions(['Login','GetUserDetail']),
 		// 展示租户列表
 		transfer() {
 			this.$refs['tenant'].show = true;

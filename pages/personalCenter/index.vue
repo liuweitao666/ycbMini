@@ -2,11 +2,19 @@
 	<view id="personCenter">
 		<audio :src="audioSrc" class="audio"></audio>
 		<nav-bar :isBackground="true" :Home="isHome" :title="personData.realName" :isBack="isBack" height="482rpx"></nav-bar>
+		<!-- 二维码弹框 -->
+		<u-popup v-model="qrCodeVisible" mode="center" length="80%" border-radius="14">
+			<view class="Qrcode_wrap">
+				<view class="header_title">企业微信二维码</view>
+				<view class="img"><image :src="personData.wechatQrCode" mode=""></image></view>
+			</view>
+		</u-popup>
+
 		<view class="main">
 			<!-- 卡片 -->
 			<view class="card">
 				<view class="header">
-					<u-avatar :src="personData.avatar" :size="160"></u-avatar>
+					<u-avatar :src="avatar ||wxUserInfo.avatarUrl" :size="160"></u-avatar>
 					<view class="info">
 						<view class="name">
 							<text>{{ personData.realName }}</text>
@@ -99,6 +107,9 @@ import enterpriseIntro from './components/enterpriseIntro.vue';
 import businessIntro from './components/businessIntro.vue';
 import { mapGetters } from 'vuex';
 import { getUserInfo, getTenantInfo } from '@/api/personalCenter/index.js';
+import {
+	getfetchUrl
+} from "@/utils/getFileUrls.js"
 export default {
 	components: {
 		personIntro,
@@ -122,12 +133,15 @@ export default {
 	},
 	data() {
 		return {
+			wxUserInfo:uni.getStorageSync('wxUserInfo'),
 			// 音频文件
 			audioSrc: '',
 			// 页面高度
 			scrollHeight: 0,
 			isHome: false,
 			isBack: true,
+			qrCodeVisible: false,
+			avatar:'',
 			// 滚动高度
 			scrollTop: 0,
 			hiddenFooter: true,
@@ -187,16 +201,16 @@ export default {
 		// }
 		return {
 			title: `易创宝-${this.personData.name}的名片`,
-			path: `/pages/personalCenter/index?id=${encodeURIComponent(this.personData.id)}&tenantId=${encodeURIComponent(this.userInfo.tenantId)}`,
-			imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
+			path: `/pages/personalCenter/index?userId=${encodeURIComponent(this.personData.id)}&tenantId=${encodeURIComponent(this.personData.tenantId)}`,
+			// imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
 		};
 	},
-	onLoad({ id, tenantId }) {
-		this.user_id = this.userInfo.user_id;
-		this.tenant_id = this.userInfo.tenant_id;
-		if (id && tenantId) {
+	onLoad({ userId, tenantId }) {
+		this.user_id = this.userInfo.id;
+		this.tenant_id = this.userInfo.tenantId;
+		if (userId && tenantId) {
 			console.log(id, tenantId);
-			this.user_id = decodeURIComponent(id);
+			this.user_id = decodeURIComponent(userId);
 			this.tenant_id = decodeURIComponent(tenantId);
 			this.isBack = false;
 			this.isHome = true;
@@ -215,6 +229,12 @@ export default {
 		// 获取用户信息
 		async getUserInfo() {
 			const { data: res } = await getUserInfo(this.user_id);
+			if(res.avatar && !this.avatar){
+				this.avatar = await getfetchUrl(res.avatar)
+			}
+			if(res.wechatQrCode){
+				res.wechatQrCode = await getfetchUrl(res.wechatQrCode)
+			}
 			this.personData = res;
 			setTimeout(() => {
 				this.getScrollHeight();
@@ -244,8 +264,9 @@ export default {
 				.exec();
 		},
 		jumpTo() {
+			console.log(this.user_id,this.tenant_id)
 			uni.navigateTo({
-				url: `/pages/personalQRcode/personalQRcode?id=${this.userInfo.user_id}`
+				url: `/pages/personalQRcode/personalQRcode?user_id=${this.user_id}&tenant_id=${this.tenant_id}`
 			});
 		},
 		// 复制文本
@@ -287,20 +308,37 @@ export default {
 		},
 		// 个人二维码展示
 		showQrcode() {
-			console.log(123);
+			this.qrCodeVisible = true;
 		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
+.Qrcode_wrap {
+	padding: 30rpx;
+	.header_title {
+		margin-bottom: 30rpx;
+		text-align: center;
+	}
+	.img {
+		width: 440rpx;
+		height: 440rpx;
+		margin: 0 auto;
+		image {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+	}
+}
 .footer_left {
 	color: #ffffff;
 	display: flex;
 	.wechat {
 		padding-left: 20rpx;
 		text-align: center;
-		.wrap{
+		.wrap {
 			display: flex;
 			align-items: center;
 		}

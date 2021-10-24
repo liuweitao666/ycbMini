@@ -22,6 +22,18 @@ export default {
 				uni.setStorageSync('windowHeight', res.windowHeight);
 			}
 		});
+		uni.login({
+			provider:'weixin',
+			success:(loginRes)=>{
+			// 获取用户信息
+					uni.getUserInfo({
+						provider:'weixin',
+						success:function(infoRes){
+								uni.setStorageSync('wxUserInfo',infoRes.userInfo)
+					}
+				});
+			}
+		});
 	},
 	onHide: function() {
 		console.log('App Hide');

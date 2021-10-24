@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="userInfo.avatar" isAvatar></nav-bar>
+		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="userInfo.avatar||wxUserInfo.avatarUrl" isAvatar></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->
@@ -49,7 +49,8 @@
 					<u-empty type="list" v-if="isComplete && total === 0"></u-empty>
 					<view class="" v-else>
 						<!-- 加载完成 -->
-						<view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view>
+						<!-- <view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view> -->
+						<u-divider v-show="isComplete"  bg-color="transparent">没有更多了</u-divider>
 						<!-- 加载动画 -->
 						<view :class="['loading_wrap', { hidden: isComplete }]"><u-loading color="red" :show="isLoading"></u-loading></view>
 					</view>
@@ -91,6 +92,7 @@ export default {
 	},
 	data() {
 		return {
+			wxUserInfo:uni.getStorageSync('wxUserInfo'),
 			// 下拉刷新
 			refresherTriggered: false,
 			_refresherTriggered: false,
@@ -351,6 +353,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .tabs {
 	width: 100vw;
 	// padding: 0 30rpx;
