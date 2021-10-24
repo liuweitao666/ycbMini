@@ -51,14 +51,13 @@ export default {
 	},
 	watch: {
 		tenantId() {
-			this.GetUserDetail();
 			this.$refs['performance'].Refresh();
 		}
 	},
 	// 下拉刷新
 	onPullDownRefresh() {
 		this.$refs['performance'].Refresh();
-		this.GetUserDetail()
+		this.GetUserDetail(this.userInfo.id)
 		setTimeout(function() {
 			uni.showToast({
 				title: '页面已刷新',
