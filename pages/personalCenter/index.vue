@@ -86,7 +86,7 @@
 				<view class="wechat" @click="showQrcode">
 					<view class="wrap">
 						<u-icon name="chat" size="60"></u-icon>
-						<text style="padding-left: 10rpx;">微信</text>
+						<text style="padding-left: 10rpx;">企业微信</text>
 					</view>
 				</view>
 				<!-- <view class="email" @click="handleCopy(personData.email,'邮箱')">
@@ -308,6 +308,10 @@ export default {
 		},
 		// 个人二维码展示
 		showQrcode() {
+			if(!this.personData.wechatQrCode) return uni.showToast({
+				title:'请先在后台上传',
+				icon:'none'
+			})
 			this.qrCodeVisible = true;
 		}
 	}

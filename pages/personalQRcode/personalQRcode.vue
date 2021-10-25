@@ -114,6 +114,9 @@ export default {
 		},
 		// 使用画布绘制页面
 		drawPageImg() {
+			uni.showLoading({
+				title:'请稍后...'
+			})
 			let _this = this;
 			// 生成画布
 			const ctx = uni.createCanvasContext('myCanvas');
@@ -267,6 +270,7 @@ export default {
 	.myCanvas{
 		position: absolute;
 		z-index: -99;
+		opacity: 0;
 	}
 .QRcode {
 	width: 100vw;
