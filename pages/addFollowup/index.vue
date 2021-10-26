@@ -144,8 +144,8 @@ export default {
 		actionSheetCallback() {},
 		calendarChange(date) {
 			console.log(date)
-			const hms = this.$dateFormat(new Date(), 'hh:mm:ss');
-			this.form.nextFollowTime = date.year+'-'+date.month +'-'+ date.day + ' ' + hms;
+			// const hms = this.$dateFormat(new Date(), 'hh:mm:ss');
+			this.form.nextFollowTime = date.year+'-'+date.month +'-'+ date.day+' '+ date.hour +':'+date.minute+':'+date.second;
 		},
 		// 文件上传成功钩子
 		handleSuccess(file){

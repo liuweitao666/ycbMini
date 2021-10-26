@@ -357,6 +357,7 @@ export default {
 				case 2:
 				  delete queryInfo.customerId
 				  queryInfo.dataId = this.customerId
+					queryInfo.descs = 'create_time'
 					const { data: operationRecord } = await getOperationRecord(queryInfo);
 					this.recordData[2].total = operationRecord.total;
 					this.recordData[2].current = this.current;
