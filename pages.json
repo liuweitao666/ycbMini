@@ -88,6 +88,13 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/webView/webView",
+			"style": {
+				"navigationBarTitleText": "企业官网",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"globalStyle": {

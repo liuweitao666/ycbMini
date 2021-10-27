@@ -235,6 +235,9 @@ export default {
 			if(res.wechatQrCode){
 				res.wechatQrCode = await getfetchUrl(res.wechatQrCode)
 			}
+			if(res.personalProfileInvoice){
+				res.personalProfileInvoice = await getfetchUrl(res.personalProfileInvoice)
+			}
 			this.personData = res;
 			setTimeout(() => {
 				this.getScrollHeight();

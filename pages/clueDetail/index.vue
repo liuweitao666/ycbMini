@@ -446,29 +446,32 @@ export default {
 				flex: 1;
 				.trade_right_title {
 					display: flex;
+					flex-wrap: wrap;
 					align-items: center;
 					justify-content: space-between;
 					.title {
 						color: #ffffff;
-						font-size: 48rpx;
+						font-size: 34rpx;
 						font-family: PingFangSC-Semibold, PingFang SC;
-						font-weight: 600;
+						font-weight: 500;
 						letter-spacing: 2rpx;
-						display: -webkit-box;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						word-break: break-all;
-						-webkit-box-orient: vertical;
-						-webkit-line-clamp: 1;
+						margin-right: 20rpx;
+						margin-top: 10rpx;
+						// display: -webkit-box;
+						// overflow: hidden;
+						// text-overflow: ellipsis;
+						// word-break: break-all;
+						// -webkit-box-orient: vertical;
+						// -webkit-line-clamp: 1;
 					}
 					.date {
 						font-size: 12px;
+						margin-top: 10rpx;
 						font-family: PingFangSC-Regular, PingFang SC;
 						font-weight: 400;
 						color: #999999;
 						line-height: 17px;
 						min-width: 216rpx;
-						margin-left: 20rpx;
 					}
 				}
 				.card_desc {

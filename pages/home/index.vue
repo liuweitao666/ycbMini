@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar :navList="navList" @change="changeTab" :isLine="true" :Avatar="userInfo.avatar||wxUserInfo.avatarUrl" isAvatar></nav-bar>
+		<nav-bar :navList="navList" @change="changeTab" :isLine="true" ></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->

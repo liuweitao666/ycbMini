@@ -7,7 +7,7 @@
 			</view>
 			<view class="item">
 				<text>官网：</text>
-				<text style="color:#00A4FF">{{ data.officialWebsite||'www.tianya.cn'}}</text>
+				<text style="color:#00A4FF" @click="openWeb('http://www.baidu.com')">{{ data.officialWebsite||'www.tianya.cn'}}</text>
 			</view>
 			<view class="item">
 				<text>地址：</text>
@@ -39,7 +39,14 @@
 
 <script>
 	export default{
-		props:['data']
+		props:['data'],
+		methods:{
+			openWeb(url){
+			uni.navigateTo({
+				url:`/pages/webView/webView?url=${encodeURIComponent(url)}`
+			})	
+			}
+		}
 	}
 </script>
 

@@ -88,6 +88,7 @@ const user = {
 					if(res.data.wechatQrCode){
 						res.data.wechatQrCode = await getfetchUrl(res.data.wechatQrCode)
 					}
+					
 					console.log(res.data)
 					commit('SET_USER_INFO',res.data)
 					resolve(res.data)

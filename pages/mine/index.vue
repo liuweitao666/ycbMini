@@ -5,7 +5,7 @@
 			<view class="mine_card">
 				<image src="../../static/image/personalCenter/card_back.png" class="background" mode=""></image>
 				<view class="content">
-					<u-avatar :src="userInfo.avatar || wxUserInfo.avatarUrl" size="120"></u-avatar>
+					<u-avatar @click="jumpTo" :src="userInfo.avatar || wxUserInfo.avatarUrl" size="120"></u-avatar>
 					<view class="name">{{ userInfo.realName }}</view>
 					<view class="intro">
 						{{ userInfo.name }}
@@ -19,6 +19,7 @@
 						</view>
 					</view>
 					<u-icon name="zhuanfa" class="zhuanfa" size="50"></u-icon>
+					<button class="zhuanfa btn-share" open-type="share"></button>
 				</view>
 			</view>
 		</view>
@@ -54,6 +55,18 @@ export default {
 			this.$refs['performance'].Refresh();
 		}
 	},
+	onShareAppMessage: function(res) {
+		// if (res.from === 'button') {
+		// 	// 来自页面内转发按钮
+		// 	console.log(res)
+		// 	return
+		// }
+		return {
+			title: `易创宝-${this.personData.name}的名片`,
+			path: `/pages/personalCenter/index?userId=${encodeURIComponent(this.userInfo.id)}&tenantId=${encodeURIComponent(this.userInfo.tenantId)}`,
+			// imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
+		};
+	},
 	// 下拉刷新
 	onPullDownRefresh() {
 		this.$refs['performance'].Refresh();
@@ -73,6 +86,17 @@ export default {
 		// 展示租户列表
 		transfer() {
 			this.$refs['tenant'].show = true;
+		},
+		jumpTo(){
+			const token = uni.getStorageSync('token');
+			if (!token) {
+				return uni.navigateTo({
+					url: '/pages/login/index'
+				});
+			}
+			uni.navigateTo({
+				url: '/pages/personalCenter/index'
+			});
 		}
 	}
 };
@@ -143,6 +167,10 @@ export default {
 					right: 0rpx;
 					top: 0rpx;
 					color: #ffffff;
+				}
+				.btn-share{
+					width: 50rpx;
+					height: 50rpx;
 				}
 			}
 		}
