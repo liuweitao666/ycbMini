@@ -43,8 +43,7 @@ export default {
 	},
 	data() {
 		return {
-			wxUserInfo:uni.getStorageSync('wxUserInfo'),
-			personData: {}
+			wxUserInfo: uni.getStorageSync('wxUserInfo'),
 		};
 	},
 	computed: {
@@ -62,15 +61,15 @@ export default {
 		// 	return
 		// }
 		return {
-			title: `易创宝-${this.personData.name}的名片`,
-			path: `/pages/personalCenter/index?userId=${encodeURIComponent(this.userInfo.id)}&tenantId=${encodeURIComponent(this.userInfo.tenantId)}`,
+			title: `易创宝-${this.userInfo.name}的名片`,
+			path: `/pages/personalCenter/index?userId=${encodeURIComponent(this.userInfo.id)}&tenantId=${encodeURIComponent(this.userInfo.tenantId)}`
 			// imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
 		};
 	},
 	// 下拉刷新
 	onPullDownRefresh() {
 		this.$refs['performance'].Refresh();
-		this.GetUserDetail(this.userInfo.id)
+		this.GetUserDetail(this.userInfo.id);
 		setTimeout(function() {
 			uni.showToast({
 				title: '页面已刷新',
@@ -79,15 +78,14 @@ export default {
 			uni.stopPullDownRefresh();
 		}, 1000);
 	},
-	created() {
-	},
+	created() {},
 	methods: {
-		...mapActions(['Login','GetUserDetail']),
+		...mapActions(['Login', 'GetUserDetail']),
 		// 展示租户列表
 		transfer() {
 			this.$refs['tenant'].show = true;
 		},
-		jumpTo(){
+		jumpTo() {
 			const token = uni.getStorageSync('token');
 			if (!token) {
 				return uni.navigateTo({
@@ -139,6 +137,7 @@ export default {
 					font-size: 24rpx;
 					height: 44rpx;
 					line-height: 44rpx;
+					padding-top: 10rpx;
 				}
 				.company {
 					color: #ffffff;
@@ -146,6 +145,8 @@ export default {
 					font-size: 24rpx;
 					display: flex;
 					align-items: center;
+					padding-top: 28rpx;
+					justify-content: space-between;
 					.switch {
 						background-color: #7065a5;
 						color: #ffffff;
@@ -168,7 +169,7 @@ export default {
 					top: 0rpx;
 					color: #ffffff;
 				}
-				.btn-share{
+				.btn-share {
 					width: 50rpx;
 					height: 50rpx;
 				}

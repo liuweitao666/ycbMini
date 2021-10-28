@@ -145,14 +145,6 @@ export default {
 			// 滚动高度
 			scrollTop: 0,
 			hiddenFooter: true,
-			navList: [
-				{
-					cate_name: '待收货'
-				},
-				{
-					cate_name: '待付款'
-				}
-			],
 			customStyle: {
 				color: '#fff',
 				background: '#2674CC',
@@ -177,7 +169,6 @@ export default {
 				},
 				{
 					cate_name: '业务介绍',
-					cate_count: 5
 				}
 			],
 			// 当前tab栏
@@ -209,7 +200,6 @@ export default {
 		this.user_id = this.userInfo.id;
 		this.tenant_id = this.userInfo.tenantId;
 		if (userId && tenantId) {
-			console.log(id, tenantId);
 			this.user_id = decodeURIComponent(userId);
 			this.tenant_id = decodeURIComponent(tenantId);
 			this.isBack = false;

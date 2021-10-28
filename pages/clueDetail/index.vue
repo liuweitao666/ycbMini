@@ -30,18 +30,19 @@
 						<view class="title">{{ detailData.name }}</view>
 						<text class="date">{{ detailData.createTime }}</text>
 					</view>
-					<view class="card_desc">{{ detailData.remark || detailData.provinceName }}</view>
+					<view class="card_desc">地区：{{ detailData.cityName?detailData.provinceName+'-'+detailData.cityName : '暂无' }}</view>
+					<view class="card_desc">备注：{{ detailData.remark || '暂无' }}</view>
 				</view>
 			</view>
 			<!-- 联系方式 -->
 			<view class="contact_info">
 				<view class="phone">
 					<u-icon name="phone" color="#8F9BB3" size="40"></u-icon>
-					<text class="icon_text">{{ detailData.phone }}</text>
+					<text class="icon_text">{{ detailData.phone ||'暂无' }}</text>
 				</view>
 				<view class="weixin">
 					<u-icon name="weixin-fill" color="#8F9BB3" size="40"></u-icon>
-					<text class="icon_text">{{ detailData.wechat }}</text>
+					<text class="icon_text">{{ detailData.wechat || '暂无' }}</text>
 				</view>
 			</view>
 			<!-- 沟通记录 -->
@@ -444,6 +445,7 @@ export default {
 			}
 			.trade_right {
 				flex: 1;
+				margin-top: -10rpx;
 				.trade_right_title {
 					display: flex;
 					flex-wrap: wrap;

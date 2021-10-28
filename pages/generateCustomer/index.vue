@@ -51,7 +51,7 @@
 				</view>
 				<view class="form_item"><u-form-item label="备注"></u-form-item></view>
 				<view class="form_item">
-					<u-form-item><u-input v-model="form.content" placeholder="备注" type="textarea" :custom-style="textareaStyle" /></u-form-item>
+					<u-form-item><u-input v-model="form.remark" placeholder="备注" type="textarea" :custom-style="textareaStyle" /></u-form-item>
 				</view>
 			</view>
 		</u-form>
