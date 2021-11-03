@@ -28,3 +28,8 @@ export const getfetchUrl = key => {
     }
   });
 };
+
+export const getrealUrl = key => {
+  return `${baseUrl}/blade-base/oss/redirect?Blade-Auth=${"bearer " +
+    uni.getStorageSync('token')}&key=${key}`;
+};

@@ -24,13 +24,13 @@
 		<view class="clue_header">
 			<!-- 商标部分 -->
 			<view class="trademark">
-				<view class="trade_left">{{dataType==='0'?'线索':'客户'}}</view>
+				<view class="trade_left">{{ dataType === '0' ? '线索' : '客户' }}</view>
 				<view class="trade_right">
 					<view class="trade_right_title">
 						<view class="title">{{ detailData.name }}</view>
 						<text class="date">{{ detailData.createTime }}</text>
 					</view>
-					<view class="card_desc">地区：{{ detailData.cityName?detailData.provinceName+'-'+detailData.cityName : '暂无' }}</view>
+					<view class="card_desc">地区：{{ detailData.cityName ? detailData.provinceName + '-' + detailData.cityName : '暂无' }}</view>
 					<view class="card_desc">备注：{{ detailData.remark || '暂无' }}</view>
 				</view>
 			</view>
@@ -38,7 +38,7 @@
 			<view class="contact_info">
 				<view class="phone">
 					<u-icon name="phone" color="#8F9BB3" size="40"></u-icon>
-					<text class="icon_text">{{ detailData.phone ||'暂无' }}</text>
+					<text class="icon_text">{{ detailData.phone || '暂无' }}</text>
 				</view>
 				<view class="weixin">
 					<u-icon name="weixin-fill" color="#8F9BB3" size="40"></u-icon>
@@ -49,7 +49,7 @@
 			<view class="work_record">
 				<view class="item_record">
 					<image src="/static/image/clueDetail/Filled.png" mode=""></image>
-					<text>回收：{{ detailData.recoveryTime || '0秒' }}</text>
+					<text>回收：{{ detailData.recycleTime||'0秒' }}</text>
 				</view>
 				<view class="item_record">
 					<image src="/static/image/clueDetail/data.png" mode=""></image>
@@ -123,7 +123,7 @@
 import logs from './components/logs.vue';
 import logFooter from '@/components/footer/footer.vue';
 // 导入工具
-import {getfetchUrl} from "@/utils/getFileUrls.js"
+import { getfetchUrl, getrealUrl } from '@/utils/getFileUrls.js';
 // 导入接口
 import { getCustomerDetail, getCustomFollowRecord, getCustomTransferRecord, getCustomOperationRecord } from '@/api/customer/customer.js';
 import { getClueDetail, getClueFollowList, getCluetransferRecord } from '@/api/clue/clue.js';
@@ -198,14 +198,14 @@ export default {
 		};
 	},
 	onPullDownRefresh() {
-		 this.refreshData()
-		  setTimeout(function () {
-				  uni.showToast({
-				  	title:'页面已刷新',
-						icon:'none'
-				  })
-		      uni.stopPullDownRefresh();
-		  }, 1000);
+		this.refreshData();
+		setTimeout(function() {
+			uni.showToast({
+				title: '页面已刷新',
+				icon: 'none'
+			});
+			uni.stopPullDownRefresh();
+		}, 1000);
 	},
 	computed: {
 		// 数据是否加载完成
@@ -273,8 +273,8 @@ export default {
 		},
 		// 刷新数据
 		refreshData() {
-			this.size = 20
-			this.current = 1
+			this.size = 20;
+			this.current = 1;
 			this.recordData.forEach(item => {
 				item.data = [];
 				item.total = null;
@@ -318,15 +318,28 @@ export default {
 			const { data: res } = await getCustomerDetail({
 				id: this.customerId
 			});
+			console.log(res.recycleTime,'sssss')
+			if(res.recycleTime){
+				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime()
+				console.log(leftTime)
+				const recycleTime = leftTime>0?this.getTime(leftTime/1000):'已回收'
+				res.recycleTime = recycleTime
+			}
 			this.detailData = res;
 			console.log(res);
 		},
 		// 获取线索详情
 		async getClueDetail() {
-			console.log(this.clueId + 'clue');
+			// console.log(this.clueId + 'clue');
 			const { data: res } = await getClueDetail({
 				id: this.clueId
 			});
+			console.log(res,'ssssssss')
+			if(res.recycleTime){
+				const leftTime = new Date(res.recoveryTime).getTime() - new Date().getTime()
+				const recycleTime = leftTime>0?this.getTime(leftTime/1000):'已回收'
+				res.recycleTime = recycleTime
+			}
 			this.detailData = res;
 			console.log(res);
 		},
@@ -344,7 +357,7 @@ export default {
 					const { data: followRecord } = await getFollowRecord(queryInfo);
 					this.recordData[0].total = followRecord.total;
 					this.recordData[0].current = this.current;
-					const records = await this.getfetchUrl(followRecord.records)
+					const records = await this.getfetchUrl(followRecord.records);
 					this.recordData[0].data = [...this.recordData[0].data, ...records];
 					this.setData(0);
 					break;
@@ -356,9 +369,9 @@ export default {
 					this.setData(1);
 					break;
 				case 2:
-				  delete queryInfo.customerId
-				  queryInfo.dataId = this.customerId
-					queryInfo.descs = 'create_time'
+					delete queryInfo.customerId;
+					queryInfo.dataId = this.customerId;
+					queryInfo.descs = 'create_time';
 					const { data: operationRecord } = await getOperationRecord(queryInfo);
 					this.recordData[2].total = operationRecord.total;
 					this.recordData[2].current = this.current;
@@ -379,30 +392,42 @@ export default {
 				.exec();
 		},
 		// 转化真实图片地址
-		async getfetchUrl(data){
-			let length = data.length - 1
-			return new Promise((resolve,reject)=>{
+		async getfetchUrl(data) {
+			let length = data.length - 1;
+			return new Promise((resolve, reject) => {
 				// 数据为空直接返回
-				if(data.length === 0){
-					return resolve(data)
+				if (data.length === 0) {
+					return resolve(data);
 				}
-				try{
-					data.forEach(async (item,index)=>{
-						if(item.files.length===0){
-							if(index === length) resolve(data)
-							return
+				try {
+					data.forEach((item, index) => {
+						if (item.files.length === 0) {
+							if (index === length) resolve(data);
+							return;
 						}
-						await item.files.forEach(async item=>{
-							console.log(item.fileName,'filename')
-							item.fileName = await getfetchUrl(item.fileKey)
-						})
-						if(index === length) resolve(data)
-					})
-				}catch(e){
+						item.files.forEach(item => {
+							item.fileName = getrealUrl(item.fileKey);
+						});
+						if (index === length) resolve(data);
+					});
+				} catch (e) {
 					//TODO handle the exception
-					console.log(e)
+					console.log(e);
 				}
-			})
+			});
+		},
+		getTime(value) {
+			let result = parseInt(value * 60);
+			let d = Math.floor(result / (3600 * 24)) < 10 ? '0' + Math.floor(result / (3600 * 24)) : Math.floor(result / (3600 * 24));
+			let h = Math.floor(result / 3600) < 10 ? '0' + Math.floor(result / 3600) : Math.floor(result / 3600);
+			let m = Math.floor((result / 60) % 60) < 10 ? '0' + Math.floor((result / 60) % 60) : Math.floor((result / 60) % 60);
+			let s = Math.floor(result % 60) < 10 ? '0' + Math.floor(result % 60) : Math.floor(result % 60);
+			let res = '';
+			if(d!=='00') res+=`${d}天`
+			if (h !== '00') res += `${h}小时`;
+			if (m !== '00' && h !== '00') res += `${m}分钟`;
+			if (s !== '00'&& m === '00' && h === '00' && d==='00') res += `${s}秒`;
+			return res;
 		}
 	}
 };

@@ -7,7 +7,7 @@
 			</view>
 			<view class="item">
 				<text>官网：</text>
-				<text style="color:#00A4FF" @click="openWeb('http://www.baidu.com')">{{ data.officialWebsite||'www.tianya.cn'}}</text>
+				<text style="color:#00A4FF" @click="handleCopy(data.officialWebsite || 'www.tianya.cn',)">{{ data.officialWebsite||'www.tianya.cn'}}</text>
 			</view>
 			<view class="item">
 				<text>地址：</text>
@@ -42,10 +42,24 @@
 		props:['data'],
 		methods:{
 			openWeb(url){
-			uni.navigateTo({
-				url:`/pages/webView/webView?url=${encodeURIComponent(url)}`
-			})	
-			}
+				uni.navigateTo({
+					url:`/pages/webView/webView?url=${encodeURIComponent(url)}`
+				})	
+			},
+			// 复制文本
+			handleCopy(value) {
+				uni.setClipboardData({
+					data: value, //要被复制的内容
+					success: () => {
+						//复制成功的回调函数
+						uni.showToast({
+							//提示
+							title: '复制成功,请移步至浏览器打开',
+							icon: 'none'
+						});
+					}
+				});
+			},
 		}
 	}
 </script>

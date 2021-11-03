@@ -82,7 +82,7 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 				break
 			default:
 				uni.showToast({
-					title: parmas.msg,
+					title: parmas.msg || '网络错误，请稍后再试！',
 					icon: 'none',
 					duration:1000
 				})

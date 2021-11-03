@@ -1,13 +1,13 @@
 <template>
   <view class="content">
     <!-- 为了展示个各种文本，图像，绘图demo -->
-    <img
+    <!-- <img
       class="poster-img"
       src="https://huangchunhongzz.gitee.io/imgs/poster/poster_1.jpg"
       alt=""
       srcset=""
-    />
-    <button class="share-btn" @tap="shareEvn">生成海报模板</button>
+    /> -->
+    <!-- <button class="share-btn" @tap="shareEvn">生成海报模板</button> -->
     <!-- 分享弹窗-->
     <view class="share-pro">
       <view class="share-pro-mask" v-if="deliveryFlag"></view>
@@ -40,67 +40,15 @@
 </template>
 
 <script>
-  import HchPoster from '../../components/hch-poster/hch-poster.vue'
+  import HchPoster from './hch-poster.vue'
   export default {
+		props:['posterData'],
     components: {
       HchPoster,
     },
     data() {
       return {
         deliveryFlag: false, //
-        // 海报模板数据
-        posterData: {
-          poster: {
-            //根据屏幕大小自动生成海报背景大小
-            url: 'https://huangchunhongzz.gitee.io/imgs/poster/poster_bg_3.png', //图片地址
-            r: 10, //圆角半径
-            w: 300, //海报宽度
-            h: 480, //海报高度
-            p: 20 //海报内边距padding
-          },
-          mainImg: {
-            //海报主商品图
-            url: 'https://huangchunhongzz.gitee.io/imgs/poster/product.png', //图片地址
-            r: 10, //圆角半径
-            w: 250, //宽度
-            h: 200 //高度
-          },
-          title: {
-            //商品标题
-            text: '今日上新水果，牛奶草莓，颗粒饱满，每盒 200g', //文本
-            fontSize: 16, //字体大小
-            color: '#000', //颜色
-            lineHeight: 25, //行高
-            mt: 20 //margin-top
-          },
-          codeImg: {
-            //小程序码
-            url: 'https://huangchunhongzz.gitee.io/imgs/poster/code.png', //图片地址
-            w: 100, //宽度
-            h: 100, //高度
-            mt: 20, //margin-top
-            r: 50 //圆角半径
-          },
-          tips: [
-            //提示信息
-            {
-              text: '记忆之王', //文本
-              fontSize: 14, //字体大小
-              color: '#2f1709', //字体颜色
-              align: 'center', //对齐方式
-              lineHeight: 25, //行高
-              mt: 20 //margin-top
-            },
-            {
-              text: '长按/扫描识别查看商品', //文本
-              fontSize: 12, //字体大小
-              color: '#2f1709', //字体颜色
-              align: 'center', //对齐方式
-              lineHeight: 25, //行高
-              mt: 20 //margin-top
-            }
-          ]
-        }
       }
     },
     onLoad() {},
@@ -207,10 +155,10 @@
   }
 
   /* 每个页面公共css */
-  .content {
-    height: 100%;
-    text-align: center;
-  }
+  // .content {
+  //   height: 100%;
+  //   text-align: center;
+  // }
 
   // .share-btn {
   //   padding: 30rpx 60rpx;

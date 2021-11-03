@@ -30,7 +30,7 @@
       <!-- 保存海报按钮 -->
       <!-- #ifndef MP-QQ -->
       <!-- cover-view 标签qq小程序有问题 -->
-      <cover-view class="save-btn" @tap="handleSaveCanvasImage">保存海报</cover-view>
+      <cover-view class="save-btn" @tap="handleSaveCanvasImage">保存个人名片</cover-view>
       <cover-view class="save-btn cancel-btn" @tap="handleCanvasCancel">取消</cover-view>
       <!-- #endif -->
       <!-- #ifdef MP-QQ -->
@@ -110,6 +110,7 @@
         let posterTitle = data.title
         posterTitle.x = this.mainImg.x
         posterTitle.y = this.mainImg.y + this.mainImg.h + data.title.mt * system.scale
+        posterTitle.w = data.w
         return posterTitle
       },
       /**

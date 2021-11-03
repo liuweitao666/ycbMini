@@ -6,7 +6,7 @@ import {
 	logout
 } from '@/api/login/index.js';
 import {
-	getfetchUrl
+	getrealUrl
 } from "@/utils/getFileUrls.js"
 import {
 	getUserInfo
@@ -83,10 +83,10 @@ const user = {
 			return new Promise((resolve, reject)=>{
 				getUserInfo(user_id).then(async res=>{
 					if(res.data.avatar){
-						res.data.avatar = await getfetchUrl(res.data.avatar)
+						res.data.avatar = getrealUrl(res.data.avatar)
 					}
 					if(res.data.wechatQrCode){
-						res.data.wechatQrCode = await getfetchUrl(res.data.wechatQrCode)
+						res.data.wechatQrCode = getrealUrl(res.data.wechatQrCode)
 					}
 					
 					console.log(res.data)
