@@ -49,7 +49,7 @@
 			<view class="work_record">
 				<view class="item_record">
 					<image src="/static/image/clueDetail/Filled.png" mode=""></image>
-					<text>回收：{{ detailData.recycleTime||'0秒' }}</text>
+					<text>回收：{{ detailData.recycleTime || '不回收' }}</text>
 				</view>
 				<view class="item_record">
 					<image src="/static/image/clueDetail/data.png" mode=""></image>
@@ -318,15 +318,13 @@ export default {
 			const { data: res } = await getCustomerDetail({
 				id: this.customerId
 			});
-			console.log(res.recycleTime,'sssss')
-			if(res.recycleTime){
-				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime()
-				console.log(leftTime)
-				const recycleTime = leftTime>0?this.getTime(leftTime/1000):'已回收'
-				res.recycleTime = recycleTime
+			if (res.recycleTime) {
+				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
+				console.log(leftTime);
+				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';
+				res.recycleTime = recycleTime;
 			}
 			this.detailData = res;
-			console.log(res);
 		},
 		// 获取线索详情
 		async getClueDetail() {
@@ -334,14 +332,13 @@ export default {
 			const { data: res } = await getClueDetail({
 				id: this.clueId
 			});
-			console.log(res,'ssssssss')
-			if(res.recycleTime){
-				const leftTime = new Date(res.recoveryTime).getTime() - new Date().getTime()
-				const recycleTime = leftTime>0?this.getTime(leftTime/1000):'已回收'
-				res.recycleTime = recycleTime
+			if (res.recycleTime) {
+				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
+				console.log(leftTime);
+				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';
+				res.recycleTime = recycleTime;
 			}
 			this.detailData = res;
-			console.log(res);
 		},
 		// 初始化对应记录数据
 		async initLogsData(getFollowRecord, getTransferRecord, getOperationRecord) {
@@ -416,18 +413,34 @@ export default {
 				}
 			});
 		},
-		getTime(value) {
-			let result = parseInt(value * 60);
-			let d = Math.floor(result / (3600 * 24)) < 10 ? '0' + Math.floor(result / (3600 * 24)) : Math.floor(result / (3600 * 24));
-			let h = Math.floor(result / 3600) < 10 ? '0' + Math.floor(result / 3600) : Math.floor(result / 3600);
-			let m = Math.floor((result / 60) % 60) < 10 ? '0' + Math.floor((result / 60) % 60) : Math.floor((result / 60) % 60);
-			let s = Math.floor(result % 60) < 10 ? '0' + Math.floor(result % 60) : Math.floor(result % 60);
-			let res = '';
-			if(d!=='00') res+=`${d}天`
-			if (h !== '00') res += `${h}小时`;
-			if (m !== '00' && h !== '00') res += `${m}分钟`;
-			if (s !== '00'&& m === '00' && h === '00' && d==='00') res += `${s}秒`;
-			return res;
+		getTime(second_time) {
+			var time = parseInt(second_time) + '秒';
+			if (parseInt(second_time) > 60) {
+				var second = parseInt(second_time) % 60;
+				var min = parseInt(second_time / 60);
+				time = min + '分' + second + '秒';
+
+				if (min > 60) {
+					min = parseInt(second_time / 60) % 60;
+					var hour = parseInt(parseInt(second_time / 60) / 60);
+					time = hour + '小时' + min + '分' + second + '秒';
+
+					if (hour > 24) {
+						hour = parseInt(parseInt(second_time / 60) / 60) % 24;
+						var day = parseInt(parseInt(parseInt(second_time / 60) / 60) / 24);
+						if(day>0){
+							time = day + '天'
+						}else if(hour>0){
+							time = hour + '小时'
+						}else if(min>0){
+							time = min + '分'
+						}else{
+							time = second + '秒'
+						}
+					}
+				}
+			}
+			return time;
 		}
 	}
 };
@@ -484,12 +497,6 @@ export default {
 						letter-spacing: 2rpx;
 						margin-right: 20rpx;
 						margin-top: 10rpx;
-						// display: -webkit-box;
-						// overflow: hidden;
-						// text-overflow: ellipsis;
-						// word-break: break-all;
-						// -webkit-box-orient: vertical;
-						// -webkit-line-clamp: 1;
 					}
 					.date {
 						font-size: 12px;
@@ -505,6 +512,12 @@ export default {
 					margin-top: 14rpx;
 					line-height: 43rpx;
 					color: #ffffff;
+					display: -webkit-box;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					word-break: break-all;
+					-webkit-box-orient: vertical;
+					-webkit-line-clamp: 2;
 				}
 			}
 		}

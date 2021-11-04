@@ -90,7 +90,12 @@ export default {
 		    return res;
 		  },
 		playAudio() {
-			console.log(this.data.personalProfileInvoice);
+			if(!this.data.personalProfileInvoice){
+				uni.showToast({
+					title:'未上传语音',
+					icon:'none'
+				})
+			}
 			this.innerAudioContext.onCanplay(() => {
 				console.log(this.innerAudioContext)
 				var time = this.innerAudioContext.duration.toFixed(0);

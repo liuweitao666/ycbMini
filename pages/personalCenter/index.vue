@@ -19,7 +19,7 @@
 						<view class="name">
 							<text>{{ personData.realName }}</text>
 						</view>
-						<view class="desc">{{ personData.name || '暂无' }}</view>
+						<view class="desc">{{ personData.postName || '普通员工' }}</view>
 						<view class="desc company">{{ personData.tenantName }}</view>
 					</view>
 					<image @click="jumpTo" class="qr_code" src="../../static/image/personalCenter/qrcode.png"></image>
@@ -218,15 +218,16 @@ export default {
 		},
 		// 获取用户信息
 		async getUserInfo() {
+			let httpReg = /http/
 			const { data: res } = await getUserInfo(this.user_id);
 			if(res.avatar && !this.avatar){
-				this.avatar = await getfetchUrl(res.avatar)
+				this.avatar =httpReg.test(res.avatar)?res.avatar:await getfetchUrl(res.avatar)
 			}
 			if(res.wechatQrCode){
 				res.wechatQrCode = await getfetchUrl(res.wechatQrCode)
 			}
 			if(res.personalProfileInvoice){
-				res.personalProfileInvoice = await getfetchUrl(res.personalProfileInvoice)
+				res.personalProfileInvoice =await getfetchUrl(res.personalProfileInvoice)
 			}
 			this.personData = res;
 			setTimeout(() => {

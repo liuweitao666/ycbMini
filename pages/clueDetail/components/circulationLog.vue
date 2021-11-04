@@ -5,7 +5,7 @@
 				<view class="custom_title">操作人：{{item.createUserName}}</view>
 				<view class="desc">{{item.createTime}}</view>
 				<view class="desc">
-					<text style="color: #FC961E;">#{{typeFlag[item.type]}}#</text>
+					<text style="color: #FC961E;padding-right: 10rpx;">#{{typeFlag[item.type]}}#</text>
 					{{item.followContent}}
 				</view>
 				<view class="desc">

@@ -57,6 +57,17 @@
 		</u-form>
 		<u-button :custom-style="customSubmit" :disabled="isLoading" @click="handleSubmit">确认提交</u-button>
 		<u-toast ref="uToast"></u-toast>
+		<!-- 重复添加提示 -->
+		<u-modal v-model="modelShow" confirm-text="知道了">
+			<view class="modelShow-content">
+				<div style="line-height: 24px">
+					<div style="color: #f56c6c">{{ transferCont.msg }}</div>
+					<div>当前客户所属人：{{ transferCont.principalName }}</div>
+					<div>跟进次数：{{ transferCont.followNum }}次</div>
+					<div>下次回收时间：{{ transferCont.recoveryTime }}</div>
+				</div>
+			</view>
+		</u-modal>
 		<!-- 搜索公司组件 -->
 	</view>
 </template>
@@ -80,6 +91,8 @@ export default {
 	components: {},
 	data() {
 		return {
+			modelShow: false,
+			transferCont: {},
 			// 自定义提交按钮
 			customSubmit: {
 				color: '#fff',
@@ -124,7 +137,7 @@ export default {
 					{
 						required: true,
 						message: '请选择来源',
-						trigger: ['blur']
+						trigger: ['change']
 					}
 				],
 				name: [
@@ -140,6 +153,17 @@ export default {
 						message: '请输入联系方式',
 						// blur和change事件触发检验
 						trigger: ['blur']
+					},
+					{
+						// 自定义验证函数，见上说明
+						validator: (rule, value, callback) => {
+							// 上面有说，返回true表示校验通过，返回false表示不通过
+							// this.$u.test.mobile()就是返回true或者false的
+							return this.$u.test.mobile(value);
+						},
+						message: '手机号码不正确',
+						// 触发器可以同时用blur和change
+						trigger: ['change', 'blur']
 					}
 				],
 				status: [
@@ -178,6 +202,7 @@ export default {
 			regionList: [],
 			// 是否新增客户
 			complex: null,
+			replayData: {}
 		};
 	},
 	onLoad({ id, complex }) {
@@ -274,10 +299,12 @@ export default {
 								});
 							}, 500);
 						} else {
-							this.$refs.uToast.show({
-								title: '网络错误',
-								type: 'error'
-							});
+							console.log(data);
+							this.transferCont = {
+								...data.data,
+								msg: data.msg
+							};
+							this.modelShow = true;
 							this.isLoading = false;
 						}
 					} catch (e) {
@@ -293,9 +320,15 @@ export default {
 </script>
 
 <style lang="scss">
+.modelShow-content {
+	padding: 20rpx 30rpx;
+	font-size: 28rpx;
+	line-height: 40rpx;
+}
 .add_follow_up {
 	margin: 30rpx;
 	overflow: hidden;
+	padding-bottom: 50rpx;
 	.form_wrap {
 		border-radius: 16rpx;
 		background-color: #ffffff;

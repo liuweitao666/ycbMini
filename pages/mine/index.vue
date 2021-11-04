@@ -8,7 +8,7 @@
 					<u-avatar @click="jumpTo" :src="userInfo.avatar || wxUserInfo.avatarUrl" size="120"></u-avatar>
 					<view class="name">{{ userInfo.realName }}</view>
 					<view class="intro">
-						{{ userInfo.name }}
+						{{ userInfo.postName ||'普通员工' }}
 						<br />
 					</view>
 					<view class="company" v-if="tenantList.length > 1">

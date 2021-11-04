@@ -9,7 +9,7 @@
 				<view class="avatar"><image :src="userInfo.avatar" mode=""></image></view>
 				<view class="introduce">
 					<view class="name">{{ userInfo.realName }}</view>
-					<view class="card_desc">技术总监CTO</view>
+					<view class="card_desc">{{personData.postName || '普通员工'}}</view>
 				</view>
 			</view>
 			<view class="intro_desc" :style="{ background: 'url(https://ycbfiles.oss-cn-shenzhen.aliyuncs.com/public/wxmini/intro_desc.png)' }">
@@ -18,7 +18,7 @@
 				您身边的创业难题解决专家
 			</view>
 			<view class="QRcode_content"><image :src="cardCode" mode="widthFix"></image></view>
-			<view class="QR_text">微信长按，识别二维码</view>
+			<view class="QR_text">我的二维码</view>
 			<view class="QR_footer">
 				<!-- <text>复制专属连接</text> -->
 				<text @click="shareEvn">生成个人名片</text>
@@ -115,16 +115,18 @@ export default {
 		},
 		// 获取用户信息
 		async getUserInfo() {
+			const httpReg = /http/
 			const { data: res } = await getUserInfo(this.queryInfo.userId);
 			if (res.avatar) {
-				res.avatar = await getfetchUrl(res.avatar);
+				res.avatar =httpReg.test(res.avatar)?res.avatar:await getfetchUrl(res.avatar);
 			}
 			if (res.wechatQrCode) {
 				res.wechatQrCode = await getfetchUrl(res.wechatQrCode);
 			}
 			this.userInfo = res;
-			this.posterData.tips[0].name=res.name
-			this.posterData.tips[1].name=res.realName
+			this.posterData.tips[0].text=res.name
+			this.posterData.tips[1].text=res.postName || '普通员工'
+			this.posterData.codeImg.url = this.cardCode || ''
 			console.log(this.userInfo);
 		},
 		shareEvn(){
