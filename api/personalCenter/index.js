@@ -31,6 +31,6 @@ export const createCardCode = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wx-mini/code/wx-cart-code`,
 	method: 'post',
 	params,
-	power: 1,
+	power: 3,
 	noSerialize:true
 })

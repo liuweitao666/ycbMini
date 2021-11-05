@@ -17,7 +17,7 @@ export const getUsers = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wx-mini/auth/get-phone-users`,
 	method: 'POST',
 	params,
-	power: 1
+	power: 1,
 })
 
 // 登录

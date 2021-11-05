@@ -6,7 +6,7 @@
 				<u-icon name="plus" style="padding-left: 34rpx;" size="36" @click="jumpTo('/pages/generateCustomer/index?complex=yes')"></u-icon>
 			</view>
 		</nav-bar>
-		<u-index-list :scroll-top="scrollTop" :sticky="false" :z-index="98" :index-list="indexList" :offset-top="navbarHeight" @select="selectFn">
+		<u-index-list  :scroll-top="scrollTop" :sticky="false" :z-index="98" :index-list="indexList" :offset-top="navbarHeight" @select="selectFn">
 			<view v-for="(item, index) in indexList" :key="index" :id="`item${item}`">
 				<u-index-anchor :index="item" :custom-style="customStyle" />
 				<view class="list-cell" v-for="customer in getAlphabeticList(item)" :key="customer.id" @click="goDetail(customer.id)">
@@ -24,6 +24,11 @@
 				</view>
 			</view>
 		</u-index-list>
+		<!-- 数据为空时 -->
+		<view class="empty_view" v-if="indexList.length===0">
+			<u-empty text="还没有用户" mode="list" ></u-empty>
+			<u-button type="primary" style="margin-top: 20rpx;" shape="square" size="medium" @click="jumpTo('/pages/generateCustomer/index?complex=yes')">立即添加</u-button>
+		</view>
 	</view>
 </template>
 
@@ -135,6 +140,17 @@ export default {
 		margin-left:40rpx;
 		font-size: 28rpx;
 	}
+}
+
+.empty_view{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 .navbar_left{

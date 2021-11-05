@@ -25,6 +25,7 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 	headers['Content-Type'] = 'application/json'
 	headers['Blade-Auth'] = `bearer ${uni.getStorageSync('token')||''}`  
 	headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
+	let responseType = ""
 	//headers中配置serialize为true开启序列化
 	if (method === "POST"&& !noSerialize) {
 		url = `${url}?${serialize(params)}`;
@@ -37,7 +38,7 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 			headers['Authorization'] = 'Basic a3N1ZGlfcGM6a3N1ZGlfcGM='
 			break;
 		case 3:
-			responseType = 'blob'
+			responseType = 'arraybuffer'
 			break;
 		default:
 			// headers['Authorization'] = `Bearer ${
@@ -52,6 +53,7 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 		method,
 		data:realData,
 		dataType: 'json',
+		responseType,
 		header: headers
 	}).then(res => {
 		// console.log(res)

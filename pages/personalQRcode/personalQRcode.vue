@@ -17,7 +17,7 @@
 				<br />
 				您身边的创业难题解决专家
 			</view>
-			<view class="QRcode_content"><image :src="cardCode" mode="widthFix"></image></view>
+			<view class="QRcode_content"><image :src="personalCode" mode="widthFix"></image></view>
 			<view class="QR_text">我的二维码</view>
 			<view class="QR_footer">
 				<!-- <text>复制专属连接</text> -->
@@ -32,6 +32,7 @@
 import { createCardCode, getUserInfo } from '@/api/personalCenter/index.js';
 import { getfetchUrl } from '@/utils/getFileUrls.js';
 import hchPoster from "@/components/hch-poster/index.vue"
+import { base64src } from "@/utils/base64Src.js"
 export default {
 	components:{hchPoster},
 	data() {
@@ -41,7 +42,8 @@ export default {
 				url: 'pages/personalCenter/index',
 				userId: 0
 			},
-			cardCode: '',
+			codeImg: '',
+			personalCode:'',
 			userInfo: {},
 			wxUserInfo:uni.getStorageSync('wxUserInfo'),
 			// 海报模板数据
@@ -111,7 +113,12 @@ export default {
 		// 创建二维码名片
 		async createCardCode() {
 			const data = await createCardCode(this.queryInfo);
-			this.cardCode = data;
+			console.log(data)
+			this.personalCode ='data:image/png;base64,'+wx.arrayBufferToBase64(data)
+			 base64src(this.personalCode,(res)=>{
+				this.posterData.codeImg.url = res
+				this.codeImg = res
+			})
 		},
 		// 获取用户信息
 		async getUserInfo() {
@@ -126,8 +133,6 @@ export default {
 			this.userInfo = res;
 			this.posterData.tips[0].text=res.name
 			this.posterData.tips[1].text=res.postName || '普通员工'
-			this.posterData.codeImg.url = this.cardCode || ''
-			console.log(this.userInfo);
 		},
 		shareEvn(){
 			this.$refs['poster'].handleShowPoster()

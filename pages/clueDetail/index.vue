@@ -319,6 +319,8 @@ export default {
 				id: this.customerId
 			});
 			if (res.recycleTime) {
+				res.recycleTime = res.recycleTime.replace(/-/g,'/')
+				console.log(res.recycleTime,'------')
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
 				console.log(leftTime);
 				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';
@@ -333,6 +335,8 @@ export default {
 				id: this.clueId
 			});
 			if (res.recycleTime) {
+				res.recycleTime = res.recycleTime.replace(/-/g,'/')
+				console.log(res.recycleTime)
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
 				console.log(leftTime);
 				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';

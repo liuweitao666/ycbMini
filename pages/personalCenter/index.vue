@@ -196,12 +196,20 @@ export default {
 			// imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
 		};
 	},
-	onLoad({ userId, tenantId }) {
+	onLoad({ userId, tenantId,scene}) {
+		console.log(userId, tenantId)
 		this.user_id = this.userInfo.id;
 		this.tenant_id = this.userInfo.tenantId;
 		if (userId && tenantId) {
 			this.user_id = decodeURIComponent(userId);
 			this.tenant_id = decodeURIComponent(tenantId);
+			this.isBack = false;
+			this.isHome = true;
+		}
+		if(scene){
+			const scenes = decodeURIComponent(scene).split(',')
+			this.user_id = scenes[0];
+			this.tenant_id = scenes[1];
 			this.isBack = false;
 			this.isHome = true;
 		}
