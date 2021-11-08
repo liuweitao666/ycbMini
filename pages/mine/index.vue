@@ -69,14 +69,15 @@ export default {
 	// 下拉刷新
 	onPullDownRefresh() {
 		this.$refs['performance'].Refresh();
-		this.GetUserDetail(this.userInfo.id);
-		setTimeout(function() {
-			uni.showToast({
-				title: '页面已刷新',
-				icon: 'none'
-			});
-			uni.stopPullDownRefresh();
-		}, 1000);
+		this.GetUserDetail(this.userInfo.id).then(res=>{
+			setTimeout(()=>{
+				uni.showToast({
+					title: '页面已刷新',
+					icon: 'none'
+				});
+				uni.stopPullDownRefresh();
+			},500)
+		})
 	},
 	created() {},
 	methods: {

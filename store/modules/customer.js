@@ -24,8 +24,11 @@ const navbar = {
 				data: customerList
 			} = await getCustomerList()
 			let FirstLetter = new Set(customerList.map(item => item.nameFirstLetter))
+			// '#'放在最后
 			const indexList = [...FirstLetter]
-			console.log(indexList)
+			if(indexList[0]==='#'){
+				indexList[indexList.length-1] = indexList.shift()
+			}
 			commit('SET_CUSTOMER_List',customerList)
 			commit('SET_INDEX_LIST',indexList)
 		},

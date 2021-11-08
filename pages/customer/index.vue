@@ -6,24 +6,40 @@
 				<u-icon name="plus" style="padding-left: 34rpx;" size="36" @click="jumpTo('/pages/generateCustomer/index?complex=yes')"></u-icon>
 			</view>
 		</nav-bar>
-		<u-index-list  :scroll-top="scrollTop" :sticky="false" :z-index="98" :index-list="indexList" :offset-top="navbarHeight" @select="selectFn">
-			<view v-for="(item, index) in indexList" :key="index" :id="`item${item}`">
-				<u-index-anchor :index="item" :custom-style="customStyle" />
-				<view class="list-cell" v-for="customer in getAlphabeticList(item)" :key="customer.id" @click="goDetail(customer.id)">
-					<view :class="['sex',switchClass(customer.sex)]">
-						{{customer.sex===0?'铭':(customer.sex===1?'男':'女')}}
-					</view>
-					<view class="info">
-						<view class="name">
-							{{customer.name}}
+		
+			<u-index-list  :scroll-top="listScrollTop" :sticky="false" :z-index="98" :index-list="indexList" :offset-top="navbarHeight" @select="selectFn">
+				<scroll-view
+					:scroll-top="scrollTop"
+					scroll-y="true"
+					class="main_wrap"
+					:style="{ height: contentHeight + 'px' }"
+					:show-scrollbar="true"
+					@scroll="scroll"
+					:refresher-threshold="45"
+					:refresher-enabled="true"
+					:refresher-triggered="refresherTriggered"
+					@refresherrefresh="refresherrefresh"
+					@refresherrestore="refresherrestore"
+					@refresherabort="refresherabort"
+				>
+					<view v-for="(item, index) in indexList" :key="index" :id="`item${item}`">
+						<u-index-anchor :index="item" :custom-style="customStyle" />
+						<view class="list-cell" v-for="customer in getAlphabeticList(item)" :key="customer.id" @click="goDetail(customer.id)">
+							<view :class="['sex',switchClass(customer.sex)]">
+								{{customer.sex===0?'铭':(customer.sex===1?'男':'女')}}
+							</view>
+							<view class="info">
+								<view class="name">
+									{{customer.name}}
+								</view>
+								<view class="desc">
+									{{customer.companyName||'未录入公司'}}
+								</view>
+							</view>
 						</view>
-						<view class="desc">
-							{{customer.companyName||'未加入公司'}}
-						</view>
 					</view>
-				</view>
-			</view>
-		</u-index-list>
+				</scroll-view>
+			</u-index-list>
 		<!-- 数据为空时 -->
 		<view class="empty_view" v-if="indexList.length===0">
 			<u-empty text="还没有用户" mode="list" ></u-empty>
@@ -43,7 +59,12 @@ export default {
 				color: '#007AC3',
 				background: 'white',
 				padding: '14rpx 30rpx'
-			}
+			},
+			contentHeight:'',
+			// 下拉刷新
+			refresherTriggered: false,
+			_refresherTriggered: false,
+			listScrollTop:0
 		};
 	},
 	computed: {
@@ -54,13 +75,68 @@ export default {
 			this.initData()
 		}
 	},
-	onPageScroll(e) {
-		this.scrollTop = e.scrollTop - uni.upx2px(this.navbarHeight);
+	// 下拉刷新
+	onPullDownRefresh() {
+		this.$store.dispatch('getCustomerList').then(res=>{
+			setTimeout(()=>{
+				uni.showToast({
+					title: '页面已刷新',
+					icon: 'none'
+				});
+				uni.stopPullDownRefresh();
+			},500)
+		})
 	},
 	created() {
 		this.initData()
 	},
+	mounted() {
+		this.handleHeight();
+	},
 	methods:{
+		scroll(data) {
+			// let {scrollTop} = detail
+			this.scrollTop = data.detail.scrollTop;
+			this.listScrollTop = (data.detail.scrollTop+86);
+		},
+		refresherrefresh() {
+			console.log('自定义下拉刷新被触发');
+			let _this = this;
+			if (_this._refresherTriggered) {
+				return;
+			}
+			_this._refresherTriggered = true;
+			//界面下拉触发，triggered可能不是true，要设为true
+			if (!_this.refresherTriggered) {
+				_this.refresherTriggered = true;
+			}
+			this.loadStoreData();
+		},
+		refresherrestore() {
+			console.log('自定义下拉刷新被复位');
+			let _this = this;
+			_this.refresherTriggered = false;
+			_this._refresherTriggered = false;
+		},
+		refresherabort() {
+			console.log('自定义下拉刷新被中止	');
+			let _this = this;
+			_this.refresherTriggered = false;
+			_this._refresherTriggered = false;
+		},
+		loadStoreData() {
+			let _this = this;
+			this.$store.dispatch('getCustomerList').then(()=>{
+				setTimeout(()=>{
+					_this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
+					_this._refresherTriggered = false;
+					uni.showToast({
+						title:'页面已刷新',
+						icon:'none'
+					})
+				},500)
+			});
+		},
 		selectFn(e){
 			let id = "#item"+e
 			console.log(id)
@@ -98,6 +174,10 @@ export default {
 				case 2:
 				return 'woman';
 			}
+		},
+		handleHeight() {
+			const windowHeight = uni.getStorageSync('windowHeight');
+			this.contentHeight = windowHeight - uni.upx2px(this.navbarHeight);
 		}
 	}
 };

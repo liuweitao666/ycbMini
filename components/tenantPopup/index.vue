@@ -39,6 +39,10 @@
 			...mapActions(['Login']),
 			selectTenant(tenantInfo){
 				console.log(this.isLogin)
+				if(this.tenantId === tenantInfo.tenantId) return 
+				uni.showLoading({
+					title: '正在切换...'
+				});
 				if(this.isLogin) return this.$emit('selectTenant',tenantInfo)
 				wx.login({
 					success: res => {
@@ -59,9 +63,6 @@
 			// 用户登录
 			postLogin(loginParams) {
 				const _this = this;
-				uni.showLoading({
-					title: '正在切换...'
-				});
 				this.Login(loginParams)
 					.then(res => {
 						if (res.code) {
