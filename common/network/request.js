@@ -41,10 +41,6 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 			responseType = 'arraybuffer'
 			break;
 		default:
-			// headers['Authorization'] = `Bearer ${
-			//     this.$store.getters.userInfo
-			// }`
-			// headers['TENANT-ID'] = this.$store.getters.userInfo.tenant_id
 			headers['Authorization'] = 'Basic a3N1ZGk6a3N1ZGk='
 			break;
 	}
@@ -56,7 +52,6 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 		responseType,
 		header: headers
 	}).then(res => {
-		// console.log(res)
 		if (res[1].statusCode == 200) {
 			return res[1].data
 		} else {

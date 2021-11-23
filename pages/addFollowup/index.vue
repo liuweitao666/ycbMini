@@ -18,13 +18,6 @@
 					<upload-file v-if="dataType" :ossPathType="dataType==='0'?'clue-import':'customer-import'" @on-success="handleSuccess"/>
 				</u-form-item>
 			</view>
-			<view class="item_single">
-				<u-form-item label="下次跟进时间" :border-bottom="false">
-					<u-input v-model="form.nextFollowTime" type="select" input-align="right" :custom-style="{ paddingRight: '20rpx' }" @click="showCalendar = true" />
-					<u-picker mode="time" v-model="showCalendar" :params="timeParams" :start-year="currentYear" @confirm="calendarChange"></u-picker>
-					<!-- <u-calendar v-model="showCalendar" mode="date" @change="calendarChange"></u-calendar> -->
-				</u-form-item>
-			</view>
 		</u-form>
 		<u-button :custom-style="customSubmit" :disabled="isLoading" @click="handleSubmit">确认提交</u-button>
 		<!-- 提示 -->
@@ -33,7 +26,6 @@
 </template>
 
 <script>
-// import {addFollowRecord} from "@/api/customer/customer.js"
 import { addClueFollow } from '@/api/clue/clue.js';
 // import
 import uploadFile from '@/components/uploadFile/index.vue';

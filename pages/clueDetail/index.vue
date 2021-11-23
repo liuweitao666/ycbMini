@@ -320,7 +320,6 @@ export default {
 			});
 			if (res.recycleTime) {
 				res.recycleTime = res.recycleTime.replace(/-/g,'/')
-				console.log(res.recycleTime,'------')
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
 				console.log(leftTime);
 				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';
@@ -336,9 +335,7 @@ export default {
 			});
 			if (res.recycleTime) {
 				res.recycleTime = res.recycleTime.replace(/-/g,'/')
-				console.log(res.recycleTime)
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
-				console.log(leftTime);
 				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';
 				res.recycleTime = recycleTime;
 			}
@@ -370,8 +367,7 @@ export default {
 					this.setData(1);
 					break;
 				case 2:
-					delete queryInfo.customerId;
-					queryInfo.dataId = this.customerId;
+					queryInfo.dataId = this.customerId || this.clueId;
 					queryInfo.descs = 'create_time';
 					const { data: operationRecord } = await getOperationRecord(queryInfo);
 					this.recordData[2].total = operationRecord.total;
@@ -428,20 +424,19 @@ export default {
 					min = parseInt(second_time / 60) % 60;
 					var hour = parseInt(parseInt(second_time / 60) / 60);
 					time = hour + '小时' + min + '分' + second + '秒';
-
 					if (hour > 24) {
 						hour = parseInt(parseInt(second_time / 60) / 60) % 24;
 						var day = parseInt(parseInt(parseInt(second_time / 60) / 60) / 24);
-						if(day>0){
-							time = day + '天'
-						}else if(hour>0){
-							time = hour + '小时'
-						}else if(min>0){
-							time = min + '分'
-						}else{
-							time = second + '秒'
-						}
 					}
+				}
+				if(day>0){
+					time = day + '天'
+				}else if(hour>0){
+					time = hour + '小时'
+				}else if(min>0){
+					time = min + '分'
+				}else{
+					time = second + '秒'
 				}
 			}
 			return time;
