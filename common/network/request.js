@@ -14,17 +14,20 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 	    3 == 验证码登录 */
 	const realData = params ||data|| {}
 	let token = ''
-	// uni.getStorage({
-	// 	key:'token',
-	// 	success:(res)=>{
-	// 		token = res.data
-	// 	}
-	// })
-	console.log(data)
-	headers['Tenant-Id'] = uni.getStorageSync('tenantId') || ''
-	headers['Content-Type'] = 'application/json'
-	headers['Blade-Auth'] = `bearer ${uni.getStorageSync('token')||''}`  
-	headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
+	console.log(power,'当前power')
+	// power为2时代表公共接口不需要带请求头
+	if(power!==2){
+		console.log(power,'进入设置header')
+		headers['Tenant-Id'] = uni.getStorageSync('tenantId') || ''
+		headers['Content-Type'] = 'application/json'
+		headers['Blade-Auth'] = `bearer ${uni.getStorageSync('token')||''}`  
+		headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`
+	}else{
+		headers['Tenant-Id'] =  ''
+		headers['Content-Type'] = 'application/json'
+		headers['Blade-Auth'] = ''  
+		headers['Authorization'] = ''
+	}
 	let responseType = ""
 	//headers中配置serialize为true开启序列化
 	if (method === "POST"&& !noSerialize) {
@@ -35,7 +38,7 @@ request.globalRequest = ({url, method, params, data, power,noSerialize}) => {
 			headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
 			break;
 		case 2:
-			headers['Authorization'] = 'Basic a3N1ZGlfcGM6a3N1ZGlfcGM='
+			// headers['Authorization'] = 'Basic a3N1ZGlfcGM6a3N1ZGlfcGM='
 			break;
 		case 3:
 			responseType = 'arraybuffer'

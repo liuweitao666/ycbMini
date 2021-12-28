@@ -66,5 +66,15 @@ export const getObjType = obj => {
 };
 
 /*
-获取上一页
+处理城市数据
 */
+const handleCity = (data)=>{
+	data.forEach(item=>{
+		console.log(item)
+		if(item.children){
+			handleCity(item.children)
+		}else{
+			item.children = []
+		}
+	})
+}

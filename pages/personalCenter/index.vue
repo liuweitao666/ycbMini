@@ -1,7 +1,7 @@
 <template>
 	<view id="personCenter">
 		<audio :src="audioSrc" class="audio"></audio>
-		<nav-bar :isBackground="true" :Home="isHome" :title="personData.realName" :isBack="isBack" height="482rpx"></nav-bar>
+		<nav-bar :isBackground="true" :Home="isHome" :title="personData.realName||''" :isBack="isBack" height="482rpx"></nav-bar>
 		<!-- 二维码弹框 -->
 		<u-popup v-model="qrCodeVisible" mode="center" length="80%" border-radius="14">
 			<view class="Qrcode_wrap">
@@ -96,6 +96,21 @@
 			</view>
 			<u-button type="primary" :custom-style="customContact" @click="phoneCall">拨打电话</u-button>
 		</person-footer>
+		<!-- 授权弹窗 -->
+		<u-popup v-model="authShow" mode="center" length="80%" border-radius="14" :mask-close-able="false">
+			<view class="auth_wrap">
+				<view class="custom_title">
+					申请获取查看权限
+				</view>
+				<view class="auth_img">
+					<image src="../../static/image/personalCenter/auth.png" mode=""></image>
+				</view>
+				 <view class="desc">
+				 	获取您的手机号
+				 </view>
+				<u-button :ripple="true" shape="circle" size="medium" @getphonenumber="authorizedPhone" type="primary" open-type="getPhoneNumber">点击授权</u-button>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -106,7 +121,7 @@ import personFooter from '@/components/footer/footer.vue';
 import enterpriseIntro from './components/enterpriseIntro.vue';
 import businessIntro from './components/businessIntro.vue';
 import { mapGetters } from 'vuex';
-import { getUserInfo, getTenantInfo } from '@/api/personalCenter/index.js';
+import { getUserInfo, getTenantInfo,authorizedPhone,getAuthorized } from '@/api/personalCenter/index.js';
 import {
 	getfetchUrl
 } from "@/utils/getFileUrls.js"
@@ -180,23 +195,22 @@ export default {
 			// 业务数据
 			businessData: null,
 			user_id: '',
-			tenant_id: ''
+			tenant_id: '',
+			authShow:false,
+			// 企业微信id
+			externalUserId:'',
+			code:''
 		};
 	},
 	onShareAppMessage: function(res) {
 		console.log(res);
-		// if (res.from === 'button') {
-		// 	// 来自页面内转发按钮
-		// 	console.log(res)
-		// 	return
-		// }
 		return {
 			title: `易创宝-${this.personData.name}的名片`,
 			path: `/pages/personalCenter/index?userId=${encodeURIComponent(this.personData.id)}&tenantId=${encodeURIComponent(this.personData.tenantId)}`,
 			// imageUrl: 'https://img0.baidu.com/it/u=3491437104,2750624836&fm=26&fmt=auto'
 		};
 	},
-	onLoad({ userId, tenantId,scene}) {
+	onLoad({ userId,tenantId,scene,externalUserId}) {
 		console.log(userId, tenantId)
 		this.user_id = this.userInfo.id;
 		this.tenant_id = this.userInfo.tenantId;
@@ -213,9 +227,57 @@ export default {
 			this.isBack = false;
 			this.isHome = true;
 		}
-		this.getUserInfo();
+		// 是否企业微信名片分享
+		if(externalUserId){
+			// this.authShow = true
+			this.externalUserId = externalUserId
+			wx.login({
+				success: res => {
+					this.code = res.code;
+					this.getAuthorized(externalUserId,tenantId)
+				}
+			});
+		}else{
+			this.getUserInfo();
+		}
 	},
 	methods: {
+		// 获取当前用户是否已授权
+		async getAuthorized(externalUserId,tenantId){
+			const {data:res} = await getAuthorized({externalUserId,tenantId})
+			if(res){
+				this.getUserInfo();
+			}else{
+				this.authShow = true
+			}
+		},
+		// 用户授权
+		async authorizedPhone(e){
+			if (e.detail.errMsg === 'getPhoneNumber:ok') {
+				const query = {
+					code: this.code,
+					encryptedData: e.detail.encryptedData,
+					externalUserId:this.externalUserId,
+					iv: e.detail.iv,
+					tenantId:this.tenant_id
+				};
+				const res = await authorizedPhone(query)
+				if(res.code===200){
+					uni.showToast({
+						title:'授权成功',
+						icon:'none'
+					})
+					this.authShow = false
+					this.getUserInfo()
+				}
+			} else {
+				uni.showToast({
+					title:'您已拒绝授权',
+					icon:'none'
+				})
+				console.log(e, '获取手机号失败');
+			}
+		},
 		// 获取租户信息
 		async getTenantInfo() {
 			const data = await getTenantInfo(this.tenant_id);
@@ -321,6 +383,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+	.auth_wrap{
+		padding: 60rpx;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		
+		.auth_img{
+			margin-bottom: 30rpx;
+			width: 100%;
+			height: 400rpx;
+			image{
+				width: 100%;
+				height: 100%;
+			}
+		}
+		.desc{
+			color: #999;
+			font-size: 28rpx;
+			padding-bottom: 30rpx;
+		}
+	}
 .Qrcode_wrap {
 	padding: 30rpx;
 	.header_title {

@@ -87,7 +87,6 @@ export default {
 	methods: {
 		// 获取线索业绩看板
 		getCluePerformance(timeType) {
-			console.log(timeType)
 			switch (timeType) {
 				case 1:
 					this.title = '今天';

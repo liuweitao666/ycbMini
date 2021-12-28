@@ -329,7 +329,6 @@ export default {
 		},
 		// 获取线索详情
 		async getClueDetail() {
-			// console.log(this.clueId + 'clue');
 			const { data: res } = await getClueDetail({
 				id: this.clueId
 			});
