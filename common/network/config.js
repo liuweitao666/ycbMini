@@ -14,9 +14,9 @@ if(process.env.NODE_ENV === 'development'){
     url_config.apiBaseUrl = 'http://19h517z135.iask.in'
 }else{
     // 生产环境
-    // url_config.baseUrl = 'https://erp.yichuangbao.com/api'
-		url_config.baseUrl = 'https://ycb-test1.yichuangbao.com/api'
-    url_config.apiBaseUrl = 'https://operate-service-api.vcrig.com'
+    url_config.baseUrl = 'https://erp.yichuangbao.com/api'
+		// url_config.baseUrl = 'https://ycb-test1.yichuangbao.com/api'
+  //   url_config.apiBaseUrl = 'https://operate-service-api.vcrig.com'
 }
 
 export default url_config
