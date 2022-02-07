@@ -100,7 +100,6 @@ export default {
 			this.listScrollTop = (data.detail.scrollTop+86);
 		},
 		refresherrefresh() {
-			console.log('自定义下拉刷新被触发');
 			let _this = this;
 			if (_this._refresherTriggered) {
 				return;

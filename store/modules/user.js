@@ -41,6 +41,7 @@ const user = {
 			uni.setStorageSync('tenantId', userInfo.tenantId)
 			return new Promise((resolve, reject) => {
 				login({
+					app: uni.getStorageSync('appId'),
 					username: userInfo.account,
 					grant_type: 'wxmini',
 					...userInfo
@@ -61,7 +62,7 @@ const user = {
 						commit('SET_TOKEN', data.access_token);
 						commit('SET_REFRESH_TOKEN', data.refresh_token);
 						commit('SET_TENANT_ID', data.tenant_id);
-						dispatch('GetUserDetail',data.user_id)
+						dispatch('GetUserDetail', data.user_id)
 					}
 					resolve({
 						code: 200,
@@ -79,24 +80,24 @@ const user = {
 			commit,
 			dispatch
 		}, user_id) {
-				
-			return new Promise((resolve, reject)=>{
-				getUserInfo(user_id).then(async res=>{
-					if(res.data.avatar){
+
+			return new Promise((resolve, reject) => {
+				getUserInfo(user_id).then(async res => {
+					if (res.data.avatar) {
 						res.data.avatar = getrealUrl(res.data.avatar)
 					}
-					if(res.data.wechatQrCode){
+					if (res.data.wechatQrCode) {
 						res.data.wechatQrCode = getrealUrl(res.data.wechatQrCode)
 					}
-					
+
 					console.log(res.data)
-					commit('SET_USER_INFO',res.data)
+					commit('SET_USER_INFO', res.data)
 					resolve(res.data)
-				}).catch(err=>{
+				}).catch(err => {
 					reject(err)
 				})
 			})
-			
+
 		},
 		//获取用户信息
 		GetUserInfo({
@@ -104,7 +105,10 @@ const user = {
 			dispatch
 		}, params) {
 			return new Promise((resolve, reject) => {
-				getUsers(params).then(res => {
+				getUsers({
+					...params,
+					app: uni.getStorageSync('appId'),
+				}).then(res => {
 					commit('SET_TENANT_LIST', res.data)
 					resolve(res)
 				}).catch(err => {

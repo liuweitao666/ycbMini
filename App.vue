@@ -22,6 +22,9 @@ export default {
 				uni.setStorageSync('windowHeight', res.windowHeight);
 			}
 		});
+		// 获取当前小程序的AppId
+		const accountInfo = wx.getAccountInfoSync();
+		uni.setStorageSync('appId', accountInfo.miniProgram.appId);
 		uni.login({
 			provider:'weixin',
 			success:(loginRes)=>{

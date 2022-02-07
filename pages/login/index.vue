@@ -63,6 +63,7 @@ export default {
 			const _this = this;
 			const code = loginParams.code;
 			checkCode({
+				app: uni.getStorageSync('appId'),
 				code
 			})
 				.then(async res => {

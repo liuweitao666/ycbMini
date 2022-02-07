@@ -35,7 +35,9 @@
 				<view class="form_item">
 					<u-form-item label="地区">
 						<u-input v-model="region" type="select" @click="showRegion" placeholder="省-市" />
-						<u-select v-model="regionShow" mode="mutil-column-auto" value-name="code" label-name="name" :list="regionList" @confirm="regionCallback"></u-select>
+						<u-popup v-model="regionShow" height="70%" mode="bottom" :border-radius="24">
+							<citySheet :dataTree="regionList" v-if="regionList.length > 0" @submit="regionCallback" />
+						</u-popup>
 						<!-- <u-action-sheet :list="regionList" v-model="show" @click="regionCallback"></u-action-sheet> -->
 					</u-form-item>
 				</view>
@@ -78,6 +80,9 @@ import { createCustomer } from '@/api/customer/customer.js';
 import { getRegionTree } from '@/api/region/region.js';
 import { getDictionaryTree } from '@/api/dict/index.js';
 
+// 导入组件
+import citySheet from '@/components/citySheet/index.vue';
+
 // 1.潜在客户、2.成交客户
 const statusList = [
 	{
@@ -88,7 +93,9 @@ const statusList = [
 	}
 ];
 export default {
-	components: {},
+	components: {
+		citySheet
+	},
 	data() {
 		return {
 			modelShow: false,
@@ -250,11 +257,12 @@ export default {
 		},
 		// 选择地区的回调
 		regionCallback(region) {
-			this.region = region[0].label + '-' + region[1].label;
-			this.form.provinceName = region[0].label;
-			this.form.provinceCode = region[0].value;
-			this.form.cityName = region[1].label;
-			this.form.cityCode = region[1].value;
+			console.log(region);
+			// this.region = region.provinceName + '-' + region.cityName;
+			this.region = region.name;
+			this.form.cityName = region.name;
+			this.form.cityCode = region.code;
+			this.regionShow = false;
 		},
 		// 选择客户状态的回调
 		sourceCallback(data) {
