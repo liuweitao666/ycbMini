@@ -48,6 +48,7 @@
 					success: res => {
 						const code = res.code;
 						checkCode({
+							app: uni.getStorageSync('appId'),
 							code
 						}).then(res=>{
 							this.postLogin({

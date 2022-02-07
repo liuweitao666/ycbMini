@@ -11,7 +11,7 @@
 				</view>
 			</scroll-view>
 			<scroll-view class="wraaper_top_right" :scroll-y="true">
-				<view class="wraaper_top_right_area" v-for="(item, index) in dataList" :key="index" @click="secondActive = index">
+				<view class="wraaper_top_right_area" v-for="(item, index) in dataList" :key="index" @click="secondActive = index,fData={}">
 					<view>
 						<text :class="['secondary_title', { secondary_title_active: secondActive === index }]">{{ item.name }}</text>
 					</view>
@@ -67,26 +67,28 @@ export default {
 		// 确认提交
 		submit() {
 			const { secondActive, active } = this;
-			if (!this.dataTree[active].children) {
-				this.$emit('submit', this.dataTree[active]);
-			} else if (this.fData.code && secondActive !== -1) {
+			const children = this.dataTree[active].children
+			if(!this.fData.code && active===0) return this.$emit('submit',{name:'',code:''});
+			if (this.fData.code && secondActive !== -1) {
 				this.$emit('submit', this.fData);
+			} else if(children) {
+				this.$emit('submit', children[secondActive]);
 			}else{
-				this.$emit('submit',{});
+				this.$emit('submit', this.dataTree[active]);
 			}
 		},
 		// 重置数据
 		resetData() {
 			this.fData = {
-				code:'',
-				name:''
+				code: '',
+				name: ''
 			};
 			this.active = 0;
 			this.secondActive = -1;
 			this.resetDataList();
 		},
-		resetCity(){
-			this.resetData()
+		resetCity() {
+			this.resetData();
 			this.$emit('submit', this.fData);
 		},
 		resetDataList() {
@@ -101,11 +103,11 @@ export default {
 		},
 		// 选择分类
 		tabClick(index) {
+			this.resetData();
 			this.active = index;
 			// this.secondActive = 0;
 			// this.processingData(index);
 			this.dataList = this.dataTree[index].children || [];
-			this.resetData()
 		},
 		// 处理数据
 		processingData(index) {
@@ -136,6 +138,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.small_btn {
+	width: 120rpx;
+	height: 60rpx;
+	line-height: 60rpx;
+	font-size: 26rpx;
+	border-radius: 8rpx;
+}
+.primary{
+	background-color: $u-type-primary;
+	color: #FFFFFF;
+}
 .empty {
 	width: 100%;
 	height: 100%;
