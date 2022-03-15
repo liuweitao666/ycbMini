@@ -9,7 +9,6 @@
 		
 			<u-index-list  :scroll-top="listScrollTop" :sticky="false" :z-index="98" :index-list="indexList" :offset-top="navbarHeight" @select="selectFn">
 				<scroll-view
-					:scroll-top="scrollTop"
 					scroll-y="true"
 					class="main_wrap"
 					:style="{ height: contentHeight + 'px' }"
@@ -50,7 +49,7 @@
 
 <script>
 import { mapGetters} from 'vuex';
-import {getCustomerList} from "@/api/customer/customer.js"
+import { getCustomerList } from "@/api/customer/customer.js"
 export default {
 	data() {
 		return {
@@ -95,7 +94,6 @@ export default {
 	},
 	methods:{
 		scroll(data) {
-			// let {scrollTop} = detail
 			this.scrollTop = data.detail.scrollTop;
 			this.listScrollTop = (data.detail.scrollTop+86);
 		},
@@ -138,7 +136,6 @@ export default {
 		},
 		selectFn(e){
 			let id = "#item"+e
-			console.log(id)
 			const query = uni.createSelectorQuery().in(this);
 			query.select(id).boundingClientRect(e=>{
 				console.log(e)

@@ -28,23 +28,16 @@
 				<view class="trade_right">
 					<view class="trade_right_title">
 						<view class="title">{{ detailData.name }}</view>
-						<text class="date">{{ detailData.createTime }}</text>
+						<!-- <text class="date">{{ detailData.createTime }}</text> -->
 					</view>
-					<view class="card_desc">地区：{{ detailData.cityName ? detailData.provinceName + '-' + detailData.cityName : '暂无' }}</view>
-					<view class="card_desc">备注：{{ detailData.remark || '暂无' }}</view>
+					<view class="card_desc" v-if="dataType === '0'">线索来源：{{ detailData.sourceName || '-' }}</view>
+					<view class="card_desc" v-if="dataType === '0'">获取时间：{{ detailData.happenTime || '-' }}</view>
+					<view class="card_desc" v-if="dataType === '1'">客户来源：{{ detailData.sourceName || '-' }}</view>
+					<view class="card_desc" v-if="dataType === '1'">创建时间：{{ detailData.createTime || '-' }}</view>
 				</view>
 			</view>
 			<!-- 联系方式 -->
-			<view class="contact_info">
-				<view class="phone">
-					<u-icon name="phone" color="#8F9BB3" size="40"></u-icon>
-					<text class="icon_text">{{ detailData.phone || '暂无' }}</text>
-				</view>
-				<view class="weixin">
-					<u-icon name="weixin-fill" color="#8F9BB3" size="40"></u-icon>
-					<text class="icon_text">{{ detailData.wechat || '暂无' }}</text>
-				</view>
-			</view>
+			<Info :detailData="detailData" :dataType="dataType" />
 			<!-- 沟通记录 -->
 			<view class="work_record">
 				<view class="item_record">
@@ -121,6 +114,7 @@
 <script>
 // 组件
 import logs from './components/logs.vue';
+import Info from './components/info.vue';
 import logFooter from '@/components/footer/footer.vue';
 // 导入工具
 import { getfetchUrl, getrealUrl } from '@/utils/getFileUrls.js';
@@ -132,7 +126,8 @@ import { mapGetters } from 'vuex';
 export default {
 	components: {
 		logs,
-		logFooter
+		logFooter,
+		Info
 	},
 	data() {
 		return {
@@ -287,7 +282,7 @@ export default {
 		// 设置数据
 		setData(index) {
 			this.data = this.recordData[index].data;
-			this.total = this.recordData[index].total;
+			this.total = Number(this.recordData[index].total);
 			this.current = this.recordData[index].current;
 			if (this.recordData[index].total === null) {
 				return this.handleInitData();
@@ -319,7 +314,7 @@ export default {
 				id: this.customerId
 			});
 			if (res.recycleTime) {
-				res.recycleTime = res.recycleTime.replace(/-/g,'/')
+				res.recycleTime = res.recycleTime.replace(/-/g, '/');
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
 				console.log(leftTime);
 				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';
@@ -333,7 +328,7 @@ export default {
 				id: this.clueId
 			});
 			if (res.recycleTime) {
-				res.recycleTime = res.recycleTime.replace(/-/g,'/')
+				res.recycleTime = res.recycleTime.replace(/-/g, '/');
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
 				const recycleTime = leftTime > 0 ? this.getTime(Math.floor(leftTime / 1000)) : '已回收';
 				res.recycleTime = recycleTime;
@@ -428,14 +423,14 @@ export default {
 						var day = parseInt(parseInt(parseInt(second_time / 60) / 60) / 24);
 					}
 				}
-				if(day>0){
-					time = day + '天'
-				}else if(hour>0){
-					time = hour + '小时'
-				}else if(min>0){
-					time = min + '分'
-				}else{
-					time = second + '秒'
+				if (day > 0) {
+					time = day + '天';
+				} else if (hour > 0) {
+					time = hour + '小时';
+				} else if (min > 0) {
+					time = min + '分';
+				} else {
+					time = second + '秒';
 				}
 			}
 			return time;
@@ -517,25 +512,6 @@ export default {
 					-webkit-box-orient: vertical;
 					-webkit-line-clamp: 2;
 				}
-			}
-		}
-		.contact_info {
-			color: #ffffff;
-			margin: 44rpx 0;
-			font-size: 26rpx;
-			display: flex;
-			.icon_text {
-				padding-left: 16rpx;
-				line-height: 40rpx;
-			}
-			.phone {
-				margin-right: 42rpx;
-				display: flex;
-				align-items: center;
-			}
-			.weixin {
-				display: flex;
-				align-items: center;
 			}
 		}
 		.work_record {

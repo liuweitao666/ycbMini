@@ -8,9 +8,7 @@
 		<view class="swiper-item">
 			<!-- 标题 -->
 			<view class="header">
-				<view :class="['tab_title',{active:Active===(index+1)}]" v-for="(item,index) in performanceList" @click="handleClick(index)" :key="item">
-					{{item}}
-				</view>
+				<view :class="['tab_title', { active: Active === index + 1 }]" v-for="(item, index) in performanceList" @click="handleClick(index)" :key="item">{{ item }}</view>
 			</view>
 			<!-- 内容 -->
 			<view class="content">
@@ -32,7 +30,7 @@
 				<view class="con_item">
 					<view class="title genjin_bg">跟进</view>
 					<view class="item_block">
-						<view class="item_block_label">{{ `${performance.followManNum || 0}/${performance.followFrequency||0}` }}</view>
+						<view class="item_block_label">{{ `${performance.followManNum || 0}/${performance.followFrequency || 0}` }}</view>
 						<view class="item_block_desc">人 / 次</view>
 					</view>
 					<view class="item_block">
@@ -55,7 +53,8 @@
 		</view>
 		<!-- <view class="dot"><view v-for="(item, index) in dots" :key="index" :class="['item', { dot_active: index === swiperActive }]"></view></view> -->
 		<view class="intro">
-			个人业绩仅支持当月<br />
+			个人业绩仅支持当月
+			<br />
 			更多业绩请查看后台报表
 		</view>
 	</view>
@@ -90,47 +89,50 @@ export default {
 			switch (timeType) {
 				case 1:
 					this.title = '今天';
-					if(this.performanceDay) return this.performance = this.performanceDay
-					this.setPerformance(1,'performanceDay')
-					break
-				case 2:	
+					if (this.performanceDay) return (this.performance = this.performanceDay);
+					this.setPerformance(1, 'performanceDay');
+					break;
+				case 2:
 					this.title = '本周';
-					if(this.performanceWeek) return this.performance = this.performanceWeek
-					this.setPerformance(2,'performanceWeek')
-					break
+					if (this.performanceWeek) return (this.performance = this.performanceWeek);
+					this.setPerformance(2, 'performanceWeek');
+					break;
 				case 3:
 					this.title = '本月';
-					if(this.performanceMouth) return this.performance = this.performanceMouth
-					this.setPerformance(3,'performanceMouth')
-					break
+					if (this.performanceMouth) return (this.performance = this.performanceMouth);
+					this.setPerformance(3, 'performanceMouth');
+					break;
 			}
 		},
 		// 设置看板数据
-		async setPerformance(timeType,performanceKey){
-			console.log(timeType,performanceKey)
+		async setPerformance(timeType, performanceKey) {
+			console.log(timeType, performanceKey);
 			const { data: performance } = await getCluePerformance({
 				timeType
-			})
+			});
 			this[performanceKey] = performance;
 			this.performance = this[performanceKey];
 		},
-		async Refresh(){
+		async Refresh() {
 			const { data: performance } = await getCluePerformance({
-				timeType:this.Active
-			})
-			this.performance = performance
+				timeType: this.Active
+			});
+			this.performanceDay = null;
+			this.performanceWeek = null;
+			this.performanceMouth = null;
+			this.performance = performance;
 		},
 		// 轮播图变化
 		change(data) {
-			console.log(data)
+			console.log(data);
 			let { current } = data.detail;
 			this.swiperActive = current;
 			const timeType = current + 1;
 			this.getCluePerformance(timeType);
 		},
-		handleClick(index){
-			this.Active = ++index
-			this.getCluePerformance(this.Active)
+		handleClick(index) {
+			this.Active = ++index;
+			this.getCluePerformance(this.Active);
 		}
 	}
 };
@@ -138,7 +140,7 @@ export default {
 
 <style lang="scss" scoped>
 .swiper_wrap {
-	background-color: #FFFFFF;
+	background-color: #ffffff;
 	border-radius: 80rpx 80rpx 0 0;
 	padding-top: 60rpx;
 	.swiper-item {
@@ -152,19 +154,19 @@ export default {
 			align-items: center;
 			padding-bottom: 44rpx;
 			margin: 0 auto 50rpx;
-			border-bottom: 2px solid rgba($color: #ECECEC, $alpha: 1);
+			border-bottom: 2px solid rgba($color: #ececec, $alpha: 1);
 			.tab_title {
 				width: 120rpx;
 				height: 60rpx;
 				font-size: 28rpx;
-				background: #EDF1F7;
+				background: #edf1f7;
 				border-radius: 34rpx;
 				line-height: 60rpx;
 				color: #000;
 				text-align: center;
 			}
-			.active{
-				background: #007AC3;
+			.active {
+				background: #007ac3;
 				color: #fff;
 			}
 		}
@@ -173,7 +175,7 @@ export default {
 			.con_item {
 				width: 33.33%;
 				color: #000;
-				border-right: 4rpx solid #EDF1F7;
+				border-right: 4rpx solid #edf1f7;
 				text-align: center;
 				&:last-child {
 					border-right: none;
@@ -182,7 +184,7 @@ export default {
 					width: 132rpx;
 					height: 44rpx;
 					margin: 20rpx auto 0;
-					color: #FFFFFF;
+					color: #ffffff;
 					border-radius: 8rpx;
 				}
 				.add_bg {
@@ -222,14 +224,14 @@ export default {
 			}
 		}
 	}
-	.intro{
+	.intro {
 		font-size: 24rpx;
 		font-family: PingFangSC-Regular, PingFang SC;
 		font-weight: 400;
-		color: #C0BBB6;
+		color: #c0bbb6;
 		line-height: 34rpx;
 		text-align: center;
-		padding: 34rpx 0 ;
+		padding: 34rpx 0;
 	}
 }
 .dot {

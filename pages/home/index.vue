@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar :navList="navList" @change="changeTab" :isLine="true" ></nav-bar>
+		<nav-bar :navList="navList" @change="changeTab" :isLine="true"></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
 		<!-- tab菜单 -->
@@ -46,15 +46,16 @@
 						<view class="right" v-show="item.phone" @click.stop="phoneCall(item.phone)"><image src="@/static/image/home/phone.png" mode=""></image></view>
 					</view>
 					<!-- 空列表 -->
-					<u-empty type="list" v-if="isComplete && total === 0"></u-empty>
+					<u-empty :text="dataType === 0 ? '暂无线索' : '暂无客户'" type="search" v-if="isComplete && total == 0"></u-empty>
 					<view class="" v-else>
 						<!-- 加载完成 -->
 						<!-- <view :class="['loading_wrap', { hidden: !isComplete }]">我是有底线的~~</view> -->
-						<u-divider v-show="isComplete"  bg-color="transparent">没有更多了</u-divider>
+						<u-divider v-show="isComplete" bg-color="transparent">没有更多了</u-divider>
 						<!-- 加载动画 -->
 						<view :class="['loading_wrap', { hidden: isComplete }]"><u-loading color="red" :show="isLoading"></u-loading></view>
 					</view>
 				</view>
+				<!-- <u-empty text="暂无线索" mode="search"  v-if="dataList.length===0" margin-top="40"></u-empty> -->
 				<view class="footer"></view>
 			</view>
 		</scroll-view>
@@ -92,7 +93,7 @@ export default {
 	},
 	data() {
 		return {
-			wxUserInfo:uni.getStorageSync('wxUserInfo'),
+			wxUserInfo: uni.getStorageSync('wxUserInfo'),
 			// 下拉刷新
 			refresherTriggered: false,
 			_refresherTriggered: false,
@@ -147,7 +148,7 @@ export default {
 	computed: {
 		// 数据是否加载完成
 		isComplete() {
-			return this.total === this.dataList.length;
+			return this.total == this.dataList.length;
 		},
 		...mapGetters(['navbarHeight', 'tenantId', 'userInfo'])
 	},
@@ -167,7 +168,6 @@ export default {
 	},
 	methods: {
 		refresherrefresh() {
-			console.log('自定义下拉刷新被触发');
 			let _this = this;
 			if (_this._refresherTriggered) {
 				return;
@@ -180,13 +180,11 @@ export default {
 			this.loadStoreData();
 		},
 		refresherrestore() {
-			console.log('自定义下拉刷新被复位');
 			let _this = this;
 			_this.refresherTriggered = false;
 			_this._refresherTriggered = false;
 		},
 		refresherabort() {
-			console.log('自定义下拉刷新被中止	');
 			let _this = this;
 			_this.refresherTriggered = false;
 			_this._refresherTriggered = false;
@@ -198,7 +196,9 @@ export default {
 			_this._refresherTriggered = false;
 		},
 		changeTab(value) {
+			// this.
 			this.dataType = value;
+			this.dataList = []
 			this.setData(value);
 		},
 		handleHeight() {
@@ -225,12 +225,22 @@ export default {
 			// let {scrollTop} = detail
 			this.scrollTop = data.detail.scrollTop;
 		},
+		// 初始化数据
+		async initData() {
+			this.isLoading = true;
+			try {
+				this.dataType === 0 ? await this.getCluePage() : await this.getCustomerPage();
+			} catch (e) {
+				this.isLoading = false;
+			}
+		},
 		// 设置数据
 		setData(index) {
 			this.current = this.recordData[index].current;
 			this.dataList = this.recordData[index].data;
 			if (this.recordData[index].total === null) return this.initData();
-			this.total = this.recordData[index].total;
+			this.total = Number(this.recordData[index].total) 
+			console.log(this.total);
 		},
 		// 刷新页面
 		refreshData() {
@@ -274,23 +284,7 @@ export default {
 				this.setSearchData();
 			}
 		},
-		// 初始化数据
-		initData() {
-			this.isLoading = true;
-			setTimeout(async _ => {
-				try {
-					this.dataType === 0 ? await this.getCluePage() : await this.getCustomerPage();
-					this.isLoading = false;
-				} catch (e) {
-					//TODO handle the exception
-					// uni.showToast({
-					// 	title: '网络错误，请稍后重试！',
-					// 	icon: 'none'
-					// });
-					this.isLoading = false;
-				}
-			}, 500);
-		},
+
 		// 获取线索分页列表
 		async getCluePage() {
 			const queryInfo = {
@@ -302,7 +296,11 @@ export default {
 			this.recordData[0].data = [...this.recordData[0].data, ...res.records];
 			this.recordData[0].total = res.total;
 			this.recordData[0].current = this.current;
-			this.setData(0);
+			setTimeout(()=> {
+				this.setData(0);
+				this.isLoading = false;
+			}, 500);
+			
 		},
 		// 获取客户分页列表
 		async getCustomerPage() {
@@ -315,7 +313,10 @@ export default {
 			this.recordData[1].data = [...this.recordData[1].data, ...res.records];
 			this.recordData[1].total = res.total;
 			this.recordData[1].current = this.current;
-			this.setData(1);
+			setTimeout(()=> {
+				this.setData(1);
+				this.isLoading = false;
+			}, 500);
 		},
 		// 跳转对应的线索详情
 		jumpTo(id) {
@@ -353,7 +354,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .tabs {
 	width: 100vw;
 	// padding: 0 30rpx;

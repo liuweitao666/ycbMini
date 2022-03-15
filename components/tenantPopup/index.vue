@@ -3,12 +3,14 @@
 		<view class="pop_wrap">
 			<view class="title">选择您的组织</view>
 			<view class="desc">你在以下组织中担任成员</view>
-			<view class="userList">
-				<view :class="['user_item', 'align-items', { selected: item.tenantId === tenantId }]" v-for="(item, index) in tenantList" :key="index" @click="selectTenant(item)">
-					<text>{{ item.tenantName }}</text>
-					<u-icon name="arrow-right"></u-icon>
+			<scroll-view scroll-y="true" style="max-height: 50vh;">
+				<view class="userList">
+					<view :class="['user_item', 'align-items', { selected: item.tenantId === tenantId }]" v-for="(item, index) in tenantList" :key="index" @click="selectTenant(item)">
+						<text>{{ item.tenantName }}</text>
+						<u-icon name="arrow-right"></u-icon>
+					</view>
 				</view>
-			</view>
+			</scroll-view>
 		</view>
 		</u-popup>
 </template>

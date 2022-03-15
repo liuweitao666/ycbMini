@@ -1,5 +1,5 @@
 <template>
-	<scroll-view :scroll-top="scrollTop" scroll-y="true" class="company_wrap" :show-scrollbar="true" @scrolltoupper="upper" @scroll="scroll" @scrolltolower="touchBottom">
+	<scroll-view  scroll-y="true" class="company_wrap" :show-scrollbar="true" @scrolltoupper="upper" @scroll="scroll" @scrolltolower="touchBottom">
 		<view id="companyWrap">
 			<u-sticky>
 				<view class="search">
@@ -42,7 +42,6 @@ export default {
 			data: [],
 			emptyText: '输入公司名称搜索',
 			// 页面可滚动的高度
-			scrollTop: 0,
 			type: '',
 			complete: false
 		};
@@ -72,9 +71,6 @@ export default {
 				scrollTop: 0,
 				duration: '200'
 			});
-		},
-		scroll(data) {
-			this.scrollTop = data.detail.scrollTop;
 		},
 		upper() {},
 		// 获取公司列表

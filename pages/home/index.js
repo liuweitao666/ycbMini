@@ -3,7 +3,7 @@ export const clueQueryInfo = {
 	name: '',
 	createDate: 0,
 	status: '0',
-	range: 1,
+	range: 2,
 	contactTypes:''
 };
 // 定义请求参数
@@ -11,7 +11,7 @@ export const customerQueryInfo = {
 	name: '',
 	createDateType: 0,
 	status: '',
-	scopeType: 1,
+	scopeType: 2,
 	contactTypes:''
 };
 export const dropData = ['联系方式', '创建时间', '范围', '状态'];
@@ -76,10 +76,6 @@ export const createTimeOptions = [
 // 范围参数 (1：全部，2：我负责的，3：部门下属)
 export const rangeOptions = [
 	{
-		label: '全部',
-		value: 1
-	},
-	{
 		label: '我负责的',
 		value: 2
 	},
@@ -118,19 +114,15 @@ export const statusOptions = [
 // 1：全部，2：本人可见，3：所在机构及子级可见，4：我协作可见
 export const scopeTypeOptions = [
 	{
-		label: '全部',
-		value: 1
-	},
-	{
-		label: '本人可见',
+		label: '我负责的',
 		value: 2
 	},
 	{
-		label: '所在机构及子级可见',
+		label: '我下属的',
 		value: 3
 	},
 	{
-		label: '我协作可见',
+		label: '我协作的',
 		value: 4
 	},
 	
