@@ -395,7 +395,7 @@ export default {
 						font-size: 28rpx;
 						font-weight: 600;
 						color: #333333;
-						line-height: 32rpx;
+						line-height: 30rpx;
 						display: -webkit-box;
 						overflow: hidden;
 						text-overflow: ellipsis;
