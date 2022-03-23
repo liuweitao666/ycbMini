@@ -156,3 +156,10 @@ button::after { border: none }
 		}
 	}
 }
+// 文本单行隐藏
+.text_hidden {
+  overflow: hidden; /*超出部分隐藏*/
+  white-space: nowrap; /*禁止换行*/
+  text-overflow: ellipsis; /*省略号*/
+}
+

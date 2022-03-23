@@ -26,10 +26,7 @@
 			<view class="trademark">
 				<view class="trade_left">{{ dataType === '0' ? '线索' : '客户' }}</view>
 				<view class="trade_right">
-					<view class="trade_right_title">
-						<view class="title">{{ detailData.name }}</view>
-						<!-- <text class="date">{{ detailData.createTime }}</text> -->
-					</view>
+					<view class="trade_right_title">{{ detailData.name }}</view>
 					<view class="card_desc" v-if="dataType === '0'">线索来源：{{ detailData.sourceName || '-' }}</view>
 					<view class="card_desc" v-if="dataType === '0'">获取时间：{{ detailData.happenTime || '-' }}</view>
 					<view class="card_desc" v-if="dataType === '1'">客户来源：{{ detailData.sourceName || '-' }}</view>
@@ -478,19 +475,18 @@ export default {
 				flex: 1;
 				margin-top: -10rpx;
 				.trade_right_title {
-					display: flex;
-					flex-wrap: wrap;
-					align-items: center;
-					justify-content: space-between;
-					.title {
-						color: #ffffff;
-						font-size: 34rpx;
-						font-family: PingFangSC-Semibold, PingFang SC;
-						font-weight: 500;
-						letter-spacing: 2rpx;
-						margin-right: 20rpx;
-						margin-top: 10rpx;
-					}
+					display: -webkit-box;
+					color: #ffffff;
+					font-size: 34rpx;
+					word-break: break-all;
+					font-family: PingFangSC-Semibold, PingFang SC;
+					font-weight: 500;
+					letter-spacing: 2rpx;
+					margin-top: 10rpx;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					-webkit-box-orient: vertical;
+					-webkit-line-clamp: 3;
 					.date {
 						font-size: 12px;
 						margin-top: 10rpx;
