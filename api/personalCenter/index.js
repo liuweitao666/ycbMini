@@ -8,12 +8,12 @@ const {
 } = configUrl
 
 // 通过id 查看用户详情
-export const getUserInfo = (id) => request.globalRequest({
-	url: `${baseUrl}/blade-user/wx-mini/user-info`,
+export const getUserInfo = () => request.globalRequest({
+	url: `${baseUrl}/blade-user/current-user-info`,
 	method: 'get',
-	params:{
-		id
-	},
+	// params:{
+	// 	id
+	// },
 	power: 1
 })
 
