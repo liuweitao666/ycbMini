@@ -37,14 +37,14 @@
 							<u-icon name="email" color="#fff" size="44"></u-icon>
 							<text class="left_text">{{ personData.email }}</text>
 						</view>
-						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.email, '邮箱')">点击复制</u-button>
+						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="$handleCopy(personData.email, '邮箱')">点击复制</u-button>
 					</view>
 					<view class="item">
 						<view class="left">
 							<u-icon name="weixin-fill" color="#fff" size="44"></u-icon>
 							<text class="left_text">{{ personData.wechat }}</text>
 						</view>
-						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="handleCopy(personData.wechat, '微信号')">点击复制</u-button>
+						<u-button size="mini" shape="circle" :custom-style="customStyle" @click="$handleCopy(personData.wechat, '微信号')">点击复制</u-button>
 					</view>
 				</view>
 			</view>
@@ -89,7 +89,7 @@
 						<text style="padding-left: 10rpx;">企业微信</text>
 					</view>
 				</view>
-				<!-- <view class="email" @click="handleCopy(personData.email,'邮箱')">
+				<!-- <view class="email" @click="$handleCopy(personData.email,'邮箱')">
 					<view><u-icon name="email" size="60"></u-icon></view>
 					<text>邮箱</text>
 				</view> -->
@@ -331,20 +331,6 @@ export default {
 			console.log(this.user_id,this.tenant_id)
 			uni.navigateTo({
 				url: `/pages/personalQRcode/personalQRcode?user_id=${this.user_id}&tenant_id=${this.tenant_id}`
-			});
-		},
-		// 复制文本
-		handleCopy(value, prompt) {
-			uni.setClipboardData({
-				data: value, //要被复制的内容
-				success: () => {
-					//复制成功的回调函数
-					uni.showToast({
-						//提示
-						title: prompt + '复制成功',
-						icon: 'none'
-					});
-				}
 			});
 		},
 		phoneCall() {

@@ -7,8 +7,10 @@ Vue.use(uView);
 import store from './store'
 import navBar from '@/components/navbar/index.vue'
 import {dateFormat} from "@/utils/date.js"
+import {handleCopy} from "@/utils/util.js" 
 //把vuex定义成全局组件
 Vue.prototype.$store = store
+Vue.prototype.$handleCopy = handleCopy
 Vue.component('navBar',navBar)
 
 Vue.prototype.$dateFormat = dateFormat

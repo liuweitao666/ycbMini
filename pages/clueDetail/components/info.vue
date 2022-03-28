@@ -26,27 +26,27 @@
 		<view class="contact_title">联系方式</view>
 		<!-- 联系方式 -->
 		<view class="contact_info">
-			<view class="phone item">
+			<view class="phone item" @click="$handleCopy(detailData.phone, '手机号')">
 				<u-icon name="phone" color="#8F9BB3" size="40"></u-icon>
 				<text class="icon_text">{{ detailData.phone || '-' }}</text>
-			</view>
-			<view class="weixin item">
+			</view >
+			<view class="weixin item" @click="$handleCopy(detailData.phone, '旺旺号')">
 				<u-icon name="taobao" color="#8F9BB3" size="40"></u-icon>
 				<text class="icon_text">{{ detailData.wangwang || '-' }}</text>
 			</view>
-			<view class="weixin item">
+			<view class="weixin item" @click="$handleCopy(detailData.tel, '电话')">
 				<u-icon name="server-fill" color="#8F9BB3" size="40"></u-icon>
 				<text class="icon_text">{{ detailData.tel || '-' }}</text>
 			</view>
-			<view class="phone item">
+			<view class="phone item" @click="$handleCopy(detailData.wechat, '微信号')">
 				<u-icon name="weixin-fill" color="#8F9BB3" size="40"></u-icon>
 				<text class="icon_text">{{ detailData.wechat || '-' }}</text>
 			</view>
-			<view class="weixin item">
+			<view class="weixin item" @click="$handleCopy(detailData.qq, 'qq')">
 				<u-icon name="qq-fill" color="#8F9BB3" size="40"></u-icon>
 				<text class="icon_text">{{ detailData.qq || '-' }}</text>
 			</view>
-			<view class="weixin item" v-if="detailData.email">
+			<view class="weixin item" v-if="detailData.email" @click="$handleCopy(detailData.email, '邮箱')">
 				<u-icon name="email-fill" color="#8F9BB3" size="40"></u-icon>
 				<text class="icon_text">{{ detailData.email || '-' }}</text>
 			</view>

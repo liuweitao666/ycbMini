@@ -1,14 +1,14 @@
 //表单序列化
 export const serialize = data => {
-  let list = [];
-  Object.keys(data).forEach(ele => {
-    list.push(`${ele}=${data[ele]}`)
-  })
-  return list.join('&');
+	let list = [];
+	Object.keys(data).forEach(ele => {
+		list.push(`${ele}=${data[ele]}`)
+	})
+	return list.join('&');
 };
 
 // 获取元素的高度/距离顶部的高度
-export const getDomInfo=(id,callback)=>{
+export const getDomInfo = (id, callback) => {
 	// const topHeight = uni.getStorageSync('topHeight')
 	// if(topHeight) return
 	const query = uni.createSelectorQuery().in(this);
@@ -24,57 +24,72 @@ export const getDomInfo=(id,callback)=>{
  * 对象深拷贝
  */
 export const deepClone = data => {
-  var type = getObjType(data);
-  var obj;
-  if (type === 'array') {
-    obj = [];
-  } else if (type === 'object') {
-    obj = {};
-  } else {
-    //不再具有下一层次
-    return data;
-  }
-  if (type === 'array') {
-    for (var i = 0, len = data.length; i < len; i++) {
-      obj.push(deepClone(data[i]));
-    }
-  } else if (type === 'object') {
-    for (var key in data) {
-      obj[key] = deepClone(data[key]);
-    }
-  }
-  return obj;
+	var type = getObjType(data);
+	var obj;
+	if (type === 'array') {
+		obj = [];
+	} else if (type === 'object') {
+		obj = {};
+	} else {
+		//不再具有下一层次
+		return data;
+	}
+	if (type === 'array') {
+		for (var i = 0, len = data.length; i < len; i++) {
+			obj.push(deepClone(data[i]));
+		}
+	} else if (type === 'object') {
+		for (var key in data) {
+			obj[key] = deepClone(data[key]);
+		}
+	}
+	return obj;
 };
 export const getObjType = obj => {
-  var toString = Object.prototype.toString;
-  var map = {
-    '[object Boolean]': 'boolean',
-    '[object Number]': 'number',
-    '[object String]': 'string',
-    '[object Function]': 'function',
-    '[object Array]': 'array',
-    '[object Date]': 'date',
-    '[object RegExp]': 'regExp',
-    '[object Undefined]': 'undefined',
-    '[object Null]': 'null',
-    '[object Object]': 'object'
-  };
-  // if (obj instanceof Element) {
-  //   return 'element';
-  // }
-  return map[toString.call(obj)];
+	var toString = Object.prototype.toString;
+	var map = {
+		'[object Boolean]': 'boolean',
+		'[object Number]': 'number',
+		'[object String]': 'string',
+		'[object Function]': 'function',
+		'[object Array]': 'array',
+		'[object Date]': 'date',
+		'[object RegExp]': 'regExp',
+		'[object Undefined]': 'undefined',
+		'[object Null]': 'null',
+		'[object Object]': 'object'
+	};
+	// if (obj instanceof Element) {
+	//   return 'element';
+	// }
+	return map[toString.call(obj)];
 };
 
 /*
 处理城市数据
 */
-const handleCity = (data)=>{
-	data.forEach(item=>{
+const handleCity = (data) => {
+	data.forEach(item => {
 		console.log(item)
-		if(item.children){
+		if (item.children) {
 			handleCity(item.children)
-		}else{
+		} else {
 			item.children = []
 		}
 	})
 }
+
+// 复制文本
+export const handleCopy = (value, prompt) => {
+		uni.setClipboardData({
+			data: value, //要被复制的内容
+			success: () => {
+				//复制成功的回调函数
+				uni.showToast({
+					//提示
+					title: prompt + '复制成功',
+					icon: 'none'
+				});
+			}
+		});
+	}
