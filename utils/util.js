@@ -81,15 +81,20 @@ const handleCity = (data) => {
 
 // 复制文本
 export const handleCopy = (value, prompt) => {
-		uni.setClipboardData({
-			data: value, //要被复制的内容
-			success: () => {
-				//复制成功的回调函数
-				uni.showToast({
-					//提示
-					title: prompt + '复制成功',
-					icon: 'none'
-				});
-			}
-		});
-	}
+	if (!value) return uni.showToast({
+		//提示
+		title: prompt + '为空',
+		icon: 'none'
+	});
+	uni.setClipboardData({
+		data: value, //要被复制的内容
+		success: () => {
+			//复制成功的回调函数
+			uni.showToast({
+				//提示
+				title: prompt + '复制成功',
+				icon: 'none'
+			});
+		}
+	});
+}
