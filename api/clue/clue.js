@@ -13,7 +13,11 @@ const {
 export const getCluePage = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wx-mini/clue/page`,
 	method: 'get',
-	params,
+	params:{
+		...params,
+		timeType:1,
+		sort:2
+	},
 	power: 1
 })
 // 小程序查询线索详情
@@ -59,6 +63,14 @@ export const getCluetransferRecord = (params) => request.globalRequest({
 // 跟进记录新增
 export const addClueFollow = (params) => request.globalRequest({
 	url: `${baseUrl}/blade-crm/wx-mini/follow/create`,
+	method: 'POST',
+	params,
+	power: 1
+})
+
+// 小程序线索转让
+export const transferClue = (params) => request.globalRequest({
+	url: `${baseUrl}/blade-crm/wx-mini/clue/transfer`,
 	method: 'POST',
 	params,
 	power: 1

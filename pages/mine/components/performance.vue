@@ -5,7 +5,7 @@
 			<swiper-item v-for="item in performanceList" :key="item">
 			</swiper-item>
 		</swiper> -->
-		<view class="swiper-item">
+		<view class="swiper-item" v-if="performance">
 			<!-- 标题 -->
 			<view class="header">
 				<view :class="['tab_title', { active: Active === index + 1 }]" v-for="(item, index) in performanceList" @click="handleClick(index)" :key="item">{{ item }}</view>
@@ -30,11 +30,11 @@
 				<view class="con_item">
 					<view class="title genjin_bg">跟进</view>
 					<view class="item_block">
-						<view class="item_block_label">{{ `${performance.followManNum || 0}/${performance.followFrequency || 0}` }}</view>
+						<view class="item_block_label">{{ `${filter_number(performance.followManNum)}/${filter_number(performance.followFrequency)}` }}</view>
 						<view class="item_block_desc">人 / 次</view>
 					</view>
 					<view class="item_block">
-						<view class="item_block_label">{{ performance.followDuration }}</view>
+						<view class="item_block_label">{{ filter_number(performance.followDuration) }}</view>
 						<view class="item_block_desc">通时</view>
 					</view>
 				</view>
@@ -84,6 +84,9 @@ export default {
 		this.getCluePerformance(this.Active);
 	},
 	methods: {
+		filter_number(value) {
+			return value == -1 ? 0 : value;
+		},
 		// 获取线索业绩看板
 		getCluePerformance(timeType) {
 			switch (timeType) {

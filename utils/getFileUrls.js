@@ -33,3 +33,8 @@ export const getrealUrl = key => {
   return `${baseUrl}/blade-base/oss/redirect?Blade-Auth=${"bearer " +
     uni.getStorageSync('token')}&key=${key}`;
 };
+
+export const getAvatar = key => {
+  return `${baseUrl}/blade-center/user/avatar?userId=${key}`;
+};
+

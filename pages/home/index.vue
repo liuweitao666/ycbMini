@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="home_wrap">
 		<nav-bar :navList="navList" @change="changeTab" :isLine="true"></nav-bar>
 		<!-- 看板 -->
 		<!-- <performance ref="performance" /> -->
@@ -22,7 +22,6 @@
 			:scroll-top="scrollTop"
 			scroll-y="true"
 			class="main_wrap"
-			:style="{ height: contentHeight + 'px' }"
 			:show-scrollbar="true"
 			@scrolltoupper="upper"
 			@scroll="scroll"
@@ -359,8 +358,13 @@ export default {
 	// padding: 0 30rpx;
 	background-color: #ffffff;
 }
+.home_wrap{
+	display: flex;
+	height: 100vh;
+	flex-direction: column;
+}
 .main_wrap {
-	height: 600rpx;
+	flex: 1;
 	.main {
 		padding: 0rpx 30rpx 30rpx;
 		// position: relative;

@@ -1,7 +1,7 @@
 <template>
 	<view class="clue_wrap">
 		<!--自定义导航 -->
-		<nav-bar @change="changeNav" :title="dataType === '0' ? '线索详情' : '客户详情'" :isBack="true"></nav-bar>
+		<!-- <nav-bar @change="changeNav" :title="dataType === '0' ? '线索详情' : '客户详情'" :isBack="true"></nav-bar> -->
 		<!-- 吸顶导航栏 -->
 		<view :class="['fixTabs', { showFixTabs: isFix }]" v-if="showFixTabs">
 			<view :class="['isFix', 'custom_tabs', 'clue_tabs']">
@@ -81,7 +81,7 @@
 			<u-button
 				type="primary"
 				:custom-style="{
-					width: '260rpx',
+					width: dataType === '0' ? '200rpx' : '420rpx',
 					height: '84rpx',
 					background: '#FC961E',
 					'border-radius': '8px'
@@ -95,7 +95,7 @@
 				<u-button
 					type="primary"
 					:custom-style="{
-						width: dataType === '0' ? '260rpx' : '420rpx',
+						width: dataType === '0' ? '200rpx' : '420rpx',
 						height: '84rpx',
 						background: '#00A4FF',
 						'border-radius': '8px'
@@ -105,6 +105,21 @@
 					添加跟进
 				</u-button>
 			</view>
+			<view :style="{ margin: dataType === '0' ? '0' : '0 auto' }" v-if="dataType == 0">
+				<u-button
+					type="primary"
+					:custom-style="{
+						width: dataType === '0' ? '130rpx' : '420rpx',
+						height: '84rpx',
+						background: '#00A4FF',
+						'border-radius': '8px'
+					}"
+					@click="JumpTo(`/pages/clueTransfer/index?id=${clueId}`)"
+				>
+					转让
+				</u-button>
+			</view>
+			<!-- dataType -->
 		</log-footer>
 	</view>
 </template>
@@ -238,6 +253,9 @@ export default {
 		// 获取详情数据
 		this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		this.handleInitData();
+		uni.setNavigationBarTitle({
+			title: this.dataType === '0'?'线索详情':'客户详情'
+		});
 		setTimeout(_ => {
 			this.showFixTabs = true;
 		}, 500);
@@ -375,7 +393,7 @@ export default {
 				.select('#tabs_clue_detail')
 				.boundingClientRect(data => {
 					console.log(data);
-					this.tabsTop = data.top - this.navbarHeight / 2;
+					this.tabsTop = data.top;
 				})
 				.exec();
 		},
