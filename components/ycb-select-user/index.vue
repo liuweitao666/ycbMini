@@ -1,15 +1,22 @@
 <template>
 	<view class="search_wrap">
 		<u-tabs name="name" :list="tabList" :is-scroll="false" :current="current" @change="change"></u-tabs>
-		<view class="search"><u-search placeholder="输入员工姓名或手机号搜索" v-model="value" @search="handleSearch"></u-search></view>
-		<scroll-view scroll-y="true" class="user_scoll" v-if="userList.length>0">
+		<view class="search">
+			<u-search
+				:placeholder="current === 0 ? '根据员工名称搜索' : '输入员工姓名或手机号搜索'"
+				:show-action="false"
+				v-model="value"
+				@clear="handleSearch"
+				@search="handleSearch"
+			></u-search>
+		</view>
+		<scroll-view scroll-y="true" class="user_scoll" v-if="userList.length > 0">
 			<view class="users_wrap" v-for="item in userList" :key="item.id" @click="selectUser(item)">
 				<view :class="['user_radio', receiverId == item.id && 'active']"><view class="circle"></view></view>
 				<view class="user">
-					<view class="avatar"><image :src="$getAvatar(item.userId)" mode=""></image></view>
-					<view class="name">{{item.name}}</view>
-					<view class="dept_name">{{item.tenantName}}</view>
-					
+					<view class="avatar"><image :src="$getAvatar(item.id)" mode=""></image></view>
+					<view class="name">{{ item.name }}</view>
+					<view class="dept_name">{{ item.tenantName }}</view>
 				</view>
 			</view>
 		</scroll-view>
@@ -21,15 +28,19 @@
 import { getUserEnterprise, getUserGlobal } from '@/api/user/index.js';
 export default {
 	name: 'ycb-select-user',
-	props:{
-		receiverId:{
-			type:String,
-			default:""
+	props: {
+		receiverId: {
+			type: String,
+			default: ''
+		},
+		targetTenantId: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
 		return {
-			userList:[],
+			userList: [],
 			// 当前tab标签
 			current: 0,
 			// 搜索关键字
@@ -46,35 +57,38 @@ export default {
 		};
 	},
 	created() {
-		console.log(this.$attrs)
-		this.getList()
+		console.log(this.$attrs);
+		this.getList();
 	},
 	methods: {
 		change(index) {
 			this.current = index;
-			this.getList()
+			this.value = '';
+			this.$emit('update:receiverId', '');
+			this.getList();
 		},
 		handleSearch() {
 			this.getList();
 		},
-		selectUser(item){
-			this.currentUser = item
-			this.$emit('update:receiverId',item.id)
+		selectUser(item) {
+			console.log(item);
+			this.currentUser = item;
+			this.$emit('update:targetTenantId', this.current == 1 ? item.tenantId : undefined);
+			this.$emit('update:receiverId', item.id);
 		},
 		async getList() {
-			try{
+			try {
 				uni.showLoading({
-					title:'正在加载...'
-				})
+					title: '正在加载...'
+				});
 				const query = { value: this.value };
 				const { data: res } = this.current === 0 ? await getUserEnterprise(query) : await getUserGlobal(query);
-				uni.hideLoading()
-				this.userList = res
-			}catch(e){
+				uni.hideLoading();
+				this.userList = res;
+			} catch (e) {
 				//TODO handle the exception
-				uni.hideLoading()
+				uni.hideLoading();
 			}
-			
 		}
 	}
 };

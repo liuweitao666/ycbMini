@@ -28,7 +28,7 @@ export const getTenantInfo = (tenantId) => request.globalRequest({
 })
 // 小程序名片二维码
 export const createCardCode = (params) => request.globalRequest({
-	url: `${baseUrl}/blade-crm/wx-mini/code/wx-cart-code`,
+	url: `${baseUrl}/blade-crm/wx-mini/code/wx-cart-code?app=${params.app}`,
 	method: 'post',
 	params,
 	power: 3,

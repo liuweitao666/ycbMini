@@ -40,7 +40,8 @@ export default {
 			queryInfo: {
 				tenantId: '',
 				url: 'pages/personalCenter/index',
-				userId: 0
+				userId: 0,
+				app:'wx0277dae9e05fd868'
 			},
 			codeImg: '',
 			personalCode:'',

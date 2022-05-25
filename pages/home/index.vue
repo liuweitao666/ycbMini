@@ -155,15 +155,12 @@ export default {
 		navbarHeight() {
 			this.handleHeight();
 		},
-		tenantId() {
-			this.refreshData();
-		}
-	},
-	created() {
-		this.initData();
 	},
 	mounted() {
 		this.handleHeight();
+	},
+	onShow() {
+		this.refreshData();
 	},
 	methods: {
 		refresherrefresh() {
@@ -365,6 +362,7 @@ export default {
 }
 .main_wrap {
 	flex: 1;
+	height:1px;
 	.main {
 		padding: 0rpx 30rpx 30rpx;
 		// position: relative;
@@ -399,7 +397,6 @@ export default {
 						font-size: 28rpx;
 						font-weight: 600;
 						color: #333333;
-						line-height: 30rpx;
 						display: -webkit-box;
 						overflow: hidden;
 						text-overflow: ellipsis;

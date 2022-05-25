@@ -1,6 +1,6 @@
 <template>
 	<view class="clue_transfer">
-		<ycb-select-user :receiverId.sync="receiverId" style="flex: 1;" />
+		<ycb-select-user :receiverId.sync="receiverId" :targetTenantId.sync="targetTenantId" style="flex: 1;" />
 		<view class="footer">
 			<u-button
 				type="primary"
@@ -26,48 +26,53 @@ export default {
 	data() {
 		return {
 			culeId: '',
-			visible:false,
+			visible: false,
 			content: '确认转让该条线索吗？',
-			receiverId:""
+			receiverId: '',
+			targetTenantId: ''
 		};
 	},
 	onLoad({ id }) {
-		this.culeId = Number(id);
+		this.culeId = id;
 	},
 	methods: {
 		// 打开确认弹窗
-		showModel(){
-			if(!this.receiverId){
+		showModel() {
+			if (!this.receiverId) {
 				return uni.showToast({
-					title:'请先选择员工！',
-					icon:'none'
-				}) 
+					title: '请先选择员工！',
+					icon: 'none'
+				});
 			}
-			this.visible = true
+			this.visible = true;
 		},
-		change(){
-			
-		},
+		change() {},
 		async submit() {
-			try{
+			try {
 				console.log('提交转让请求！');
-				const data =await transferClue({
-					receiverId:this.receiverId,
-					ids:[this.culeId]
-				})
-				console.log(data)
-				if(data.success){
+				const data = await transferClue({
+					receiverId: this.receiverId,
+					ids: [this.culeId],
+					targetTenantId: this.targetTenantId
+				});
+				console.log(data);
+				if (data.success) {
 					uni.showToast({
-						title:'线索转让成功！',
-						icon:'none'
-					}) 
-				}else{
+						title: '线索转让成功！',
+						icon: 'none'
+					});
+					setTimeout(()=>{
+						uni.switchTab({
+							url: '/pages/home/index'
+						});
+					},500)
+				} else {
 					uni.showToast({
-						title:'线索转让失败！',
-						icon:'none'
-					}) 
+						title: '线索转让失败！',
+						icon: 'none'
+					});
 				}
-			}catch(e){
+			} catch (e) {
 				//TODO handle the exception
 			}
 		}

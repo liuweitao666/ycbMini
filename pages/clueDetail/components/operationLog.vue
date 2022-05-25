@@ -7,7 +7,7 @@
 				<view class="desc" v-for="(item2, index2) in item.updateContent" :key="index2">
 					<text style="color: #FC961E">#{{ switchField(item.operationType) }}</text>
 					<text style="color: #FC961E;padding-right: 10rpx">{{ item2.fieldName }}#</text>
-					<text >{{ `${item2.fieldName ? item2.fieldName + '更新' : ''} ${item2.oldValue ? item2.oldValue + '变更为' : ''}${item2.newValue}` }}</text>
+					<text>{{ `${item2.fieldName ? item2.fieldName + '更新' : ''} ${item2.oldValue ? item2.oldValue + '变更为' : ''}${item2.newValue}` }}</text>
 				</view>
 			</view>
 		</view>
@@ -44,6 +44,12 @@ export default {
 					return '订单';
 				case 'OrderGoods':
 					return '订单商品';
+				case 'sell':
+					return '推送';
+				case 'to_customer':
+					return '转客户';
+				case 'transfer':
+					return '转让';
 			}
 		}
 	}

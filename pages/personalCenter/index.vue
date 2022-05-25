@@ -123,7 +123,8 @@ import businessIntro from './components/businessIntro.vue';
 import { mapGetters } from 'vuex';
 import { getUserInfo, getTenantInfo,authorizedPhone,getAuthorized } from '@/api/personalCenter/index.js';
 import {
-	getfetchUrl
+	getfetchUrl,
+	getAvatar
 } from "@/utils/getFileUrls.js"
 export default {
 	components: {
@@ -288,10 +289,10 @@ export default {
 		},
 		// 获取用户信息
 		async getUserInfo() {
-			let httpReg = /http/
+			const httpReg = /http/g
 			const { data: res } = await getUserInfo(this.user_id);
 			if(res.avatar && !this.avatar){
-				this.avatar =httpReg.test(res.avatar)?res.avatar:await getfetchUrl(res.avatar)
+				this.avatar = httpReg.test(res.avatar)?res.avatar:getAvatar(this.user_id)
 			}
 			if(res.wechatQrCode){
 				res.wechatQrCode = await getfetchUrl(res.wechatQrCode)

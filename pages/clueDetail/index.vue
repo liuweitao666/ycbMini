@@ -250,9 +250,10 @@ export default {
 	onLoad({ type, id }) {
 		this.dataType = type;
 		this.dataType === '0' ? (this.clueId = id) : (this.customerId = id);
+	},
+	onShow() {
 		// 获取详情数据
 		this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
-		this.handleInitData();
 		uni.setNavigationBarTitle({
 			title: this.dataType === '0'?'线索详情':'客户详情'
 		});
@@ -291,7 +292,6 @@ export default {
 				item.current = 1;
 				item.scrollTop = 0;
 			});
-			this.handleInitData();
 			this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		},
 		// 设置数据
@@ -328,6 +328,7 @@ export default {
 			const { data: res } = await getCustomerDetail({
 				id: this.customerId
 			});
+			this.handleInitData();
 			if (res.recycleTime) {
 				res.recycleTime = res.recycleTime.replace(/-/g, '/');
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
@@ -342,6 +343,7 @@ export default {
 			const { data: res } = await getClueDetail({
 				id: this.clueId
 			});
+			this.handleInitData();
 			if (res.recycleTime) {
 				res.recycleTime = res.recycleTime.replace(/-/g, '/');
 				const leftTime = new Date(res.recycleTime).getTime() - new Date().getTime();
