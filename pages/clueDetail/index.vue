@@ -87,7 +87,7 @@
 					'border-radius': '8px'
 				}"
 				@click="JumpTo(`/pages/generateCustomer/index?id=${clueId}`)"
-				v-if="dataType === '0'"
+				v-if="dataType === '0' && detailData.status != '4'"
 			>
 				生成客户
 			</u-button>
@@ -95,7 +95,7 @@
 				<u-button
 					type="primary"
 					:custom-style="{
-						width: dataType === '0' ? '200rpx' : '420rpx',
+						width: dataType === '0'&& detailData.status != '4' ? '200rpx' : '420rpx',
 						height: '84rpx',
 						background: '#00A4FF',
 						'border-radius': '8px'
@@ -253,9 +253,9 @@ export default {
 	},
 	onShow() {
 		// 获取详情数据
-		this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
+		this.refreshData();
 		uni.setNavigationBarTitle({
-			title: this.dataType === '0'?'线索详情':'客户详情'
+			title: this.dataType === '0' ? '线索详情' : '客户详情'
 		});
 		setTimeout(_ => {
 			this.showFixTabs = true;

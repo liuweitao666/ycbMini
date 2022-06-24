@@ -2,8 +2,8 @@
 	<view class="add_follow_up">
 		<u-form :model="form" ref="uForm" label-width="140">
 			<view class="form_wrap">
-				<view class="form_item" v-if="complex">
-					<u-form-item label="来源" prop="source" :required="true">
+				<view class="form_item">
+					<u-form-item label="来源渠道" prop="source" :required="true">
 						<u-input v-model="form.sourceText" type="select" @click="sourceShow = true" />
 						<u-select :list="sourceList" mode="mutil-column-auto" value-name="dictKey" label-name="dictValue" v-model="sourceShow" @confirm="sourceCallback"></u-select>
 					</u-form-item>
@@ -11,29 +11,8 @@
 				<view class="form_item">
 					<u-form-item label="客户姓名" prop="name" :required="true"><u-input v-model="form.name" placeholder="姓名" /></u-form-item>
 				</view>
-				<view class="form_item" v-if="complex">
-					<u-form-item label="性别">
-						<u-input v-model="form.sexText" type="select" @click="sexShow = true" />
-						<u-action-sheet :list="sexList" v-model="sexShow" @click="sexCallback"></u-action-sheet>
-					</u-form-item>
-				</view>
 				<view class="form_item">
-					<u-form-item label="联系方式" prop="phone" :required="true"><u-input v-model="form.phone" placeholder="联系方式" /></u-form-item>
-				</view>
-				<view class="form_item" v-if="complex">
-					<u-form-item label="公司名称"><u-input v-model="form.companyName" type="select" @click="jumpTo('/pages/searchPage/index?type=1')" placeholder="公司名称" /></u-form-item>
-				</view>
-				<view class="form_item" v-if="complex">
-					<u-form-item label="公司职位"><u-input v-model="form.position" placeholder="公司职位" /></u-form-item>
-				</view>
-				<!-- <view class="form_item">
-					<u-form-item label="业务类型">
-						<u-input v-model="form.sex" type="select" @click="show = true" />
-						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
-					</u-form-item>
-				</view> -->
-				<view class="form_item">
-					<u-form-item label="地区">
+					<u-form-item label="办理地址">
 						<u-input v-model="region" type="select" @click="showRegion" placeholder="省-市" />
 						<u-popup v-model="regionShow" height="70%" mode="bottom" :border-radius="24">
 							<citySheet :dataTree="regionList" v-if="regionList.length > 0" @submit="regionCallback" />
@@ -42,12 +21,38 @@
 					</u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="客户类型" prop="statusText" :required="true">
-						<u-input v-model="form.statusText" type="select" @click="statusShow = true" />
-						<u-action-sheet :list="statusList" v-model="statusShow" @click="statusCallback"></u-action-sheet>
+					<u-form-item label="业务类型">
+						<u-input v-model="form.sex" type="select" @click="show = true" />
+						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
-				<!-- @click="jumpTo" 跳转标签选择页方法 -->
+				<view class="form_item" v-if="complex">
+					<u-form-item label="性别">
+						<u-input v-model="form.sexText" type="select" @click="sexShow = true" />
+						<u-action-sheet :list="sexList" v-model="sexShow" @click="sexCallback"></u-action-sheet>
+					</u-form-item>
+				</view>
+				<!-- 联系方式 -->
+				<view class="form_item">
+					<u-form-item label="联系方式"><contacts v-model="form.phone" placeholder="联系方式" /></u-form-item>
+				</view>
+				<view class="form_item">
+					<u-form-item label="微信号"><u-input v-model="form.position" placeholder="微信号" /></u-form-item>
+				</view>
+				<view class="form_item"><u-form-item label="微信二维码"></u-form-item></view>
+				<view class="form_item">
+					<u-form-item><upload-file ossPathType="customer-import" @on-success="handleSuccess" /></u-form-item>
+				</view>
+				<!-- 公司名称 -->
+				<view class="form_item" v-if="complex">
+					<u-form-item label="公司名称"><u-input v-model="form.companyName" type="select" @click="jumpTo('/pages/searchPage/index?type=1')" placeholder="公司名称" /></u-form-item>
+				</view>
+				<view class="form_item" v-if="complex">
+					<u-form-item label="微信号"><u-input v-model="form.position" placeholder="公司职位" /></u-form-item>
+				</view>
+				<view class="form_item">
+					<u-form-item label="意向度"><u-rate :count="5" active-color="#FA3534" v-model="form.rate"></u-rate></u-form-item>
+				</view>
 				<view class="form_item">
 					<u-form-item label="标签"><u-input v-model="form.labels" type="select" placeholder="请输入标签" @click="jumpTo('/pages/generateCustomer/labels/labels')" /></u-form-item>
 				</view>
@@ -75,14 +80,16 @@
 </template>
 
 <script>
-import { clueToCustomer } from '@/api/clue/clue.js';
+import { clueToCustomer, getClueDetail } from '@/api/clue/clue.js';
 import { createCustomer } from '@/api/customer/customer.js';
 import { getRegionTree } from '@/api/region/region.js';
 import { getDictionaryTree } from '@/api/dict/index.js';
 
 // 导入组件
 import citySheet from '@/components/citySheet/index.vue';
-
+import contacts from '@/components/contacts/index.vue';
+import uploadFile from '@/components/uploadFile/index.vue';
+import { isMobile } from '@/utils/validate.js';
 // 1.潜在客户、2.成交客户
 const statusList = [
 	{
@@ -94,12 +101,15 @@ const statusList = [
 ];
 export default {
 	components: {
-		citySheet
+		citySheet,
+		contacts,
+		uploadFile
 	},
 	data() {
 		return {
 			modelShow: false,
 			transferCont: {},
+			culeData: {},
 			// 自定义提交按钮
 			customSubmit: {
 				color: '#fff',
@@ -164,13 +174,15 @@ export default {
 					{
 						// 自定义验证函数，见上说明
 						validator: (rule, value, callback) => {
+							console.log(value);
 							// 上面有说，返回true表示校验通过，返回false表示不通过
 							// this.$u.test.mobile()就是返回true或者false的
-							return this.$u.test.mobile(value);
+							return isMobile(value);
 						},
 						message: '手机号码不正确',
 						// 触发器可以同时用blur和change
-						trigger: ['change', 'blur']
+						// 'change',
+						trigger: ['blur']
 					}
 				],
 				status: [
@@ -213,6 +225,12 @@ export default {
 		};
 	},
 	onLoad({ id, complex }) {
+		if (!complex) {
+			getClueDetail({ id }).then(res => {
+				this.culeData = res.data;
+				this.form.phone = res.data.phone;
+			});
+		}
 		this.form.clueId = id;
 		this.complex = complex;
 	},
@@ -223,6 +241,14 @@ export default {
 		this.getsourceList();
 	},
 	methods: {
+		// 上传图片
+		handleSuccess(file) {
+			this.form.files.push(file);
+			this.$refs.uToast.show({
+				title: '上传成功',
+				type: 'success'
+			});
+		},
 		// 设置公司信息
 		setCompany(companyInfo) {
 			this.form.companyName = companyInfo.companyName;
@@ -292,7 +318,8 @@ export default {
 						uni.showLoading({
 							title: '正在生成'
 						});
-						const data = this.complex ? await createCustomer(this.form) : await clueToCustomer(this.form);
+						const { wangwang, wechat, qq, tel, email } = this.culeData;
+						const data = this.complex ? await createCustomer(this.form) : await clueToCustomer({ ...this.form, wangwang, wechat, qq, tel, email });
 						uni.hideLoading();
 						if (data.code === 200) {
 							this.$refs.uToast.show({

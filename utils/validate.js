@@ -19,3 +19,22 @@ export function validatenull(val) {
     }
     return false;
 }
+
+/**
+ * 手机号码
+ * @param {*} s
+ */
+export function isMobile(s) {
+  if (s && s.indexOf(' ') > -1) {
+    let splitIndex = s.indexOf(' ')
+    let code = s.substr(0, splitIndex)
+    let _input = s.substring(splitIndex).trim()
+    if (code.trim() == '+86') {
+      return /^1[0-9]{10}$/.test(_input)
+    } else {
+      return /^([0-9\s]*)$/.test(_input)
+    }
+  } else {
+    return /^1[0-9]{10}$/.test(s)
+  }
+}
