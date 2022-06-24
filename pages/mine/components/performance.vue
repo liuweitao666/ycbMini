@@ -186,6 +186,7 @@ export default {
 				.title {
 					width: 132rpx;
 					height: 44rpx;
+					line-height: 44rpx;
 					margin: 20rpx auto 0;
 					color: #ffffff;
 					border-radius: 8rpx;

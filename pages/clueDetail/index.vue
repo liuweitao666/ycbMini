@@ -95,7 +95,7 @@
 				<u-button
 					type="primary"
 					:custom-style="{
-						width: dataType === '0'&& detailData.status != '4' ? '200rpx' : '420rpx',
+						width: dataType === '0' && detailData.status != '4' ? '200rpx' : '420rpx',
 						height: '84rpx',
 						background: '#00A4FF',
 						'border-radius': '8px'
@@ -173,6 +173,7 @@ export default {
 			clueId: '',
 			// 展示正在加载
 			isLoading: false,
+			codeVisible:false,
 			// log记录数据
 			data: [],
 			// 记录每次点击的记录数据
@@ -358,7 +359,6 @@ export default {
 			const queryInfo = {
 				size: this.size,
 				current: this.current
-				// customerId: this.customerId
 			};
 			this.dataType === '0' ? (queryInfo.clueId = this.clueId) : (queryInfo.customerId = this.customerId);
 			switch (this.currentTab) {
@@ -424,6 +424,7 @@ export default {
 				}
 			});
 		},
+		// 倒计时
 		getTime(second_time) {
 			var time = parseInt(second_time) + '秒';
 			if (parseInt(second_time) > 60) {
@@ -451,7 +452,8 @@ export default {
 				}
 			}
 			return time;
-		}
+		},
+		
 	}
 };
 </script>

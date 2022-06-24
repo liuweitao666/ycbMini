@@ -22,8 +22,8 @@
 				</view>
 				<view class="form_item">
 					<u-form-item label="业务类型">
-						<u-input v-model="form.sex" type="select" @click="show = true" />
-						<u-action-sheet :list="actionSheetList" v-model="show" @click="actionSheetCallback"></u-action-sheet>
+						<u-input v-model="form.sex" type="select" @click="businessShow = true" />
+						<u-action-sheet :list="businessSheetList" v-model="show" @click="businessSheetCallback"></u-action-sheet>
 					</u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
@@ -41,7 +41,9 @@
 				</view>
 				<view class="form_item"><u-form-item label="微信二维码"></u-form-item></view>
 				<view class="form_item">
-					<u-form-item><upload-file ossPathType="customer-import" @on-success="handleSuccess" /></u-form-item>
+					<u-form-item>
+						<upload-file ossPathType="customer-import" @on-success="handleSuccess" />
+					</u-form-item>
 				</view>
 				<!-- 公司名称 -->
 				<view class="form_item" v-if="complex">
@@ -108,6 +110,8 @@ export default {
 	data() {
 		return {
 			modelShow: false,
+			businessShow:false,
+			businessSheetList:[],
 			transferCont: {},
 			culeData: {},
 			// 自定义提交按钮
@@ -261,6 +265,7 @@ export default {
 		async showRegion() {
 			this.regionShow = true;
 		},
+		
 		// 获取来源渠道
 		async getsourceList() {
 			const { data: res } = await getDictionaryTree('source');
@@ -280,6 +285,14 @@ export default {
 			this.form.status = value + 1;
 			this.form.statusText = statusList[value].text;
 			console.log(this.form);
+		},
+		// 业务类型
+		businessSheetCallback(business){
+			// this.region = region.provinceName + '-' + region.cityName;
+			// this.business = business.name;
+			this.form.cityName = business.name;
+			this.form.cityCode = business.code;
+			this.businessShow = false;
 		},
 		// 选择地区的回调
 		regionCallback(region) {
