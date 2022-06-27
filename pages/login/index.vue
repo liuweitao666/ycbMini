@@ -35,7 +35,7 @@ export default {
 		this.login();
 	},
 	methods: {
-		...mapActions(['GetUserInfo', 'Login']),
+		...mapActions(['GetUserInfo', 'Login','getDict']),
 		// 登陆
 		login() {
 			wx.login({

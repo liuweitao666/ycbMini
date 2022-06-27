@@ -86,12 +86,19 @@
 				"navigationBarTitleText": "企业官网",
 				"enablePullDownRefresh": false
 			}
-		},{
+		}, {
 			"path": "pages/clueTransfer/index",
 			"style": {
 				"navigationBarTitleText": "转让线索",
 				"enablePullDownRefresh": false
 			}
+		}, {
+			"path": "pages/filterData/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"globalStyle": {

@@ -11,7 +11,6 @@ import {
 import {
 	getUserInfo
 } from '@/api/personalCenter/index.js';
-
 const getuserInfo = _ => {
 	const info = uni.getStorageSync('userInfo')
 	return info ? JSON.parse(info) : []
@@ -63,6 +62,7 @@ const user = {
 						commit('SET_REFRESH_TOKEN', data.refresh_token);
 						commit('SET_TENANT_ID', data.tenant_id);
 						dispatch('GetUserDetail', data.user_id)
+						dispatch('dict/getDict', {}, {root: true})
 					}
 					resolve({
 						code: 200,

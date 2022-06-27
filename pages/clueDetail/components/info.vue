@@ -43,9 +43,11 @@
 			</view>
 			<view class="phone item">
 				<u-icon name="weixin-fill" color="#8F9BB3" size="40"></u-icon>
-				<text class="icon_text">{{ detailData.wechat || '-' }}</text>
-				<u-icon name="photo" color="#8F9BB3" size="40" @click="codeVisible = true"></u-icon>
-				<u-icon name="file-text" v-if="detailData.wechat" color="#8F9BB3" size="38" @click="$handleCopy(detailData.wechat, '微信号')"></u-icon>
+				<u-icon name="photo" style="margin-left: 10rpx;" color="#8F9BB3" v-if="detailData.wechatQr" size="40" @click="codeVisible = true"></u-icon>
+				<text v-else>
+					<text class="icon_text">{{ detailData.wechat || '-' }}</text>
+					<u-icon name="file-text" v-if="detailData.wechat" color="#8F9BB3" size="38" @click="$handleCopy(detailData.wechat, '微信号')"></u-icon>
+				</text>
 			</view>
 			<view class="weixin item">
 				<u-icon name="qq-fill" color="#8F9BB3" size="40"></u-icon>
@@ -65,11 +67,11 @@
 					<image src="/static/image/clueDetail/qywechat.png" />
 					<view class="code_wrap">
 						<view class="title">
-							请加我的
-							<text class="qywechat">企业微信</text>
+							添加客户
+							<text class="qywechat">微信</text>
 						</view>
 						<image
-							src="https://img2.baidu.com/it/u=2860188096,638334621&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1656176400&t=c87b79529c96e0522cc4558df0ac6870"
+							:src="$getrealUrl(detailData.wechatQr)"
 							class="m-qrcode"
 							show-menu-by-longpress="true"
 						/>
@@ -108,10 +110,10 @@ export default {
 	methods: {
 		// 分享图片
 		share() {
-			share('https://img2.baidu.com/it/u=2860188096,638334621&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1656176400&t=c87b79529c96e0522cc4558df0ac6870');
+			share(this.detailData.wechatQr);
 		},
-		saveFile(key) {
-			saveFile('ycb/000000/clue-followup/2022/06/24/1656062158201.jpg');
+		saveFile() {
+			saveFile(this.detailData.wechatQr);
 		}
 	}
 };

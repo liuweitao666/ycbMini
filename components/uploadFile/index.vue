@@ -11,6 +11,7 @@
 			ref="Uupload"
 			:height="height"
 			:auto-upload="true"
+			:maxCount="maxCount"
 			:on-success="handleSuccess"
 			:on-error="handleError"
 		></u-upload>
@@ -49,7 +50,7 @@ export default {
 			default: false
 		},
 		// 最大允许上传个数
-		limit: {
+		maxCount: {
 			type: Number,
 			default: 1
 		},
@@ -166,11 +167,6 @@ export default {
 		},
 		handleRemove(file, fileList) {
 			// this.$emit('changeUpload', fileList)
-		},
-		// 预览
-		handlePreview(file) {
-			this.dialogVisible = true;
-			this.dialogImageUrl = file.uploadurl;
 		},
 		// 预览弹窗关闭前的回调
 		beforeDialogClose(done) {

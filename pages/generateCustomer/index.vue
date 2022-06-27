@@ -12,7 +12,7 @@
 					<u-form-item label="客户姓名" prop="name" :required="true"><u-input v-model="form.name" placeholder="姓名" /></u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="办理地址">
+					<u-form-item label="办理地址" prop="cityCode" :required="true">
 						<u-input v-model="region" type="select" @click="showRegion" placeholder="省-市" />
 						<u-popup v-model="regionShow" height="70%" mode="bottom" :border-radius="24">
 							<citySheet :dataTree="regionList" v-if="regionList.length > 0" @submit="regionCallback" />
@@ -21,9 +21,9 @@
 					</u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="业务类型">
-						<u-input v-model="form.sex" type="select" @click="businessShow = true" />
-						<u-action-sheet :list="businessSheetList" v-model="show" @click="businessSheetCallback"></u-action-sheet>
+					<u-form-item label="业务类型" prop="goodsIds" :required="true">
+						<u-input :value="form.goodsCategory" type="select" @click="jumpTo('/pages/filterData/index?title=业务类型')" />
+						<!-- <u-select :list="categoryList" mode="mutil-column-auto" value-name="code" label-name="name" v-model="businessShow"></u-select> -->
 					</u-form-item>
 				</view>
 				<view class="form_item" v-if="complex">
@@ -34,16 +34,14 @@
 				</view>
 				<!-- 联系方式 -->
 				<view class="form_item">
-					<u-form-item label="联系方式"><contacts v-model="form.phone" placeholder="联系方式" /></u-form-item>
+					<u-form-item label="联系方式" prop="phone"><contacts v-model="form.phone" placeholder="联系方式" /></u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="微信号"><u-input v-model="form.position" placeholder="微信号" /></u-form-item>
+					<u-form-item label="微信号"><u-input v-model="form.wechat" placeholder="微信号" /></u-form-item>
 				</view>
 				<view class="form_item"><u-form-item label="微信二维码"></u-form-item></view>
 				<view class="form_item">
-					<u-form-item>
-						<upload-file ossPathType="customer-import" @on-success="handleSuccess" />
-					</u-form-item>
+					<u-form-item><upload-file ossPathType="customer-import" @on-success="handleSuccess" /></u-form-item>
 				</view>
 				<!-- 公司名称 -->
 				<view class="form_item" v-if="complex">
@@ -53,10 +51,14 @@
 					<u-form-item label="微信号"><u-input v-model="form.position" placeholder="公司职位" /></u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="意向度"><u-rate :count="5" active-color="#FA3534" v-model="form.rate"></u-rate></u-form-item>
+					<u-form-item label="意向度"><u-rate :count="5" active-color="#FA3534" v-model="form.intentionDegree"></u-rate></u-form-item>
 				</view>
 				<view class="form_item">
-					<u-form-item label="标签"><u-input v-model="form.labels" type="select" placeholder="请输入标签" @click="jumpTo('/pages/generateCustomer/labels/labels')" /></u-form-item>
+					<!-- <u-input v-model="form.labels" type="select" placeholder="请输入标签" @click="jumpTo('/pages/generateCustomer/labels/labels')" /> -->
+					<u-form-item label="标签"></u-form-item>
+					<u-form-item>
+						<ycb-tags :labels.sync="form.labels" />
+					</u-form-item>
 				</view>
 				<view class="form_item"><u-form-item label="备注"></u-form-item></view>
 				<view class="form_item">
@@ -91,7 +93,9 @@ import { getDictionaryTree } from '@/api/dict/index.js';
 import citySheet from '@/components/citySheet/index.vue';
 import contacts from '@/components/contacts/index.vue';
 import uploadFile from '@/components/uploadFile/index.vue';
+import ycbTags from '@/components/ycbTags/index.vue';
 import { isMobile } from '@/utils/validate.js';
+import { mapGetters } from 'vuex';
 // 1.潜在客户、2.成交客户
 const statusList = [
 	{
@@ -105,13 +109,14 @@ export default {
 	components: {
 		citySheet,
 		contacts,
-		uploadFile
+		uploadFile,
+		ycbTags
 	},
 	data() {
 		return {
 			modelShow: false,
-			businessShow:false,
-			businessSheetList:[],
+			businessShow: false,
+			businessSheetList: [],
 			transferCont: {},
 			culeData: {},
 			// 自定义提交按钮
@@ -151,7 +156,11 @@ export default {
 				source: '',
 				sourceText: '',
 				sexText: '',
-				sex: 0
+				sex: 0,
+				wechatQr: '',
+				goodsCategory: '',
+				goodsIds: '',
+				intentionDegree: 1
 			},
 			rules: {
 				source: [
@@ -168,13 +177,21 @@ export default {
 						trigger: ['blur']
 					}
 				],
-				phone: [
+				goodsIds: [
 					{
 						required: true,
-						message: '请输入联系方式',
-						// blur和change事件触发检验
+						message: '请选择业务类型',
 						trigger: ['blur']
-					},
+					}
+				],
+				cityCode: [
+					{
+						required: true,
+						message: '请选择城市',
+						trigger: ['blur']
+					}
+				],
+				phone: [
 					{
 						// 自定义验证函数，见上说明
 						validator: (rule, value, callback) => {
@@ -187,6 +204,13 @@ export default {
 						// 触发器可以同时用blur和change
 						// 'change',
 						trigger: ['blur']
+					}
+				],
+				intentionDegree: [
+					{
+						message: '请选择意向度',
+						// blur和change事件触发检验
+						trigger: ['blur', 'change']
 					}
 				],
 				status: [
@@ -217,8 +241,6 @@ export default {
 			sourceShow: false,
 			// 客户状态列表
 			statusList: statusList,
-			// 客户来源列表
-			sourceList: [],
 			// 显示地区列选择去
 			regionShow: false,
 			// 地区列表
@@ -227,6 +249,18 @@ export default {
 			complex: null,
 			replayData: {}
 		};
+	},
+	computed: {
+		...mapGetters(['sourceList', 'filterGoods'])
+	},
+	watch: {
+		filterGoods: {
+			handler: function(val) {
+				this.form.goodsIds = val.map(item => item.id).join(',');
+				this.form.goodsCategory = val.map(item => item.name).join(',');
+			},
+			deep: true
+		}
 	},
 	onLoad({ id, complex }) {
 		if (!complex) {
@@ -240,14 +274,17 @@ export default {
 	},
 	// 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
 	onReady() {
+		if (!this.form.goodsIds) {
+			this.$store.commit('dict/SET_FILTER_GOODS', []);
+		}
 		this.$refs.uForm.setRules(this.rules);
 		this.getRegionTree();
-		this.getsourceList();
 	},
 	methods: {
 		// 上传图片
 		handleSuccess(file) {
-			this.form.files.push(file);
+			console.log(file);
+			this.form.wechatQr = file.fileKey;
 			this.$refs.uToast.show({
 				title: '上传成功',
 				type: 'success'
@@ -265,13 +302,6 @@ export default {
 		async showRegion() {
 			this.regionShow = true;
 		},
-		
-		// 获取来源渠道
-		async getsourceList() {
-			const { data: res } = await getDictionaryTree('source');
-			console.log(res);
-			this.sourceList = res;
-		},
 		// 获取城市数据
 		async getRegionTree() {
 			const { data: res } = await getRegionTree({
@@ -285,14 +315,6 @@ export default {
 			this.form.status = value + 1;
 			this.form.statusText = statusList[value].text;
 			console.log(this.form);
-		},
-		// 业务类型
-		businessSheetCallback(business){
-			// this.region = region.provinceName + '-' + region.cityName;
-			// this.business = business.name;
-			this.form.cityName = business.name;
-			this.form.cityCode = business.code;
-			this.businessShow = false;
 		},
 		// 选择地区的回调
 		regionCallback(region) {
@@ -320,25 +342,38 @@ export default {
 				url
 			});
 		},
-
 		// 提交生成客户请求
 		handleSubmit() {
+			console.log(this.form);
 			this.$refs.uForm.validate(async value => {
-				console.log(this.form, this.complex);
+				let _phoneValue = this.form.phone.split(' ')[1];
+				if (!_phoneValue && !this.form.wechat && !this.form.wechatQr) {
+					return uni.showToast({
+						title: '联系方式不能为空',
+						icon: 'none'
+					});
+				}
 				if (value) {
 					try {
 						this.isLoading = true;
 						uni.showLoading({
 							title: '正在生成'
 						});
+						let phone;
+						if (!_phoneValue) {
+							phone = _phoneValue;
+						} else {
+							phone = this.form.phone;
+						}
 						const { wangwang, wechat, qq, tel, email } = this.culeData;
-						const data = this.complex ? await createCustomer(this.form) : await clueToCustomer({ ...this.form, wangwang, wechat, qq, tel, email });
+						const data = this.complex ? await createCustomer({ ...this.form, phone }) : await clueToCustomer({ wangwang, wechat, qq, tel, email, ...this.form, phone });
 						uni.hideLoading();
 						if (data.code === 200) {
 							this.$refs.uToast.show({
 								title: '生成成功',
 								type: 'success'
 							});
+							this.$store.commit('dict/SET_FILTER_GOODS', []);
 							this.isLoading = false;
 							this.$store.dispatch('getCustomerList');
 							setTimeout(() => {

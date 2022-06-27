@@ -1,5 +1,5 @@
 <script>
-	import {mapGetters} from "vuex"
+	import {mapGetters,mapActions} from "vuex"
 	import {calcDate} from "@/utils/date.js"
 	import {validatenull} from '@/utils/validate.js'
 	import website from "@/config/website.js"
@@ -13,6 +13,9 @@ export default {
 		console.log('App Launch');
 	},
 	onShow: function() {
+		if(this.token){
+			this.getDict()
+		}
 		this.timer = setInterval(() => {
 			this.refreshToken()
 		}, 30000);
@@ -43,9 +46,12 @@ export default {
 		// clearInterval(this.timer)
 	},
 	computed:{
-		...mapGetters(['userInfo'])
+		...mapGetters(['userInfo','token'])
 	},
 	methods:{
+		...mapActions({
+			getDict:'dict/getDict'
+		}),
 		// 定时检测token
 		async refreshToken() {
 			console.log('refreshToken')

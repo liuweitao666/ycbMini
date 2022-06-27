@@ -13,7 +13,8 @@ import {
 
 const fileFormat = ["jpg", "gif", "bmp", "png", "jpeg"]
 // 分享图片
-export const share = (url) => {
+export const share =async (key) => {
+	const url = await getfetchUrl(key)
 	uni.showLoading({
 		title: '加载中'
 	});

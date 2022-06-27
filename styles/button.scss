@@ -1,0 +1,53 @@
+// 中
+.small_btn{
+	width: 120rpx;
+	height: 60rpx;
+	line-height: 60rpx;
+	font-size: 26rpx;
+	border-radius: 8rpx;
+}
+// 大
+.default_btn{
+	width: 100%;
+	height: 94rpx;
+	border-radius: 20rpx;
+}
+// 小
+.mini_btn{
+	padding: 6rpx 16rpx;
+	border-radius: 20rpx;
+}
+// 主题 primary 默认
+.primary{
+	background-color: $u-type-primary;
+	color: #FFFFFF;
+}
+.warning{
+	background-color: $u-type-warning;
+	color: #FFFFFF;
+}
+.success{
+	background-color: $u-type-success;
+	color: #FFFFFF;
+}
+.btn_info{
+	background-color: #C2C2C2;
+	color: #FFFFFF;
+}
+// plain 朴素
+.plain{
+	border: 1px solid $u-type-info-dark;
+	color: $u-type-info-dark
+}
+.plain_primary{
+	border:1px solid $u-type-primary;
+	color: $u-type-primary;
+}
+.plain_warning{
+	border:1px solid $u-type-warning;
+	color: $u-type-warning;
+}
+.plain_success{
+	border:1px solid $u-type-success; 
+	color: $u-type-success;
+}

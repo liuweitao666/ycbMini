@@ -15,7 +15,7 @@
 			</view>
 			<view class="item_single">
 				<u-form-item :border-bottom="false">
-					<upload-file v-if="dataType" :ossPathType="dataType==='0'?'clue-import':'customer-import'" @on-success="handleSuccess"/>
+					<upload-file v-if="dataType" :ossPathType="dataType==='0'?'clue-import':'customer-import'" :maxCount="99" @on-success="handleSuccess"/>
 				</u-form-item>
 			</view>
 		</u-form>

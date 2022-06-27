@@ -163,3 +163,110 @@ button::after { border: none }
   text-overflow: ellipsis; /*省略号*/
 }
 
+
+button {
+	margin: 0;
+	padding: 0;
+	outline: none;
+	border-radius: 0;
+	background-color: transparent;
+	width: max-content;
+}
+button::after {
+	border: none;
+}
+
+.button-hover {
+	color: rgba(0, 0, 0, 0.6);
+	background-color: #fff;
+}
+.title {
+	font-size: 32rpx;
+	font-family: PingFangSC-Medium, PingFang SC;
+	font-weight: 600;
+	color: #0a0b26;
+	line-height: 44rpx;
+	padding-bottom: 20rpx;
+}
+
+.desc {
+	font-size: 24rpx;
+	font-family: PingFangSC-Regular, PingFang SC;
+	font-weight: 400;
+	color: #777777;
+	line-height: 54rpx;
+	color: #777777;
+}
+
+/* 刷新动画 */
+.pulldown-loadng {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #f5f6fa;
+	height: 80rpx;
+}
+.loading-icon-text {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 26rpx;
+	color: #999;
+	width: 100%;
+	height: 80rpx;
+}
+.loading-icon-text image {
+	width: 50rpx;
+	height: 50rpx;
+	margin-right: 10rpx;
+}
+
+@keyframes loadingImg {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+.loadingImg {
+	animation: loadingImg 1.5s linear infinite;
+}
+
+// 搜索输入框
+.search_input {
+	width: 100%;
+	border-radius: 60rpx;
+	padding: 12rpx 40rpx;
+	height: 64rpx;
+	box-sizing: border-box;
+	background: #f0f0f0;
+	position: relative;
+	top: -4px;
+}
+// 底部操作按钮通用样式
+.operation {
+	position: fixed;
+	width: 100%;
+	box-shadow: 0px -4px 10px 0px rgba(0, 0, 0, 0.05);
+	bottom: 0;
+	display: flex;
+	height: 174rpx;
+	padding: 0rpx 50rpx;
+	align-items: center;
+	justify-content: center;
+	background-color: #ffffff;
+	.btn_info {
+		margin-left: 20rpx;
+		width: 234rpx;
+	}
+}
+
+.position_center{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+}
+// 导入自定义按钮样式
+@import './button.scss';

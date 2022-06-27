@@ -206,14 +206,14 @@ export default {
 		};
 	},
 	onPullDownRefresh() {
-		this.refreshData();
+		this.refreshData(this.dataType);
 		setTimeout(function() {
 			uni.showToast({
 				title: '页面已刷新',
 				icon: 'none'
 			});
 			uni.stopPullDownRefresh();
-		}, 1000);
+		}, 500);
 	},
 	computed: {
 		// 数据是否加载完成
@@ -254,10 +254,7 @@ export default {
 	},
 	onShow() {
 		// 获取详情数据
-		this.refreshData();
-		uni.setNavigationBarTitle({
-			title: this.dataType === '0' ? '线索详情' : '客户详情'
-		});
+		this.refreshData(this.dataType);
 		setTimeout(_ => {
 			this.showFixTabs = true;
 		}, 500);
@@ -284,7 +281,7 @@ export default {
 			}, 100);
 		},
 		// 刷新数据
-		refreshData() {
+		refreshData(dataType) {
 			this.size = 20;
 			this.current = 1;
 			this.recordData.forEach(item => {
@@ -293,7 +290,10 @@ export default {
 				item.current = 1;
 				item.scrollTop = 0;
 			});
-			this.dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
+			uni.setNavigationBarTitle({
+				title: dataType === '0' ? '线索详情' : '客户详情'
+			});
+			dataType === '0' ? this.getClueDetail() : this.getCustomerDetail();
 		},
 		// 设置数据
 		setData(index) {

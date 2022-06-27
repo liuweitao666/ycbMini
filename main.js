@@ -9,11 +9,12 @@ import navBar from '@/components/navbar/index.vue'
 import ycbSelectUser from '@/components/ycb-select-user/index.vue'
 import {dateFormat} from "@/utils/date.js"
 import {handleCopy} from "@/utils/util.js" 
-import {getAvatar} from "@/utils/getFileUrls.js" 
+import {getAvatar,getrealUrl} from "@/utils/getFileUrls.js" 
 //把vuex定义成全局组件
 Vue.prototype.$store = store
 Vue.prototype.$handleCopy = handleCopy
 Vue.prototype.$getAvatar = getAvatar
+Vue.prototype.$getrealUrl = getrealUrl
 Vue.component('navBar',navBar)
 Vue.component('ycbSelectUser',ycbSelectUser)
 

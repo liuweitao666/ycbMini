@@ -29,11 +29,15 @@ export function isMobile(s) {
     let splitIndex = s.indexOf(' ')
     let code = s.substr(0, splitIndex)
     let _input = s.substring(splitIndex).trim()
-    if (code.trim() == '+86') {
-      return /^1[0-9]{10}$/.test(_input)
-    } else {
-      return /^([0-9\s]*)$/.test(_input)
-    }
+		if(_input){
+			if ( code.trim() == '+86') {
+			  return /^1[0-9]{10}$/.test(_input)
+			} else {
+			  return /^([0-9\s]*)$/.test(_input)
+			}  
+		}else{
+			return true
+		}
   } else {
     return /^1[0-9]{10}$/.test(s)
   }
